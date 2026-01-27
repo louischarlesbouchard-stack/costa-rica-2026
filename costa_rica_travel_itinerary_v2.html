@@ -1,0 +1,2103 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voyage Famille 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: {
+                        'cr-green': '#2d5a47', 'cr-gold': '#f2cc8f', 'cr-blue': '#1e6091', 'cr-orange': '#ea580c',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* BASE STYLES & MOSAIC */
+        .mosaic-container {
+            column-count: 2;
+            column-gap: 8px;
+            padding: 8px;
+        }
+
+        @media (min-width: 640px) {
+            .mosaic-container {
+                column-count: 3;
+                /* Bigger images */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .mosaic-container {
+                column-count: 5;
+                /* Reduced density for bigger images */
+            }
+        }
+
+
+        .mosaic-item {
+            break-inside: avoid;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mosaic-item img {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+
+        .mosaic-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* CUSTOM SCROLLBAR for Itinerary List */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 3px;
+        }
+
+        .leaflet-tooltip.custom-tooltip {
+            background-color: white;
+            border: 1px solid #1e6091;
+            color: #1e6091;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            padding: 2px 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .poi-marker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            color: white;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .poi-marker:hover {
+            transform: scale(1.2);
+            z-index: 9999 !important;
+        }
+
+        /* Hide Leaflet routing control container (blank box) */
+        .leaflet-routing-container {
+            display: none !important;
+        }
+
+        .bg-waterfall {
+            background: #0ea5e9;
+        }
+
+        .bg-beach {
+            background: #eab308;
+        }
+
+        .bg-activity {
+            background: #ec4899;
+        }
+
+        .bg-food {
+            background: #f97316;
+        }
+
+        .bg-park {
+            background: #16a34a;
+        }
+
+        /* Mosaic Styles */
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 200px);
+            gap: 0.5rem;
+        }
+
+        .mosaic-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+
+        /* Hero Section (V6) */
+        .hero-bg {
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(28, 25, 23, 1)), url('https://images.unsplash.com/photo-1590424765063-4416194b5f92?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .scroll-btn {
+            position: absolute;
+            bottom: 40px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .mosaic-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .mosaic-item.wide {
+            grid-column: span 2;
+        }
+
+        /* Marker Refinements */
+        /* Marker Refinements V6 */
+        .black-marker-oval {
+            background: #000;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 9999px;
+            /* Oval */
+            padding: 0 4px;
+            /* Reduced Padding */
+            font-size: 10px;
+            /* Reduced Font */
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            height: 16px;
+            /* Reduced Height (was 24px) */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .permanent-label {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            box-shadow: none;
+            color: #000;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 0 4px;
+            margin-left: 2px !important;
+            /* Spacing from dot */
+        }
+
+        /* City & Beach Label Styles */
+        /* City & Beach Label Styles */
+        .leaflet-tooltip.city-label {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            /* Slightly larger */
+            color: #000 !important;
+            white-space: nowrap;
+            text-shadow: 2px 2px 0px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+        }
+
+        .leaflet-tooltip.beach-label {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 10px;
+            color: #000 !important;
+            white-space: nowrap;
+            text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff;
+            /* Lighter outline */
+        }
+
+        .city-label::before,
+        .beach-label::before {
+            display: none !important;
+        }
+
+        .city-label sup {
+            font-size: 8px;
+            font-weight: 900;
+            margin-left: 2px;
+            color: #d97706;
+            /* Orange for day numbers to pop */
+        }
+
+        .city-dot {
+            background-color: #000;
+            border: 2px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            width: 12px;
+            height: 12px;
+        }
+
+        .beach-dot {
+            background-color: #3b82f6;
+            /* Blue-500 */
+            border: 1px solid white;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            width: 8px;
+            /* Small dot */
+            height: 8px;
+        }
+
+        .region-label {
+            color: #93c5fd !important;
+            /* Blue-300 (Lighter, subtler) */
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            /* Reduced opacity */
+            text-shadow: none;
+            /* Removed heavy shadow */
+            pointer-events: none;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .leaflet-tooltip-left.permanent-label::before {
+            border-left-color: transparent;
+        }
+
+        .leaflet-tooltip-right.permanent-label::before {
+            border-right-color: transparent;
+        }
+
+        .legend-control {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            border: 1px solid #e5e5e5;
+            min-width: 120px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: white;
+        }
+
+        /* Compact Budget Styles */
+        .compact-input {
+            width: 50px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px dotted #a8a29e;
+            font-family: 'Outfit', sans-serif;
+            font-size: 11px;
+            text-align: right;
+            color: #ea580c;
+            /* Orange for better visibility */
+            font-weight: 700;
+            padding: 0;
+            transition: all 0.2s;
+        }
+
+        .compact-input:focus,
+        .compact-input:not(:placeholder-shown) {
+            border-bottom-style: solid;
+            border-bottom-color: #ea580c;
+            color: #c2410c;
+            /* Darker orange on focus */
+        }
+
+        /* Remove number spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .activity-line {
+            margin-bottom: 2px;
+            line-height: 1.4;
+        }
+
+        .activity-line:hover .compact-input {
+            border-bottom-color: #ea580c;
+        }
+
+        /* Hide Leaflet Routing Machine UI if present */
+        .leaflet-routing-container,
+        .leaflet-routing-machine,
+        .leaflet-routing-alt,
+        .leaflet-routing-alternatives-container {
+            display: none !important;
+        }
+
+        /* Smoother map tiles */
+        .leaflet-tile {
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        .leaflet-container {
+            background: #f5f5f4 !important;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- TIER 1: FLUID MOSAIC HEADER -->
+    <div
+        class="relative bg-stone-900 border-b-8 border-cr-gold overflow-hidden min-h-screen flex items-center justify-center">
+
+        <div class="mosaic-container w-full h-full absolute inset-0 opacity-60">
+            <!-- FIRST PAGE PHOTOS ONLY - 20 items -->
+            <div class="mosaic-item"><img src="Photos/Photos/First page/meal.png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (12).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (8).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (9).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Montezuma (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Samana (11).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Tamarindo (4).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/la Fortuna (11).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/la Fortuna (6).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/tortuguero (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/tortuguero (6).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/uvita (2).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/uvita (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Drake Bay (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (1).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (2).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (4).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (6).png"></div>
+        </div>
+
+        <div
+            class="absolute bottom-8 left-[45%] transform -translate-x-1/2 z-10 flex flex-col items-center text-center">
+            <h1 class="text-4xl md:text-6xl font-serif font-black text-white drop-shadow-2xl mb-2 tracking-tighter">
+                COSTA RICA
+            </h1>
+            <p class="text-xl md:text-3xl text-stone-200 font-light tracking-wide drop-shadow-md">
+                Voyage en Famille • <span class="text-cr-gold font-bold">Pura Vida</span>
+            </p>
+        </div>
+    </div>
+    <div id="itinerary-start"></div> <!-- Scroll Anchor -->
+
+    <!-- TIER 2: ITINERARY CARDS -->
+    <div class="bg-stone-100 border-y-4 border-white shadow-inner">
+        <div class="container mx-auto max-w-full px-4 py-8">
+            <div
+                class="flex flex-col lg:flex-row h-[860px] bg-white rounded-xl shadow-lg border border-stone-100 overflow-hidden">
+
+                <!-- COL 1: MAP (8/12) - LARGER -->
+                <div class="hidden lg:flex flex-col w-full lg:w-[67%] h-full relative bg-stone-100">
+                    <div id="main-map" class="flex-grow z-0 bg-stone-200 relative w-full h-full">
+                        <!-- Leaflet Map -->
+                    </div>
+                </div>
+
+                <!-- COL 2: ITINERARY LIST (16%) -->
+                <div
+                    class="w-full lg:w-[16%] bg-white z-10 flex flex-col h-full border-l border-r border-stone-200 overflow-hidden">
+                    <div class="sticky top-0 bg-white z-20 shadow-sm border-b border-stone-100 flex-shrink-0">
+                        <div class="p-3 flex justify-between items-center">
+                            <h2
+                                class="font-serif font-black text-lg text-stone-800 tracking-tight flex items-center gap-2">
+                                <i class="fas fa-list-ul text-cr-orange"></i> Itinéraire
+                            </h2>
+                            <span id="day-count-badge"
+                                class="text-xs font-bold text-white bg-cr-orange px-2 py-0.5 rounded-full">18 J</span>
+                        </div>
+                        <!-- Sort Buttons -->
+                        <div class="px-3 pb-2 flex justify-between items-center border-t border-stone-50 pt-2">
+                            <div class="flex gap-1">
+                                <button onclick="sortDays('date')" class="p-1 text-stone-400 hover:text-stone-800"
+                                    title="Date"><i class="fas fa-calendar-alt"></i></button>
+                                <button onclick="sortDays('km')" class="p-1 text-stone-400 hover:text-stone-800"
+                                    title="Km"><i class="fas fa-road"></i></button>
+                            </div>
+                            <div class="text-[10px] font-bold text-stone-400">
+                                <span id="kpi-total-km">-- km</span> • <span id="kpi-total-time">-- h</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FEED CONTAINER -->
+                    <div id="summary-feed" class="flex-grow overflow-y-auto custom-scroll p-1 space-y-0 bg-stone-50">
+                        <!-- JS Injected Cards -->
+                    </div>
+                </div>
+
+                <!-- COL 3: TRAJETS & STATS (17%) -->
+                <div class="w-full lg:w-[17%] bg-stone-900 text-stone-300 flex flex-col h-full overflow-hidden">
+                    <!-- Header with KPIs integrated -->
+                    <div class="p-3 border-b border-white/10 bg-stone-800 flex-shrink-0">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="font-serif font-bold text-base text-cr-gold tracking-wide"><i
+                                    class="fas fa-route mr-2"></i>Trajets</h2>
+                        </div>
+                        <!-- Totals Row -->
+                        <div class="grid grid-cols-2 gap-2 text-center bg-stone-700/50 rounded p-2">
+                            <div>
+                                <div class="text-[9px] text-stone-500 uppercase tracking-widest">Total Km</div>
+                                <div class="text-lg font-bold text-white font-serif" id="stat-panel-km">0</div>
+                            </div>
+                            <div>
+                                <div class="text-[9px] text-stone-500 uppercase tracking-widest">Heures</div>
+                                <div class="text-lg font-bold text-white font-serif" id="stat-panel-time">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route Table Container -->
+                    <div class="flex-grow overflow-y-auto custom-scroll p-3 space-y-2">
+                        <div id="route-table" class="space-y-2">
+                            <!-- JS Injected Route Segments -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIER 2: RICH CARDS -->
+    <div class="py-12 bg-stone-50">
+        <div class="py-12 bg-stone-50">
+            <div class="container mx-auto px-4 max-w-full"> <!-- Full Width Details -->
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-serif font-bold text-stone-800 mb-2">Détails de l'Itinéraire</h2>
+                    <div class="w-16 h-1 bg-cr-gold mx-auto mt-4"></div>
+                </div>
+
+                <!-- GRID of BIGGER CARDS (4 Columns) -->
+                <div id="details-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TIER 3: FINANCE SECTION -->
+        <div class="bg-stone-800 text-white py-16 border-t-8 border-cr-gold">
+            <div class="container mx-auto px-8 w-full max-w-[95%]">
+                <!-- Replaced max-w-7xl with px-8 max-w-[95%] -->
+                <div class="text-center mb-8 relative flex flex-col items-center">
+                    <h2 class="text-4xl font-serif font-bold text-cr-gold mb-2">Budget Global Estimé</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        <button onclick="window.exportBudget()"
+                            class="text-[10px] uppercase font-bold text-stone-400 hover:text-white border border-stone-600 rounded px-3 py-1 hover:border-cr-orange hover:bg-stone-700 transition-all"
+                            title="Sauvegarder les données">
+                            <i class="fas fa-save mr-1"></i> Save JSON
+                        </button>
+                        <div class="w-12 h-1 bg-white/20"></div>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <!-- LEFT PANEL: Dashboard Charts & Recap (Expanded - Bigger Text & Width) -->
+                    <div
+                        class="w-full grid grid-cols-1 lg:grid-cols-3 gap-16 bg-stone-700/50 p-12 rounded-xl border border-white/5 h-full shadow-2xl">
+                        <!-- COL 1: Main Chart & Legend -->
+                        <div class="flex flex-col items-center justify-start w-full">
+                            <h3
+                                class="text-lg font-bold uppercase tracking-widest text-stone-400 mb-8 border-b border-white/10 pb-2 w-full text-center">
+                                Répartition Globale</h3>
+                            <div class="relative w-72 h-72 mb-8">
+                                <canvas id="budgetChart"></canvas>
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-sm text-stone-400 uppercase tracking-widest">Total</span>
+                                    <span id="grand-total" class="text-3xl font-bold text-white">$0</span>
+                                </div>
+                            </div>
+                            <!-- Legend Grid -->
+                            <div class="grid grid-cols-1 gap-y-2 text-sm text-stone-300 w-full max-w-sm px-4">
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#3b82f6"></span> Vols</div>
+                                    <span id="legend-vols" class="font-bold text-white">$0</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#8b5cf6"></span> Héberg.</div>
+                                    <span id="legend-heberg" class="font-bold text-white">$0</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#f59e0b"></span> Transport</div>
+                                    <span id="legend-transport" class="font-bold text-white">$0</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#ec4899"></span> Activités</div>
+                                    <span id="legend-activites" class="font-bold text-white">$0</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#10b981"></span> Vie</div>
+                                    <span id="legend-vie" class="font-bold text-white">$0</span>
+                                </div>
+                                <div class="flex items-center justify-between w-full border-b border-white/5 pb-1">
+                                    <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                            style="background-color:#facc15"></span> Autres</div>
+                                    <span id="legend-autres" class="font-bold text-white">$0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COL 2: Daily Expenses Chart -->
+                        <div class="flex flex-col items-center justify-start w-full border-l border-white/5 pl-12">
+                            <h3
+                                class="text-lg font-bold uppercase tracking-widest text-stone-400 mb-8 border-b border-white/10 pb-2 w-full text-center">
+                                Dépenses Journalières</h3>
+                            <div class="relative w-64 h-64 mb-8 opacity-90 hover:opacity-100 transition-opacity">
+                                <canvas id="dailyChart"></canvas>
+                            </div>
+                            <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-sm text-stone-300 w-full max-w-sm px-4">
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#ef4444"></span> Food</div>
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#3b82f6"></span> Drinks</div>
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#10b981"></span> Gas</div>
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#f59e0b"></span> Gifts</div>
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#8b5cf6"></span> Goods</div>
+                                <div class="flex items-center"><span class="w-3 h-3 rounded-full mr-3"
+                                        style="background-color:#64748b"></span> Other</div>
+                            </div>
+                        </div>
+
+                        <!-- COL 3: Detailed Recap Table -->
+                        <div class="flex flex-col justify-start w-full border-l border-white/5 pl-12">
+                            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                                <h3 class="text-lg font-bold uppercase tracking-widest text-stone-400">
+                                    Récapitulatif
+                                </h3>
+                                <button onclick="window.resetFixedCosts()"
+                                    class="mb-1 text-[9px] text-stone-500 hover:text-cr-orange transition-colors border border-stone-600 rounded px-2 py-1 hover:border-cr-orange uppercase tracking-wider">
+                                    <i class="fas fa-undo mr-1"></i> Reset
+                                </button>
+                            </div>
+
+                            <!-- NO SCROLL - Show all expenses -->
+                            <div class="space-y-6">
+                                <!-- Fixed Costs Group - EDITABLE -->
+                                <div>
+                                    <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">Coûts
+                                        Fixes
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Vols</span>
+                                            <div class="flex items-center">
+                                                <span class="text-stone-500 mr-1">$</span>
+                                                <input type="number" id="input-flights"
+                                                    class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                    value="4500" onchange="window.updateFixedCosts()">
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Hébergements</span>
+                                            <div class="flex items-center">
+                                                <span class="text-stone-500 mr-1">$</span>
+                                                <div
+                                                    class="w-20 px-2 py-1 text-right font-bold text-white border border-transparent">
+                                                    <span id="tbl-accom">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Loc. Voiture</span>
+                                            <div class="flex items-center">
+                                                <span class="text-stone-500 mr-1">$</span>
+                                                <input type="number" id="input-car"
+                                                    class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                    value="1200" onchange="window.updateFixedCosts()">
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Assurances</span>
+                                            <div class="flex items-center">
+                                                <span class="text-stone-500 mr-1">$</span>
+                                                <input type="number" id="input-insurance"
+                                                    class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                    value="0" onchange="window.updateFixedCosts()">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- Separator -->
+                            <hr class="border-white/10 my-8">
+
+                            <!-- Variable Costs Group - Calculated from cards -->
+                            <div class="mt-8">
+                                <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">Sur
+                                    Place
+                                </h4>
+                                <div class="space-y-2">
+                                    <div
+                                        class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                        <span>Activités</span>
+                                        <span id="tbl-activities" class="font-bold text-white">$0</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                        <span>Nourriture</span>
+                                        <span id="tbl-food" class="font-bold text-white">$0</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                        <span>Transport (Gas/Park)</span>
+                                        <span id="tbl-transport" class="font-bold text-white">$0</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                        <span>Shopping/Cadeaux</span>
+                                        <span id="tbl-shopping" class="font-bold text-white">$0</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                        <span>Autres (Tips/Night)</span>
+                                        <span id="tbl-other" class="font-bold text-white">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grand Total -->
+                        <div class="col-span-1 lg:col-span-3 pt-6 border-t border-white/20 mt-8">
+                            <div class="flex flex-row items-center justify-between px-4">
+                                <span class="text-2xl text-stone-400 font-bold tracking-widest uppercase">Grand
+                                    Total</span>
+                                <span id="grand-total-tbl" class="text-6xl font-black text-cr-gold">$0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- LOCAL PHOTOS (User Provided) ---
+            // Helper to generate array of local paths: Photos/Photos/City (i).png
+            const p = (city, count, start = 1) => {
+                return Array.from({ length: count }, (_, i) => `Photos/Photos/${city} (${i + start}).png`);
+            };
+
+            const photoDB = {
+                // La Fortuna
+                arenal: ['Photos/Photos/la Fortuna (1).png', 'Photos/Photos/la Fortuna (5).png', 'Photos/Photos/la Fortuna (6).png', 'Photos/Photos/la Fortuna (7).png', 'Photos/Photos/la Fortuna (10).png', 'Photos/Photos/la Fortuna (11).png'],
+                mistico: ['Photos/Photos/la Fortuna (5).png', 'Photos/Photos/la Fortuna (6).png', 'Photos/Photos/la Fortuna (7).png'],
+
+                // Bijagua
+                rio_celeste: ['Photos/Photos/Bijagua (1).png', 'Photos/Photos/Bijagua (2).png', 'Photos/Photos/Bijagua (3).png'],
+
+                // Tortuguero
+                tortuguero: ['Photos/Photos/tortuguero (2).png', 'Photos/Photos/tortuguero (3).png', 'Photos/Photos/tortuguero (4).png', 'Photos/Photos/tortuguero (5).png', 'Photos/Photos/tortuguero (6).png', 'Photos/Photos/tortuguero (8).png', 'Photos/Photos/tortuguero (9).png'],
+
+                // Sierpe
+                pacuare: ['Photos/Photos/Sierpe (1).png', 'Photos/Photos/Sierpe (2).png'],
+
+                // Drake Bay
+                corcovado: ['Photos/Photos/Drake Bay (11).png', 'Photos/Photos/Drake Bay (12).png', 'Photos/Photos/Drake Bay (13).png', 'Photos/Photos/Drake Bay (14).png', 'Photos/Photos/Drake Bay (15).png', 'Photos/Photos/Drake Bay (16).png', 'Photos/Photos/Drake Bay (18).png'],
+
+                // Uvita
+                uvita: ['Photos/Photos/uvita (1).png', 'Photos/Photos/uvita (2).png', 'Photos/Photos/uvita (3).png', 'Photos/Photos/uvita (4).png', 'Photos/Photos/uvita (5).png', 'Photos/Photos/uvita (6).png'],
+
+                // Manuel Antonio
+                manuel_antonio: ['Photos/Photos/Manuel Antonio (1).png', 'Photos/Photos/Manuel Antonio (7).png', 'Photos/Photos/Manuel Antonio (8).png', 'Photos/Photos/Manuel Antonio (9).png', 'Photos/Photos/Manuel Antonio (10).png', 'Photos/Photos/Manuel Antonio (11).png', 'Photos/Photos/Manuel Antonio (12).png'],
+
+                // Montezuma
+                montezuma: ['Photos/Photos/Montezuma (2).png', 'Photos/Photos/Montezuma (4).png', 'Photos/Photos/Montezuma (5).png'],
+
+                // Santa Teresa
+                santa_teresa: ['Photos/Photos/santa teresa (1).png', 'Photos/Photos/santa teresa (2).png', 'Photos/Photos/santa teresa (3).png', 'Photos/Photos/santa teresa (5).png', 'Photos/Photos/santa teresa (6).png', 'Photos/Photos/santa teresa (7).png'],
+
+                // Samara (Files named Samana)
+                samara: ['Photos/Photos/Samana (1).png', 'Photos/Photos/Samana (2).png', 'Photos/Photos/Samana (3).png', 'Photos/Photos/Samana (9).png', 'Photos/Photos/Samana (11).png', 'Photos/Photos/Samana (14).png', 'Photos/Photos/Samana (15).png', 'Photos/Photos/Samana (16).png', 'Photos/Photos/Samana (17).png'],
+
+                // Tamarindo
+                tamarindo: ['Photos/Photos/Tamarindo (1).png', 'Photos/Photos/Tamarindo (2).png', 'Photos/Photos/Tamarindo (3).png', 'Photos/Photos/Tamarindo (4).png', 'Photos/Photos/Tamarindo (5).png', 'Photos/Photos/Tamarindo (6).png', 'Photos/Photos/Tamarindo (7).png'],
+
+                // Jaco
+                jaco: ['Photos/Photos/Jaco.png'],
+
+                // La Leona
+                laleona: ['Photos/Photos/la leona (2).png', 'Photos/Photos/la leona (3).png', 'Photos/Photos/la leona (5).png'],
+
+                // Paquera
+                paquera: ['Photos/Photos/Paquera (1).png', 'Photos/Photos/Paquera (2).png', 'Photos/Photos/Paquera (3).png'],
+
+                // Liberia
+                liberia: ['Photos/Photos/liberia (1).png', 'Photos/Photos/liberia (2).png']
+            };
+
+            let days = [
+                { d: 'J1', date: '21 Juil', loc: 'La Fortuna', labelPos: 'bottom', title: 'Arrivée & Volcan', photos: photoDB.arenal, coords: [10.4709, -84.6453], travel: "3h30 • 105 km", road: "Route 142", roadType: "secondary", text: "• Arrivée Aéroport LIR (Liberia)<br>• Récupération 4x4<br>• Route vers La Fortuna<br>• Soir: Détente Thermalitas del Arenal" },
+                { d: 'J2', date: '22 Juil', loc: 'La Fortuna', labelPos: 'bottom', title: 'Mistico & Salto', photos: photoDB.mistico, coords: [10.4709, -84.6453], travel: "Sur Place", text: "• 08h00: Mistico Hanging Bridges (Voir les paresseux)<br>• 13h00: Baignade gratuite à 'El Salto' (Corde à sauter)<br>• PM: Randonnée 'Arenal 1968' (Lave séchée)<br>• Option: Chocolate Tour" },
+                { d: 'J3', date: '23 Juil', loc: 'Rio Blanco', title: 'Vers l\'Est', photos: photoDB.tortuguero, coords: [10.21, -83.79], travel: "2h00", road: "Route 32", roadType: "highway", text: "• Installation à Rio Blanco (Base stratégique)<br>• Excursion journée vers Tortuguero possible<br>• Ou exploration locale (Rainforest)" },
+                { d: 'J4', date: '24 Juil', loc: 'Rio Blanco', title: 'Tortuguero Day', photos: [photoDB.tortuguero[3], photoDB.tortuguero[4], photoDB.tortuguero[5]], coords: [10.21, -83.79], travel: "Sur Place", text: "• Navigation canaux (Dep. La Pavona)<br>• Journée découverte Tortuguero<br>• Retour Rio Blanco le soir (Route facilitée pour demain)" },
+                { d: 'J5', date: '25 Juil', loc: 'Sierpe', title: 'Rafting & Route Sud', photos: photoDB.pacuare, coords: [8.8601, -83.4730], travel: "5h Route • 250 km", road: "Route 34", roadType: "highway", text: "• Matin: Rafting Rio Pacuare (Départ proche!)<br>• Après-midi: Longue route vers Sierpe<br>• Arrêt: Pont des Crocodiles (Tarcoles)<br>• Nuit: Sierpe (Préparation Osa)" },
+                { d: 'J6', date: '26 Juil', loc: 'Drake Bay', title: 'Drake Bay', photos: photoDB.corcovado, coords: [8.6917, -83.6644], travel: "1h Bateau", text: "• 11h30: Bateau Sierpe -> Drake Bay (Mangrove tour inclus)<br>• PM: Drake Bay Hiking Trail (Cocalito)<br>• Soir: Plancton bioluminescent (Tour bateau)" },
+                { d: 'J7', date: '27 Juil', loc: 'Drake Bay', title: 'Sirena Station', photos: [photoDB.corcovado[3], photoDB.corcovado[4], 'Photos/Drake Bay (14).png'], coords: [8.6917, -83.6644], travel: "Bateau Expedition", text: "• Full Day: Corcovado<br>• Faune intense: Tapirs, 4 espèces de singes, Requins<br>• Guide obligatoire (Pacheco Tours)<br>• Option: Snorkeling Isla del Caño (Tortues & Requins)" },
+                { d: 'J8', date: '28 Juil', loc: 'Uvita', title: 'Whales Tail', photos: photoDB.uvita, coords: [9.1670, -83.7441], travel: "1h Bateau + 4x4", road: "Route 243", roadType: "secondary", text: "• Retour bateau vers Sierpe + Route courte<br>• PM: Cataratas Nauyaca (4x4 Tour)<br>• PM: Parc Marino Ballena (Marchez sur la Queue de Baleine)<br>• Activité: Observation des Baleines (Saison haute!)<br>• Soir: Pizza au Sibu Cafe" },
+                { d: 'J9', date: '29 Juil', loc: 'Quepos', title: 'Espadilla', photos: photoDB.manuel_antonio, coords: [9.4300, -84.1650], travel: "45min • 45 km", road: "Route 34", roadType: "highway", text: "• Matin: Parc Manuel Antonio (Plage Gemelas)<br>• Attention: Nourriture interdite (Singes voleurs!)<br>• PM: Plage publique Espadilla (Parasailing)<br>• Soir: Marina Pez Vela (Dîner & Glace)" },
+                { d: 'J10', date: '30 Juil', loc: 'Puntarenas', labelPos: 'right', title: 'Route & Port', photos: photoDB.paquera, coords: [9.9763, -84.8288], travel: "2h30 • 150 km", road: "Route 34", roadType: "highway", text: "• Route vers le Nord -> <b>Arrêt Tranopy Tour (Rainforest Adv. Jaco)</b><br>• Installation à Puntarenas pour la nuit<br>• Prêt pour le ferry vers Paquera demain" },
+                { d: 'J11', date: '31 Juil', loc: 'Montezuma', labelPos: 'right', title: 'Cascades', photos: photoDB.montezuma, coords: [9.6500, -85.0600], travel: "2h30 (Ferry inclus)", road: "Ferry + Route 160", roadType: "mixed", text: "• Matin: Ferry Puntarenas -> Paquera (1h30 traversée)<br>• Découverte du Village Bohème de Montezuma<br>• PM: Montezuma Waterfalls (3 Niveaux)<br>• Soir: Dîner à 'Playa de los Artistes'" },
+                { d: 'J12', date: '1 Août', loc: 'Santa Teresa', title: 'Surf & Chill', photos: photoDB.santa_teresa, coords: [9.6453, -85.1666], travel: "45min", road: "Piste", roadType: "secondary", text: "• Matin: Cabo Blanco Reserve (Option)<br>• Court trajet vers Santa Teresa<br>• PM: Surf Lesson ou Yoga<br>• Sunset à Playa Carmen" },
+                { d: 'J13', date: '2 Août', loc: 'Santa Teresa', title: 'Pura Vida', photos: [photoDB.santa_teresa[3], photoDB.santa_teresa[4], photoDB.santa_teresa[5]], coords: [9.6453, -85.1666], travel: "Sur Place", text: "• Journée Chill à Santa Teresa / Mal Pais<br>• Visite: Piscines naturelles à marée basse<br>• Option: Louer un VTT pour explorer la côte<br>• Soir: Dîner 'The Bakery' ou Sushi" },
+                { d: 'J14', date: '3 Août', loc: 'Sámara', title: 'Détente', photos: photoDB.samara, coords: [9.8805, -85.5269], travel: "4h30 • Route Péninsule", road: "Route 21", roadType: "secondary", text: "• Route Péninsule: Cobano → Jicaral → Nicoya (Sans Ferry)<br>• PM: Installation à Samara (Plus familial)<br>• Plage: Playa Carrillo (Palmiers, peu de monde)<br>• Soir: Dîner les pieds dans le sable" },
+                { d: 'J15', date: '4 Août', loc: 'Sámara', title: 'Isla Tortuga', photos: [photoDB.samara[5], photoDB.samara[6], photoDB.samara[7]], coords: [9.7833, -84.9000], travel: "Bateau Excursion", text: "• Matin: Visite Nosara Beach (Playa Guiones - Surf Vibe)<br>• Option: Journée Bateau Isla Tortuga<br>• Activités: Snorkeling, Banana Boat, BBQ Plage<br>• Retour: Coucher de soleil en mer" },
+                { d: 'J16', date: '5 Août', loc: 'Tamarindo', title: 'Route Côtière', photos: photoDB.tamarindo, coords: [10.2993, -85.8400], travel: "2h30 • 85 km (Côte)", road: "Route 160 Côtière", roadType: "secondary", text: "• Route côtière: Sámara → Nosara → Ostional<br>• Arrêt: Playa Ostional (Observation tortues si saison)<br>• Continuation: Playa Junquillal → Tamarindo<br>• PM: Playa Conchal (Sable de coquillages)<br>• Soir: Sunset au Coco Loco (Bar de plage)" },
+                { d: 'J17', date: '6 Août', loc: 'Tamarindo', title: 'Playa Grande', photos: [photoDB.tamarindo[3], photoDB.tamarindo[4], photoDB.tamarindo[5]], coords: [10.3200, -85.8500], travel: "Sur Place", text: "• Matin: Bateau Estuaire -> Playa Grande (Parc National Las Baulas)<br>• Surf Trip ou longue marche sur la plage sauvage<br>• Déjeuner: Taco Star (Simple & Bon)<br>• PM: Détente piscine ou shopping Tamarindo<br>• Soir: Night Market (si ouvert) ou Dîner Pangas" },
+                { d: 'J18', date: '7 Août', loc: 'Curubandé', labelPos: 'top', title: 'La Leona', photos: photoDB.laleona, coords: [10.7650, -85.3900], travel: "1h45 • 80 km", road: "Route 21", roadType: "highway", text: "• Départ Tamarindo -> Curubandé (Rincon de la Vieja)<br>• Activité: La Leona Waterfall Adventure (Canyon & Baignade)<br>• Option: Rincón de la Vieja National Park (Volcan, Boue) - 30 min<br>• Nuit: Près de Liberia (Stratégique pour le départ)" },
+                { d: 'J19', date: '8 Août', loc: 'Liberia', labelPos: 'right', title: 'Retour Liberia', photos: photoDB.liberia, coords: [10.6346, -85.4410], travel: "30min", road: "Route 1", roadType: "highway", text: "• Dernier petit-déj Gallo Pinto<br>• Route très courte vers LIR Airport<br>• Restitution 4x4 (Rapide)<br>• Vol Retour: Pura Vida!" }
+            ];
+
+            // DAYS IN RESERVE (not shown on map/cards):
+            // J-Reserve-1: Monteverde arrival
+            // J-Reserve-2: Monteverde El Tigre
+            // J-Reserve-3: Puerto Viejo Caribbean
+            // J-Reserve-4: Cahuita & Jaguar Center
+            // HISTORY & UNDO
+            const undoStack = [];
+            let initialDaysSnapshot = [];
+
+            // Deep copy helper
+            const cloneDays = (dArray) => dArray.map(d => ({ ...d }));
+
+            // INITIALIZE STATE & DATA (Must run before render)
+            window.itineraryState = {};
+
+            // Helper to initialize itineraryState for a single day
+            function initializeDayItineraryState(day) {
+                window.itineraryState[day.d] = {
+                    activities: [],
+                    restaurants: [], // Array of {name, price}
+                    expenses: { food: 0, gifts: 0, drinks: 0, tips: 0, goods: 0, night: 0, parking: 0, gas: 0 }
+                };
+
+                // Parse text to activities
+                const raw = day.text.replace(/<br\s*\/?>/gi, '\n');
+                const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+                lines.forEach(line => {
+                    let clean = line;
+                    if (clean.startsWith('•')) clean = clean.substring(1).trim();
+                    // Auto-extract restaurants (looking for keywords: Dîner, Soir, Déjeuner + Name)
+                    // We support up to 2 restaurants per day
+                    let restMatches = [];
+                    if (clean.match(/^(Dîner|Soir|Déjeuner|Lunch|Souper)\s*:/i)) {
+                        const parts = clean.split(':');
+                        if (parts.length > 1) {
+                            // Remove (Typique) or other parens if needed, or keep them? User said "Soda Viquez (Typique)" in example.
+                            // Let's keep the full name for now.
+                            restMatches.push(parts[1].trim());
+                        }
+                    }
+                    if (clean.includes('Sibu Cafe')) restMatches.push('Sibu Cafe'); // Special case from user request
+                    if (clean.includes('Playa de los Artistes')) restMatches.push('Playa de los Artistes'); // New special case
+                    if (clean.includes('The Bakery')) restMatches.push('The Bakery'); // New special case
+
+                    if (restMatches.length > 0) {
+                        restMatches.forEach(r => {
+                            if (window.itineraryState[day.d].restaurants.length < 2) {
+                                window.itineraryState[day.d].restaurants.push({ name: r, price: 0 });
+                            }
+                        });
+                    }
+
+                    window.itineraryState[day.d].activities.push({ name: clean, price: 0 });
+                });
+
+                // Ensure we always have 2 slots for restaurants
+                while (window.itineraryState[day.d].restaurants.length < 2) {
+                    window.itineraryState[day.d].restaurants.push({ name: '', price: 0 });
+                }
+
+                // Ensure we always have at least 6 slots for activities (User Request)
+                while (window.itineraryState[day.d].activities.length < 6) {
+                    window.itineraryState[day.d].activities.push({ name: '', price: 0 });
+                }
+
+                // CRITICAL: Attach to day object for template rendering
+                day.activities = window.itineraryState[day.d].activities;
+                day.restaurants = window.itineraryState[day.d].restaurants;
+            }
+
+
+            // Capture initial state immediately
+            initialDaysSnapshot = cloneDays(days);
+            days.forEach(d => {
+                initializeDayItineraryState(d);
+            });
+
+            // RENDER LIST FUNCTION
+            let isAscending = true;
+            window.toggleSort = function () {
+                isAscending = !isAscending;
+                renderSidebar();
+            };
+
+            function renderSidebar() {
+                const listData = isAscending ? days : [...days].reverse();
+                document.getElementById('summary-feed').innerHTML = listData.map((d, idx) => {
+                    // Extract first activity as summary - REMOVED
+                    // const firstActivity = d.text.split('<br>')[0].replace('•', '').trim();
+                    // const summary = firstActivity.length > 40 ? firstActivity.substring(0, 40) + '...' : firstActivity;
+
+                    // Road info
+                    const roadInfo = d.road || '';
+                    const roadBadge = roadInfo ? `<span class="text-[10px] bg-stone-700 text-white px-1.5 py-0.5 rounded font-mono">${roadInfo}</span>` : '';
+
+                    return `
+                            <div class="p-3 cursor-pointer bg-white rounded-lg shadow-sm border border-stone-200 mb-2 hover:shadow-md hover:border-cr-green transition-all" onclick="window.flyTo([${d.coords}])" data-day-id="${d.d}">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-black text-white bg-cr-green px-2 py-0.5 rounded">${d.d}</span>
+                                        <span class="text-sm font-bold text-stone-700">${d.loc}</span>
+                                    </div>
+                                    <span class="text-xs text-stone-400 font-medium">${d.date}</span>
+                                </div>
+                                <!-- Summary Removed as per request -->
+                                ${d.travel && d.travel !== 'Sur Place' ? `
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <div class="flex items-center gap-1.5 text-cr-orange font-bold text-xs">
+                                            <i class="fas fa-car-side text-[10px]"></i>
+                                            <span>${d.travel}</span>
+                                        </div>
+                                        ${roadBadge}
+                                    </div>
+                                ` : '<div class="text-[10px] text-stone-400 italic"><i class="fas fa-map-pin mr-1"></i>Sur place</div>'
+                        }
+                            </div>
+                            `;
+                }).join('');
+            }
+
+            // Initial Render
+            renderSidebar();
+
+            // RENDER CARDS - Toggle button is now floating
+            const toggleBtnHtml = `
+                            <div class="fixed bottom-6 right-6 z-50">
+                                <button onclick="window.toggleAllExpenses()" class="bg-stone-800/90 hover:bg-stone-900 text-white text-[8px] font-bold uppercase tracking-widest px-2 py-1.5 rounded-full shadow-lg transition-all flex items-center gap-1 backdrop-blur-sm border border-white/10">
+                                    <i class="fas fa-coins text-[8px]"></i>
+                                    <span id="toggle-all-text">Fermer</span>
+                                    <i id="toggle-all-icon" class="fas fa-chevron-up text-[8px]"></i>
+                                </button>
+                    </div>
+                            `;
+
+            function renderDetailsGrid() {
+                document.getElementById('details-grid').innerHTML = toggleBtnHtml + days.map(d => `
+                            <div class="bg-white rounded-xl shadow-md border border-stone-100 overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform group" onclick="window.flyTo([${d.coords}])">
+                    
+                    <div class="grid grid-cols-3 h-52 w-full gap-0.5 flex-none" id="gallery-${d.d}">
+                        <div class="col-span-2 relative overflow-hidden bg-stone-200">
+                             <img src="${Array.isArray(d.photos) ? d.photos[0] : d.photos}" 
+                                  class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                                  >
+                             <!-- VISIBLE LOCATION BADGE -->
+                            <div class="absolute top-3 left-3 bg-stone-900/90 text-white text-xs px-3 py-1.5 rounded-md backdrop-blur-md font-black uppercase tracking-widest shadow-lg border border-white/20">
+                                <span><i class="fas fa-calendar-alt mr-1 text-cr-orange"></i>${d.date} • ${d.loc}</span>
+                            </div>
+                        </div>
+                        <div class="col-span-1 grid grid-rows-2 gap-0.5">
+                             <div class="relative overflow-hidden bg-stone-200">
+                                <img src="${Array.isArray(d.photos) && d.photos[1] ? d.photos[1] : d.photos}" 
+                                     class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                                     onerror="this.style.display='none'">
+                             </div>
+                             <div class="relative overflow-hidden bg-stone-200">
+                                <img src="${Array.isArray(d.photos) && d.photos[2] ? d.photos[2] : d.photos}" 
+                                     class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+                                     onerror="this.style.display='none'">
+                             </div>
+                        </div>
+                    </div>
+
+                        <!-- Content Section (Always Right) -->
+                            <div class="col-span-1 md:col-span-2 p-5 flex flex-col justify-between h-full bg-white relative">
+                                <!-- Header -->
+                                <div class="flex justify-between items-start mb-3 border-b border-stone-100 pb-2">
+                                    <div>
+                                        <h3 class="text-xl font-serif font-black text-cr-green uppercase tracking-wide">${d.loc}</h3>
+                                        <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">J${d.d.replace(/\D/g, '')} • ${d.date}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <!-- Calculate Total for Render -->
+                                        ${(() => {
+                        const s = window.itineraryState[d.d];
+                        const actT = s.activities.reduce((a, x) => a + (x.price || 0), 0);
+                        const restT = s.restaurants.reduce((a, x) => a + (x.price || 0), 0);
+                        const expT = Object.values(s.expenses).reduce((a, x) => a + (x || 0), 0);
+                        return `<span class="block text-3xl font-black text-cr-gold" id="total-${d.d}">$${(actT + restT + expT).toLocaleString()}</span>`;
+                    })()}
+                                    </div>
+                                </div>
+
+                                <!-- Activity List - NO SCROLL -->
+                                <div class="mb-2">
+                                    <ul class="space-y-1.5">
+                                    ${d.activities.map((a, idx) => `
+                            <li class="group flex items-start text-base text-stone-600">
+                                <span class="mr-2 text-cr-orange mt-0.5">•</span>
+                                <span class="flex-1 leading-tight outline-none hover:bg-stone-50 rounded px-1 transition-colors cursor-text" 
+                                      contenteditable="true"
+                                      onblur="window.updateActivityName('${d.d}', ${idx}, this.innerText)"
+                                      onkeydown="if(event.key==='Enter'){event.preventDefault(); this.blur();}">
+                                    ${a.name}
+                                </span>
+                                <div class="ml-2 flex items-center">
+                                    <span class="text-[9px] text-stone-400 mr-1">$</span>
+                                    <input type="number" class="w-14 bg-white border border-stone-300 rounded px-1 py-0.5 text-right text-sm shadow-sm focus:border-cr-orange focus:outline-none ${a.price > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal'}" 
+                                            value="${a.price || 0}" 
+                                            oninput="window.updateInputStyle(this)"
+                                            onchange="window.updateActivityPrice('${d.d}', ${idx}, this.value)">
+                                </div>
+                            </li>
+                            `).join('')}
+                                    </ul>
+                                </div>
+
+                                <!-- Restaurant Section - FIXED HEIGHT for alignment -->
+                                <div class="h-[110px] border-t border-stone-100 pt-2">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-utensils text-cr-orange text-xs"></i>
+                                        <span class="text-[10px] font-black text-cr-orange uppercase tracking-widest">Restaurants & Délices</span>
+                                        <div class="h-px bg-cr-orange/30 flex-grow"></div>
+                                    </div>
+
+                                    <!-- Restaurant Row 1 -->
+                                    <div class="group flex items-start text-sm text-stone-600 mb-1.5">
+                                        <span class="mr-2 text-stone-400 mt-0.5"><i class="fas fa-utensils text-xs"></i></span>
+                                        <div class="flex-1">
+                                            <input type="text" class="w-full bg-transparent border-b border-transparent hover:border-stone-200 focus:border-cr-orange focus:outline-none text-sm text-stone-700 placeholder-stone-300 transition-colors"
+                                                placeholder="Restaurant 1..."
+                                                value="${d.restaurants[0].name}"
+                                                onchange="window.updateRestaurantName('${d.d}', 0, this.value)">
+                                        </div>
+                                        <div class="ml-2 flex items-center">
+                                            <span class="text-[9px] text-stone-400 mr-1">$</span>
+                                            <input type="number" class="w-14 bg-white border border-stone-300 rounded px-1 py-0.5 text-right text-sm shadow-sm focus:border-cr-orange focus:outline-none ${d.restaurants[0].price > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal'}"
+                                                value="${d.restaurants[0].price || 0}"
+                                                oninput="window.updateInputStyle(this)"
+                                                onchange="window.updateRestaurantPrice('${d.d}', 0, this.value)">
+                                        </div>
+                                    </div>
+
+                                    <!-- Restaurant Row 2 -->
+                                    <div class="group flex items-start text-sm text-stone-600">
+                                        <span class="mr-2 text-stone-400 mt-0.5"><i class="fas fa-utensils text-xs"></i></span>
+                                        <div class="flex-1">
+                                            <input type="text" class="w-full bg-transparent border-b border-transparent hover:border-stone-200 focus:border-cr-orange focus:outline-none text-sm text-stone-700 placeholder-stone-300 transition-colors"
+                                                placeholder="Restaurant 2..."
+                                                value="${d.restaurants[1].name}"
+                                                onchange="window.updateRestaurantName('${d.d}', 1, this.value)">
+                                        </div>
+                                        <div class="ml-2 flex items-center">
+                                            <span class="text-[10px] text-stone-500 mr-1">$</span>
+                                            <input type="number" class="w-14 bg-white border border-stone-300 rounded px-1 py-0.5 text-right text-sm shadow-sm focus:border-cr-orange focus:outline-none ${d.restaurants[1].price > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal'}"
+                                                value="${d.restaurants[1].price || 0}"
+                                                oninput="window.updateInputStyle(this)"
+                                                onchange="window.updateRestaurantPrice('${d.d}', 1, this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Compact Expense Grid - Always Visible, Icons in Cells -->
+                                <div class="pt-2 mt-auto border-t border-cr-gold/30">
+                                    <div class="text-[9px] font-bold text-cr-orange uppercase tracking-widest mb-1.5 flex items-center gap-1">
+                                        <i class="fas fa-coins text-cr-gold text-[8px]"></i> Dépenses
+                                    </div>
+                                    <div class="grid grid-cols-4 gap-1" data-dayid="${d.d}">
+                                        ${['food', 'drinks', 'tips', 'parking', 'gas', 'gifts', 'goods', 'night'].map((type, i) => {
+                        const icons = {
+                            food: 'utensils text-cr-orange', drinks: 'cocktail text-blue-500', tips: 'hand-holding-usd text-green-600',
+                            parking: 'parking text-stone-600', gas: 'gas-pump text-stone-600', gifts: 'gifts text-purple-500',
+                            goods: 'shopping-bag text-pink-500', night: 'home text-orange-600'
+                        };
+                        const iconClass = icons[type] || 'circle';
+                        const val = window.itineraryState[d.d].expenses[type] || 0;
+                        const row = Math.floor(i / 4);
+                        const col = i % 4;
+
+                        // Conditional styling for the input
+                        const textStyle = val > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal';
+
+                        return `
+                                            <div class="relative group">
+                                                <i class="fas fa-${iconClass} absolute left-1 top-1/2 -translate-y-1/2 text-[11px] opacity-80 z-10 pointer-events-none"></i>
+                                                
+                                                <!-- Dollar Sign (Positioned Right, visible when focused or hovering?) 
+                                                     User requested "need a $ sign". Let's put it on the right edge or near value?
+                                                     Let's put it absolute right. -->
+                                                <span class="absolute right-1 top-1/2 -translate-y-1/2 text-[10px] text-stone-400 pointer-events-none">$</span>
+
+                                                <input type="number" 
+                                                    class="expense-input w-full bg-white border border-stone-300 rounded pl-5 pr-3 py-1 text-center text-sm shadow-sm focus:border-cr-orange focus:outline-none placeholder-stone-300/50 ${textStyle}"
+                                                    placeholder="0" 
+                                                    value="${val || ''}" 
+                                                    data-dayid="${d.d}"
+                                                    data-type="${type}"
+                                                    data-idx="${i}"
+                                                    data-row="${row}"
+                                                    data-col="${col}"
+                                                    oninput="window.updateInputStyle(this)" 
+                                                    onchange="window.updateBudget('${d.d}', '${type}', this.value)">
+                                            </div>`;
+                    }).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+                            `).join('');
+            }
+
+            // KEYBOARD NAVIGATION FOR EXPENSE GRID
+            document.addEventListener('keydown', function (e) {
+                if (!e.target.classList.contains('expense-input')) return;
+
+                const input = e.target;
+                const grid = input.closest('.grid'); // The 4x2 grid container
+                if (!grid) return;
+
+                const dayId = input.dataset.dayid;
+                const currentIdx = parseInt(input.dataset.idx);
+                const totalInputs = 8; // 8 cells per grid
+
+                // Helper to focus
+                const focusIdx = (idx) => {
+                    const target = grid.querySelector(`input[data-idx="${idx}"]`);
+                    if (target) {
+                        target.focus();
+                        // Optional: Select text? target.select();
+                    }
+                };
+
+                // Prevent default for Arrows to stop number increment
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                    e.preventDefault();
+                }
+
+                if (e.key === 'ArrowRight' || e.key === 'Enter') {
+                    // Move Right (wrapping? or stay in row? User said "enter move right". usually wrapping is expected in grid)
+                    // If at end of grid, maybe move to next day? Let's stay in grid for simplicity first.
+                    const next = currentIdx + 1;
+                    if (next < totalInputs) focusIdx(next);
+                } else if (e.key === 'ArrowLeft') {
+                    const prev = currentIdx - 1;
+                    if (prev >= 0) focusIdx(prev);
+                } else if (e.key === 'ArrowUp') {
+                    const up = currentIdx - 4; // 4 columns
+                    if (up >= 0) focusIdx(up);
+                } else if (e.key === 'ArrowDown') {
+                    const down = currentIdx + 4;
+                    if (down < totalInputs) focusIdx(down);
+                }
+            });
+
+            renderDetailsGrid();
+
+            // --- LOGIC ---
+            // --- LOGIC ---
+            // window.itineraryState was init at top
+
+            window.renderActivities = function (dayId) {
+                const container = document.getElementById(`list-${dayId}`);
+                if (!container) return;
+                const state = window.itineraryState[dayId];
+                container.innerHTML = '';
+
+                state.activities.forEach((act, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'activity-line flex items-baseline justify-between group text-base';
+                    div.innerHTML = `
+                            <div class="flex-grow pr-2 relative">
+                            <span class="text-cr-orange font-bold mr-1">•</span>
+                            <span contenteditable="true" class="outline-none hover:bg-stone-50 rounded px-1 transition-colors"
+                                  onblur="window.updateActivityName('${dayId}', ${idx}, this.innerText)"
+                                  onkeydown="if(event.key==='Enter'){event.preventDefault(); window.addActivity('${dayId}', ${idx});}">
+                                  ${act.name}
+                            </span>
+                        </div>
+                        <input type="number" class="w-14 bg-white border border-stone-300 rounded px-1 py-0.5 text-right text-sm shadow-sm focus:border-cr-orange focus:outline-none ${act.price > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal'}" placeholder="$" value="${act.price || ''}"
+                                oninput="window.updateInputStyle(this)"
+                                onchange="window.updateActivityPrice('${dayId}', ${idx}, this.value)">
+                                `;
+                    container.appendChild(div);
+                });
+                updateTotal(dayId);
+            };
+
+
+            window.addActivity = function (dayId, idx) {
+                // Insert AFTER the current index
+                window.itineraryState[dayId].activities.splice(idx + 1, 0, { name: 'Nouvelle activité', price: 0 });
+                window.renderActivities(dayId);
+            };
+
+            window.updateActivityName = function (dayId, idx, val) {
+                if (window.itineraryState[dayId].activities[idx]) {
+                    window.itineraryState[dayId].activities[idx].name = val;
+                }
+            };
+
+            window.toggleExpenses = function (dayId) {
+                const drawer = document.getElementById(`exp-drawer-${dayId}`);
+                const chevron = document.getElementById(`chevron-${dayId}`);
+                if (drawer && chevron) {
+                    drawer.classList.toggle('hidden');
+                    if (drawer.classList.contains('hidden')) {
+                        chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    } else {
+                        chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                    }
+                }
+            };
+
+            let allOpen = true; // Default state
+            window.toggleAllExpenses = function () {
+                allOpen = !allOpen;
+                const btnText = document.getElementById('toggle-all-text');
+                const btnIcon = document.getElementById('toggle-all-icon');
+
+                if (allOpen) {
+                    btnText.innerText = "Fermer Dépenses";
+                    btnIcon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                } else {
+                    btnText.innerText = "Ouvrir Dépenses";
+                    btnIcon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                }
+
+                Object.keys(window.itineraryState).forEach(dayId => {
+                    const drawer = document.getElementById(`exp-drawer-${dayId}`);
+                    const chevron = document.getElementById(`chevron-${dayId}`);
+                    if (drawer && chevron) {
+                        if (allOpen) {
+                            drawer.classList.remove('hidden');
+                            chevron.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                        } else {
+                            drawer.classList.add('hidden');
+                            chevron.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                        }
+                    }
+                });
+            };
+
+            window.updateActivityPrice = function (dayId, idx, val) {
+                if (window.itineraryState[dayId].activities[idx]) {
+                    window.itineraryState[dayId].activities[idx].price = parseFloat(val) || 0;
+                    updateTotal(dayId);
+                }
+            };
+
+            window.updateRestaurantName = function (dayId, idx, val) {
+                if (!window.itineraryState[dayId].restaurants[idx]) window.itineraryState[dayId].restaurants[idx] = { name: '', price: 0 };
+                window.itineraryState[dayId].restaurants[idx].name = val;
+            };
+
+            window.updateRestaurantPrice = function (dayId, idx, val) {
+                if (!window.itineraryState[dayId].restaurants[idx]) window.itineraryState[dayId].restaurants[idx] = { name: '', price: 0 };
+                window.itineraryState[dayId].restaurants[idx].price = parseFloat(val) || 0;
+                updateTotal(dayId);
+            };
+
+            // PRE-FILL DEFAULT DATA (If empty)
+            window.populateDefaults = function () {
+                // Fixed costs
+                if (window.globalFixedCosts.flights === 0) window.updateFixedCost('flights', 4500);
+                if (window.globalFixedCosts.car === 0) window.updateFixedCost('car', 1200);
+                if (window.globalFixedCosts.accommodation === 0) window.updateFixedCost('accommodation', 3500);
+
+                // Update DOM for inputs
+                const ids = { flights: 'inp-flights', car: 'inp-car', accommodation: 'inp-accommodation' };
+                Object.keys(ids).forEach(k => {
+                    const el = document.getElementById(ids[k]);
+                    if (el && el.value == "") el.value = window.globalFixedCosts[k];
+                });
+            };
+            // Call defaults shortly after init
+            setTimeout(window.populateDefaults, 500);
+            setTimeout(window.populateEstimates, 600); // Run after defaults
+
+            window.populateEstimates = function () {
+                // Cost Estimates for Family of 5 (2 Adults, 3 Children) - 2025/2026
+                const estimates = {
+                    'J1': { gas: 15, acts: { 'Thermalitas': 50 } }, // 105km -> ~10L Gas ($12) + Buffer
+                    'J2': { acts: { 'Mistico': 130, 'Arenal 1968': 97, 'Chocolate': 130 } }, // Mistico ($130), Hike ($97), Chocolate ($130)
+                    'J3': { gas: 20, parking: 20, acts: { 'Bateau taxi': 50, 'Tour guidé Ponde': 175 } }, // Tortuguero Arrive (Was J4)
+                    'J4': { acts: { 'Canoe tour': 175, 'Parc National': 49 } }, // Tortu Full (Was J5)
+                    'J5': { gas: 30, acts: { 'Rafting Rio Pacuare': 495 } }, // Sierpe (Was J6)
+                    'J6': { parking: 18, acts: { 'Bateau Sierpe': 100, 'Plancton': 250 } }, // Drake Arrive (Was J7)
+                    'J7': { acts: { 'Sirena Ranger Station': 650, 'Corcovado': 650, 'Caño': 440 } }, // Drake Full (Was J8)
+                    'J8': { gas: 5, acts: { 'Retour bateau': 100, 'Parc Marino Ballena': 12, 'Observation des Baleines': 400, 'Nauyaca': 128 } }, // Uvita (Was J9)
+                    'J9': { gas: 10, parking: 10, acts: { 'Parc Manuel Antonio': 51, 'Parasailing': 170 } }, // Quepos (Was J10)
+                    'J10': { gas: 15, acts: { 'Tranopy Tour': 160, 'Traversée Ferry': 25 } }, // Paquera Stay + RA
+                    'J11': { gas: 5, acts: { 'Montezuma Waterfalls': 20 } }, // Montezuma (Short drive)
+                    'J12': { gas: 5, acts: { 'Surf Lesson': 100 } }, // Santa Teresa
+                    'J13': { expenses: { food: 50, drinks: 20 } }, // Santa Teresa Free
+                    'J14': { gas: 30, expenses: { other: 40 } }, // Samara Arrive
+                    'J15': { acts: { 'Isla Tortuga': 370 } }, // Samara Tortuga
+                    'J16': { gas: 10 }, // Tamarindo
+                    'J17': { gas: 15, acts: { 'La Leona Waterfall': 150 }, expenses: { food: 60 } }, // Curubande (La Leona)
+                    'J18': { gas: 5 } // Departure
+                };
+
+                Object.keys(estimates).forEach(dayId => {
+                    const data = estimates[dayId];
+                    const dayState = window.itineraryState[dayId];
+                    if (!dayState) return;
+
+                    // 1. Update Expenses State
+                    if (data.gas) dayState.expenses.gas = data.gas;
+                    if (data.parking) dayState.expenses.parking = data.parking;
+                    if (data.expenses) {
+                        Object.keys(data.expenses).forEach(k => dayState.expenses[k] = data.expenses[k]);
+                    }
+
+                    // 2. Update Activities State (Fuzzy Match)
+                    if (data.acts) {
+                        Object.keys(data.acts).forEach(key => {
+                            const price = data.acts[key];
+                            const actIdx = dayState.activities.findIndex(a => a.name.toLowerCase().includes(key.toLowerCase()));
+                            if (actIdx >= 0 && dayState.activities[actIdx].price === 0) { // Only set if 0
+                                dayState.activities[actIdx].price = price;
+                            }
+                        });
+                    }
+                });
+
+                // --- MOBILE TRACKING: LOAD PERSISTED STATE ---
+                const saved = localStorage.getItem('crc_itinerary_state');
+                const savedFixed = localStorage.getItem('crc_fixed_costs'); // LOAD FIXED COSTS
+
+                if (saved) {
+                    try {
+                        const savedState = JSON.parse(saved);
+                        Object.keys(savedState).forEach(k => {
+                            if (window.itineraryState[k]) {
+                                window.itineraryState[k] = savedState[k];
+                            }
+                        });
+                        console.log("Restored budget from device storage.");
+                    } catch (e) { console.error("Restore failed", e); }
+                }
+
+                if (savedFixed) {
+                    try {
+                        const parsedFixed = JSON.parse(savedFixed);
+                        // Merge to ensure structure
+                        window.globalFixedCosts = { ...window.globalFixedCosts, ...parsedFixed };
+                    } catch (e) { console.error("Fixed cost restore failed", e); }
+                }
+
+                // 3. Render everything ONCE
+                renderDetailsGrid();
+                window.updateGlobalBudget();
+            };
+
+            // GLOBAL STATE
+            window.globalFixedCosts = { flights: 4500, car: 1200, accommodation: 0, misc: 0 };
+
+            window.updateFixedCost = function (key, val) {
+                window.globalFixedCosts[key] = parseFloat(val) || 0;
+                window.updateGlobalBudget();
+            };
+
+            // NEW: Function called when user edits fixed cost inputs
+            window.updateFixedCosts = function () {
+                const flightsInput = document.getElementById('input-flights');
+                const carInput = document.getElementById('input-car');
+                const insuranceInput = document.getElementById('input-insurance');
+
+                if (flightsInput) window.globalFixedCosts.flights = parseFloat(flightsInput.value) || 0;
+                if (carInput) window.globalFixedCosts.car = parseFloat(carInput.value) || 0;
+                if (insuranceInput) window.globalFixedCosts.misc = parseFloat(insuranceInput.value) || 0;
+
+                window.updateGlobalBudget();
+            };
+
+            window.resetFixedCosts = function () {
+                window.globalFixedCosts = { flights: 0, car: 0, accommodation: 0, misc: 0 };
+                document.querySelectorAll('.budget-fix-input').forEach(el => el.value = '');
+                window.updateGlobalBudget();
+            };
+
+            // CHART INSTANCE
+            let budgetChart = null;
+            let dailyChart = null; // Initialize dailyChart
+
+            window.updateGlobalBudget = function () {
+                let totalVariable = 0;
+                let catVariable = { activities: 0, living: 0, transport: 0, shopping: 0, food: 0, drinks: 0, other: 0, gifts: 0, goods: 0 };
+                Object.values(window.itineraryState).forEach(dayState => {
+                    // Activities
+                    const actTotal = dayState.activities.reduce((acc, a) => acc + (a.price || 0), 0);
+                    catVariable.activities += actTotal;
+
+                    // Expenses
+                    const restTotal = (dayState.restaurants || []).reduce((acc, r) => acc + (r.price || 0), 0);
+                    // Add restaurant to activities/living for graph, but keep separate in logic if needed
+
+                    // Map to categories
+                    // Restaurant goes to Food
+                    catVariable.living += (dayState.expenses.food || 0) + (dayState.expenses.drinks || 0) + (dayState.expenses.night || 0) + restTotal;
+
+                    // Detailed stats
+                    catVariable.food = (catVariable.food || 0) + (dayState.expenses.food || 0) + restTotal;
+                    catVariable.drinks = (catVariable.drinks || 0) + (dayState.expenses.drinks || 0);
+                    // FIXED: Transport logic was merging gas/parking. Split them for 8-category chart.
+                    catVariable.gas = (catVariable.gas || 0) + (dayState.expenses.gas || 0);
+                    catVariable.parking = (catVariable.parking || 0) + (dayState.expenses.parking || 0);
+                    catVariable.transport = (catVariable.transport || 0) + (dayState.expenses.gas || 0) + (dayState.expenses.parking || 0); // Keep for global transport sum
+
+                    catVariable.names_shopping = (catVariable.shopping || 0); // Keep track
+                    catVariable.gifts = (catVariable.gifts || 0) + (dayState.expenses.gifts || 0);
+                    catVariable.goods = (catVariable.goods || 0) + (dayState.expenses.goods || 0);
+                    catVariable.shopping = (catVariable.shopping || 0) + (dayState.expenses.gifts || 0) + (dayState.expenses.goods || 0);
+
+                    catVariable.tips = (catVariable.tips || 0) + (dayState.expenses.tips || 0);
+                    catVariable.other = (catVariable.other || 0) + (dayState.expenses.night || 0); // Night is 'other' here or accom? Night usually Accom.
+                    // Leaving 'Night' in 'Other' for daily chart if not mapped to Fixed Accom?
+                    // Previous logic: catVariable.other += tips + night. 
+                    // New logic: Tips has own category. Other is just Night? Or Night is separate?
+                    // User asked for 8 categories. The input grid has: Food, Drinks, Tips, Parking, Gas, Gifts, Goods, Night.
+                    // Let's assume Night is the 8th usage (or "Other"). But Night is usually Accommodation.
+                    // If Night is daily expense (e.g. hotel paid on spot), let's call it "Night/Other".
+
+                    const expTotal = Object.values(dayState.expenses).reduce((acc, v) => acc + (v || 0), 0);
+                    totalVariable += (actTotal + expTotal + restTotal);
+                });
+
+                // 2. Sum Fixed Costs
+                const totalFixed = Object.values(window.globalFixedCosts).reduce((acc, v) => acc + v, 0);
+
+                // 3. Update DOM Totals
+                const elVar = document.getElementById('total-variable');
+                const elFixed = document.getElementById('total-fixed');
+                const elGrand = document.getElementById('grand-total');
+                const elGrandTbl = document.getElementById('grand-total-tbl');
+
+                if (elVar) elVar.textContent = '$' + totalVariable.toLocaleString();
+                if (elFixed) elFixed.textContent = '$' + totalFixed.toLocaleString();
+                if (elGrand) elGrand.textContent = '$' + (totalVariable + totalFixed).toLocaleString();
+                if (elGrandTbl) elGrandTbl.textContent = '$' + (totalVariable + totalFixed).toLocaleString();
+
+                // 4. Update Recap Table
+                // Fixed costs: inputs are editable, only update accommodation (calculated from cards)
+                // Calculate accommodation from all 'night' expenses in cards
+                let totalAccom = 0;
+                Object.keys(window.itineraryState).forEach(dayId => {
+                    totalAccom += window.itineraryState[dayId].expenses.night || 0;
+                });
+                window.globalFixedCosts.accommodation = totalAccom;
+
+                const elAccom = document.getElementById('tbl-accom');
+                if (elAccom) elAccom.textContent = totalAccom.toLocaleString();
+
+                const elActivities = document.getElementById('tbl-activities');
+                const elFood = document.getElementById('tbl-food');
+                const elTransport = document.getElementById('tbl-transport');
+                const elShopping = document.getElementById('tbl-shopping');
+                const elOther = document.getElementById('tbl-other');
+
+                // NEW: Update Input Style Helper
+                window.updateInputStyle = function (el) {
+                    const val = parseFloat(el.value);
+                    if (val > 0) {
+                        el.classList.remove('text-stone-300', 'font-normal');
+                        el.classList.add('text-stone-900', 'font-bold');
+                    } else {
+                        el.classList.remove('text-stone-900', 'font-bold');
+                        el.classList.add('text-stone-300', 'font-normal');
+                    }
+                };
+
+                if (elActivities) elActivities.textContent = '$' + catVariable.activities.toLocaleString();
+                if (elFood) elFood.textContent = '$' + ((catVariable.food || 0) + (catVariable.drinks || 0)).toLocaleString();
+                if (elTransport) elTransport.textContent = '$' + catVariable.transport.toLocaleString();
+                if (elShopping) elShopping.textContent = '$' + catVariable.shopping.toLocaleString();
+                if (elOther) elOther.textContent = '$' + catVariable.other.toLocaleString();
+
+                // 5. Update Charts & Legend
+                const legendVols = document.getElementById('legend-vols');
+                const legendHeberg = document.getElementById('legend-heberg');
+                const legendTransport = document.getElementById('legend-transport');
+                const legendActivites = document.getElementById('legend-activites');
+                const legendVie = document.getElementById('legend-vie');
+                const legendAutres = document.getElementById('legend-autres');
+
+                const volsVal = window.globalFixedCosts.flights;
+                const hebergVal = window.globalFixedCosts.accommodation;
+                const transportVal = window.globalFixedCosts.car + catVariable.transport;
+                const activitesVal = catVariable.activities;
+                const vieVal = (catVariable.food || 0) + (catVariable.drinks || 0);
+                const autresVal = window.globalFixedCosts.misc + catVariable.shopping + catVariable.other;
+
+                if (legendVols) legendVols.textContent = '$' + volsVal.toLocaleString();
+                if (legendHeberg) legendHeberg.textContent = '$' + hebergVal.toLocaleString();
+                if (legendTransport) legendTransport.textContent = '$' + transportVal.toLocaleString();
+                if (legendActivites) legendActivites.textContent = '$' + activitesVal.toLocaleString();
+                if (legendVie) legendVie.textContent = '$' + vieVal.toLocaleString();
+                // --- MOBILE TRACKING: SAVE STATE (Inputs & Fixed) ---
+                localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
+                localStorage.setItem('crc_fixed_costs', JSON.stringify(window.globalFixedCosts));
+
+
+                updateChartDisplay({
+                    vols: volsVal,
+                    heberg: hebergVal,
+                    transport: transportVal,
+                    activites: activitesVal,
+                    vie: vieVal,
+                    autres: autresVal
+                });
+
+                updateDailyChartDisplay({
+                    food: catVariable.food || 0,
+                    drinks: catVariable.drinks || 0,
+                    gas: catVariable.gas || 0, // Now purely Gas
+                    gifts: catVariable.gifts || 0,
+                    goods: catVariable.goods || 0,
+                    tips: catVariable.tips || 0,
+                    parking: catVariable.parking || 0,
+                    other: catVariable.other || 0
+                });
+            };
+
+            function updateChartDisplay(data) {
+                const ctx = document.getElementById('budgetChart');
+                if (!ctx) return;
+
+                const config = {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Vols', 'Héberg.', 'Transport', 'Activités', 'Food', 'Autre'],
+                        datasets: [{
+                            data: [data.vols, data.heberg, data.transport, data.activites, data.vie, data.autres],
+                            backgroundColor: ['#3b82f6', '#a855f7', '#f97316', '#ec4899', '#22c55e', '#eab308'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        cutout: '70%'
+                    }
+                };
+
+                if (budgetChart) {
+                    budgetChart.data.datasets[0].data = config.data.datasets[0].data;
+                    budgetChart.update();
+                } else {
+                    budgetChart = new Chart(ctx, config);
+                }
+            }
+
+            function updateDailyChartDisplay(data) {
+                const ctx = document.getElementById('dailyChart');
+                if (!ctx) return;
+
+                const config = {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Food', 'Drinks', 'Gas', 'Gifts', 'Goods', 'Tips', 'Parking', 'Other'],
+                        datasets: [{
+                            data: [data.food, data.drinks, data.gas, data.gifts, data.goods, data.tips, data.parking, data.other],
+                            backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#14b8a6', '#6366f1', '#64748b'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        cutout: '70%'
+                    }
+                };
+
+                if (dailyChart) {
+                    dailyChart.data.datasets[0].data = config.data.datasets[0].data;
+                    dailyChart.update();
+                } else {
+                    dailyChart = new Chart(ctx, config);
+                }
+            }
+
+            window.updateBudget = function (dayId, type, val) {
+                window.itineraryState[dayId].expenses[type] = parseFloat(val) || 0;
+                updateTotal(dayId);
+            };
+
+            function updateTotal(dayId) {
+                const s = window.itineraryState[dayId];
+                const actTotal = s.activities.reduce((acc, a) => acc + (a.price || 0), 0);
+                const restTotal = s.restaurants.reduce((acc, r) => acc + (r.price || 0), 0);
+                const expTotal = Object.values(s.expenses).reduce((acc, v) => acc + (v || 0), 0);
+                const total = actTotal + expTotal + restTotal;
+                const el = document.getElementById(`total-${dayId}`);
+                if (el) el.textContent = '$' + total.toLocaleString();
+
+                // Trigger Global Update
+                if (window.updateGlobalBudget) window.updateGlobalBudget();
+
+                // --- MOBILE TRACKING: SAVE STATE ---
+                localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
+            }
+
+            // (Moved State Init to top)
+
+            // Haversine formula to calculate distance between two lat/lon points in km
+            function getDistance(lat1, lon1, lat2, lon2) {
+                const R = 6371; // Radius of Earth in kilometers
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c; // Distance in km
+            }
+
+            // Function to update header totals
+            function updateHeaderTotals() {
+                let totalKm = 0;
+                let totalHours = 0;
+
+                for (let i = 0; i < days.length; i++) {
+                    const d = days[i];
+                    if (d.travel && d.travel.includes('km')) {
+                        const km = parseInt(d.travel.split('•')[1].replace(/[^0-9]/g, '')) || 0;
+                        totalKm += km;
+                    }
+                    if (d.travel && d.travel.includes('h')) {
+                        const parts = d.travel.split('•')[0].trim().split('h');
+                        const h = parseInt(parts[0]) || 0;
+                        const m = parseInt(parts[1]) || 0;
+                        totalHours += h + (m / 60);
+                    }
+                }
+
+                const elKm = document.getElementById('kpi-total-km');
+                const elTime = document.getElementById('kpi-total-time');
+                if (elKm) elKm.textContent = `${totalKm} km`;
+                if (elTime) elTime.textContent = `${Math.round(totalHours)}h`;
+
+                // Update Trajets Stats Panel (3rd Column)
+                const elPanelKm = document.getElementById('stat-panel-km');
+                const elPanelTime = document.getElementById('stat-panel-time');
+                if (elPanelKm) elPanelKm.textContent = `${totalKm}`;
+                if (elPanelTime) elPanelTime.textContent = `${Math.round(totalHours)}`;
+
+                // Update Day Count Badge
+                const elDayCount = document.getElementById('day-count-badge');
+                if (elDayCount) elDayCount.textContent = `${days.length} J`;
+            }
+
+            // SORTING FUNCTION
+            window.sortDays = function (criteria) {
+                if (undoStack.length === 0) undoStack.push(cloneDays(initialDaysSnapshot)); // Save original state first
+
+                if (criteria === 'date') {
+                    // Reset to alphabetical/chronological by Day ID (J1, J2...)
+                    days.sort((a, b) => parseInt(a.d.substring(1)) - parseInt(b.d.substring(1)));
+                } else if (criteria === 'km') {
+                    days.sort((a, b) => {
+                        const kmA = a.travel && a.travel.includes('km') ? parseInt(a.travel.split('•')[1].replace(/[^0-9]/g, '')) || 0 : 0;
+                        const kmB = b.travel && b.travel.includes('km') ? parseInt(b.travel.split('•')[1].replace(/[^0-9]/g, '')) || 0 : 0;
+                        return kmB - kmA; // High to Low
+                    });
+                } else if (criteria === 'time') {
+                    days.sort((a, b) => {
+                        const getMins = (str) => {
+                            if (!str || !str.includes('h')) return 0;
+                            const p = str.split('•')[0].trim().split('h');
+                            return (parseInt(p[0]) || 0) * 60 + (parseInt(p[1]) || 0);
+                        };
+                        return getMins(b.travel) - getMins(a.travel);
+                    });
+                }
+                renderSidebar();
+                renderDetailsGrid();
+                // Update header totals (optional, totals usually stay same, but keep consistent)
+                updateHeaderTotals();
+            };
+
+
+            // --- BUILD ROUTE DATA FOR SORTABLE TABLE ---
+            let routeData = [];
+            function buildRouteData() {
+                routeData = [];
+                for (let i = 0; i < days.length; i++) {
+                    const d = days[i];
+                    let km = 0;
+                    let hours = 0;
+
+                    // Parse km from travel string
+                    if (d.travel && d.travel.includes('km')) {
+                        km = parseInt(d.travel.split('•')[1].replace(/[^0-9]/g, '')) || 0;
+                    }
+
+                    // For boat trips without km, estimate from coordinates
+                    if (d.travel && !d.travel.includes('km') && i > 0) {
+                        const prev = days[i - 1];
+                        if (d.coords && prev.coords && d.coords[0] !== prev.coords[0]) {
+                            // Calculate distance using Haversine
+                            km = Math.round(getDistance(prev.coords[0], prev.coords[1], d.coords[0], d.coords[1]));
+                        }
+                    }
+
+                    // Parse hours
+                    if (d.travel && d.travel.includes('h')) {
+                        const parts = d.travel.split('•')[0].trim().split('h');
+                        hours = (parseInt(parts[0]) || 0) + ((parseInt(parts[1]) || 0) / 60);
+                    }
+
+                    routeData.push({
+                        dayNum: i + 1,
+                        dayId: d.d,
+                        from: i > 0 ? days[i - 1].loc : 'Départ',
+                        to: d.loc,
+                        km: km,
+                        hours: hours,
+                        travel: d.travel || 'Sur place',
+                        coords: d.coords,
+                        isBoat: d.travel && d.travel.toLowerCase().includes('bateau')
+                    });
+                }
+                // Filter out "Sur place" and same-location stays
+                routeData = routeData.filter(r => (r.km > 0 || r.hours > 0) && r.from !== r.to);
+            }
+            buildRouteData(); // Initial build
+
+            // Count legs with actual travel
+            let numLegs = routeData.length;
+
+            // Render route table function
+            function renderRouteTable(sortBy = 'km') {
+                const sorted = [...routeData].sort((a, b) => sortBy === 'km' ? b.km - a.km : b.hours - a.hours);
+                const maxVal = sortBy === 'km' ? Math.max(...sorted.map(r => r.km)) : Math.max(...sorted.map(r => r.hours));
+
+                const tableHtml = sorted.map((r, i) => {
+                    const val = sortBy === 'km' ? r.km : r.hours;
+                    const pct = maxVal > 0 ? (val / maxVal) * 100 : 0;
+                    const barColor = i === 0 ? 'bg-cr-orange' : 'bg-stone-600';
+                    const valDisplay = sortBy === 'km' ? `${r.km} km` : `${Math.floor(r.hours)}h${Math.round((r.hours % 1) * 60) || ''}`;
+                    const boatIcon = r.isBoat ? '<i class="fas fa-ship text-blue-400 mr-1"></i>' : '';
+
+                    return `
+                    <div class="bg-stone-700/30 rounded p-3 mb-1 cursor-pointer hover:bg-stone-700/60 transition" onclick="window.flyTo([${r.coords}])">
+                        <div class="flex justify-between items-start mb-1 gap-1">
+                            <span class="text-[13px] font-bold text-white leading-tight">${boatIcon}${r.from} → ${r.to}</span>
+                            <span class="text-[12px] font-mono text-stone-400 whitespace-nowrap">J${r.dayNum}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex-grow h-1.5 bg-stone-900 rounded-full overflow-hidden">
+                                <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                            </div>
+                            <span class="text-[11px] font-mono font-bold min-w-[35px] text-right ${i === 0 ? 'text-cr-orange' : 'text-stone-300'}">${valDisplay}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                document.getElementById('route-table').innerHTML = tableHtml;
+
+                // Update button states (Compact) - Safely handle missing buttons
+                const kmBtn = document.getElementById('sort-km-btn');
+                const timeBtn = document.getElementById('sort-time-btn');
+                if (kmBtn) kmBtn.className = `text-[8px] px-2 py-1 rounded transition text-stone-300 flex-1 text-center ${sortBy === 'km' ? 'bg-cr-orange text-white' : 'bg-stone-700 hover:bg-cr-orange hover:text-white'}`;
+                if (timeBtn) timeBtn.className = `text-[8px] px-2 py-1 rounded transition text-stone-300 flex-1 text-center ${sortBy === 'time' ? 'bg-cr-gold text-white' : 'bg-stone-700 hover:bg-cr-gold hover:text-white'}`;
+            }
+
+            window.sortRoutes = function (sortBy) {
+                renderRouteTable(sortBy);
+            };
+
+            // Update summary KPIs
+            // These will be updated by updateHeaderTotals() and buildRouteData()
+            // document.getElementById('kpi-total-km').textContent = `${totalKm} km`;
+            // document.getElementById('kpi-total-time').textContent = `${Math.round(totalHours)}h`;
+            // document.getElementById('kpi-num-legs').textContent = numLegs;
+
+            // Initial render sorted by KM
+            renderRouteTable('km');
+            updateHeaderTotals();
+            document.getElementById('day-count-badge').textContent = '19 J'; // Updated duration
+
+
+            const map = L.map('main-map', { scrollWheelZoom: false }).setView([10.0, -84.0], 8);
+            // Removed duplicate zoom control - only using the default one on the left
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+
+            setTimeout(() => { map.invalidateSize(); }, 500);
+
+            window.flyTo = function (c) { map.flyTo(c, 10, { duration: 1.5 }); };
+
+            // Interactive Map Logic
+            let markersLayer = L.layerGroup().addTo(map);
+
+            // Initial Route Render
+            // Advanced Route Rendering with OSRM and Dashed Lines for Boats
+            let routeLayers = [];
+
+            function updateRoute() {
+                // Clear existing layers
+                routeLayers.forEach(l => map.removeLayer(l));
+                routeLayers = [];
+                // 1. Group days into unique sequential locations to define legs
+                const uniqueLocs = [];
+
+
+                days.forEach((d, i) => {
+                    if (i === 0 || d.loc !== days[i - 1].loc) {
+                        uniqueLocs.push({
+                            coords: d.coords,
+                            loc: d.loc,
+                            labelPos: d.labelPos, // PASS LABEL POS
+                            travel: (d.travel || '').toLowerCase(),
+                            dayNum: d.d
+                        });
+                    }
+                });
+
+                // PHANTOM START: Inject Liberia Airport if starting at La Fortuna
+                if (uniqueLocs.length > 0 && uniqueLocs[0].loc === 'La Fortuna') {
+                    uniqueLocs.unshift({
+                        coords: [10.599, -85.539], // Liberia Airport
+                        loc: 'Départ LIR',
+                        labelPos: 'right', // Though markers likely won't render for this unless we add it
+                        travel: 'depart',
+                        dayNum: 'Start'
+                    });
+                }
+
+                // 2. Initialize OSRM Router
+                const router = L.Routing.osrmv1({
+                    serviceUrl: 'https://router.project-osrm.org/route/v1',
+                    profile: 'driving'
+                });
+
+                // 3. Process legs sequentially
+                function processLeg(index) {
+                    if (index >= uniqueLocs.length - 1) return;
+
+                    const start = uniqueLocs[index];
+                    const end = uniqueLocs[index + 1];
+
+                    // REMOVED isBoat restriction to try strict road routing for everything first.
+                    // Fallback will handle un-routable segments.
+
+                    // Try OSRM for Roads
+                    // Try OSRM for Roads
+                    router.route([
+                        L.Routing.waypoint(L.latLng(start.coords)),
+                        L.Routing.waypoint(L.latLng(end.coords))
+                    ], (err, routes) => {
+                        if (!err && routes && routes.length > 0) {
+                            const line = L.polyline(routes[0].coordinates, {
+                                color: '#ef4444', // Red
+                                weight: 4,
+                                opacity: 0.8
+                            }).addTo(map);
+                            routeLayers.push(line);
+                        } else {
+                            // Fallback to solid red if OSRM fails
+                            console.warn('OSRM failed for', start.loc, 'to', end.loc, err);
+                            const line = L.polyline([start.coords, end.coords], {
+                                color: '#ef4444',
+                                weight: 4,
+                                opacity: 0.8
+                                // No dashArray
+                            }).addTo(map);
+                            routeLayers.push(line);
+                        }
+                        // Slight delay to respect Rate Limits
+                        setTimeout(() => processLeg(index + 1), 300);
+                    });
+                }
+
+                // Start processing
+                processLeg(0);
+            }
+
+            function renderMarkers() {
+                markersLayer.clearLayers();
+
+                // Group consecutive days at same location
+                const grouped = [];
+                let current = null;
+
+                days.forEach((d, i) => {
+                    if (current && current.loc === d.loc) {
+                        current.dayCount++;
+                        current.lastDayNum = i + 1;
+                    } else {
+                        if (current) grouped.push(current);
+                        current = {
+                            loc: d.loc,
+                            coords: d.coords,
+                            labelPos: d.labelPos, // Store labelPos
+                            dayCount: 1,
+                            firstDayNum: i + 1,
+                            lastDayNum: i + 1
+                        };
+                    }
+                });
+                if (current) grouped.push(current);
+
+                // Render markers - small black dots with city name nearby
+                grouped.forEach((g, i) => {
+                    const dayLabel = g.dayCount > 1 ? `${g.firstDayNum}-${g.lastDayNum}` : `${g.firstDayNum}`;
+                    // const nightsLabel = g.dayCount > 1 ? `(${g.dayCount} nuits)` : ''; // Unused for now
+
+                    if (g.lastDayNum > g.dayNum) dayLabel += `-${g.lastDayNum}`;
+
+                    // Positioning Logic:
+                    const isPacific = g.coords[1] < -84.2;
+
+                    let labelStyle = '';
+
+                    if (g.labelPos === 'bottom') {
+                        labelStyle = 'top: 15px; left: 50%; transform: translateX(-50%); text-align: center;';
+                    } else if (g.labelPos === 'top') {
+                        labelStyle = 'bottom: 12px; left: 50%; transform: translateX(-50%); text-align: center;';
+                    } else if (g.labelPos === 'right') {
+                        labelStyle = 'left: 12px; top: -8px; text-align: left;';
+                    } else if (g.labelPos === 'left') {
+                        labelStyle = 'right: 22px; top: -8px; text-align: right;';
+                    } else {
+                        // Fallback
+                        if (isPacific) {
+                            labelStyle = 'right: 22px; top: -8px; text-align: right;';
+                        } else {
+                            labelStyle = 'left: 12px; top: -8px; text-align: left;';
+                        }
+                    }
+
+                    // Create Marker
+                    const icon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: `<div style="position: relative; z-index: 1000;">
+                                        <!-- The Dot (Centered at 0,0) -->
+                                        <div style="position: absolute; top: -5px; left: -5px; width: 10px; height: 10px; background: #000000; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.4);"></div>
+                                        <!-- The Label -->
+                                        <div style="position: absolute; ${labelStyle} white-space: nowrap; pointer-events: none;">
+                                            <span style="font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 800; color: #000000; text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; letter-spacing: 0.5px;">
+                                                ${g.loc.toUpperCase()}
+                                            </span>
+                                            <div style="font-size: 10px; font-weight: 700; color: #57534e; margin-top: -2px;">${dayLabel}</div>
+                                        </div>
+                                   </div>`
+                    });
+
+                    L.marker(g.coords, { icon: icon }).addTo(markersLayer).bindPopup(`<b>${g.loc}</b><br>${g.title}`);
+                });
+            }
+
+            // Add Click-to-Add Logic
+            map.on('click', function (e) {
+                // Confirm dialog? Simple for now
+                if (confirm("Ajouter une étape ici?")) {
+                    const dayId = `J${days.length + 1}`;
+
+                    // Init State first
+                    window.itineraryState[dayId] = {
+                        activities: Array(6).fill().map(() => ({ name: '', price: 0 })),
+                        restaurants: Array(2).fill().map(() => ({ name: '', price: 0 })),
+                        expenses: { food: 0, gifts: 0, drinks: 0, tips: 0, goods: 0, night: 0, parking: 0, gas: 0 }
+                    };
+
+                    const newDay = {
+                        d: dayId,
+                        date: 'New Date',
+                        loc: 'Nouvelle Etape',
+                        title: 'Stop ' + (days.length + 1),
+                        photos: ["https://placehold.co/600x400"],
+                        coords: [e.latlng.lat, e.latlng.lng],
+                        travel: "Calculating...",
+                        text: "• Nouvelle étape ajoutée via la carte.",
+                        activities: window.itineraryState[dayId].activities,
+                        restaurants: window.itineraryState[dayId].restaurants
+                    };
+
+                    days.push(newDay);
+                    renderMarkers();
+                    updateRoute();
+                    renderDetailsGrid(); // Update list
+                }
+            });
+
+
+            renderMarkers();
+            updateRoute();
+
+
+            function handleReorder(evt) {
+                const container = document.getElementById('summary-feed');
+                const items = Array.from(container.children).filter(el => el.hasAttribute('data-day-id'));
+                const newIds = items.map(el => el.getAttribute('data-day-id'));
+
+                const daysMap = new Map();
+                days.forEach(d => daysMap.set(d.d, d));
+                const newDays = newIds.map(id => daysMap.get(id)).filter(d => d);
+
+                if (newDays.length === days.length) {
+                    // SAVE HISTORY
+                    undoStack.push(cloneDays(days));
+                    if (undoStack.length > 50) undoStack.shift(); // Limit stack
+
+                    days = newDays;
+                    // Update Main view
+                    renderDetailsGrid();
+                }
+            }
+
+            // NEW: EXPORT FUNCTION
+            window.exportBudget = function () {
+                const data = {
+                    itinerary: window.itineraryState,
+                    fixed: window.globalFixedCosts,
+                    timestamp: new Date().toISOString()
+                };
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "budget_costa_rica.json");
+                document.body.appendChild(downloadAnchorNode); // required for firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            };
+
+            // HISTORY FUNCTIONS
+            window.undoLastMove = function () {
+                if (undoStack.length === 0) return;
+                const prevDays = undoStack.pop();
+                days = prevDays;
+                renderSidebar();
+                renderDetailsGrid();
+            };
+
+            window.resetOrder = function () {
+                if (initialDaysSnapshot.length === 0) return;
+                // Save current state to undo stack before resetting
+                undoStack.push(cloneDays(days));
+
+                days = cloneDays(initialDaysSnapshot);
+                renderSidebar();
+                renderDetailsGrid();
+            };
+
+            // KEYBOARD SHORTCUT (Ctrl+Z)
+            document.addEventListener('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                    e.preventDefault();
+                    window.undoLastMove();
+                }
+            });
+
+            new Sortable(document.getElementById('summary-feed'), {
+                animation: 150,
+                ghostClass: 'bg-stone-50',
+                onEnd: handleReorder
+            });
+
+        });
+    </script>
+</body>
+
+</html>

@@ -2047,20 +2047,22 @@
                 }
             }
 
-            // NEW: EXPORT FUNCTION
+            // NEW: EXPORT FUNCTION - Saves budget_data.json for Git sync
             window.exportBudget = function () {
                 const data = {
-                    itinerary: window.itineraryState,
-                    fixed: window.globalFixedCosts,
-                    timestamp: new Date().toISOString()
+                    version: 1,
+                    lastUpdated: new Date().toISOString(),
+                    fixedCosts: window.globalFixedCosts,
+                    itinerary: window.itineraryState
                 };
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
                 const downloadAnchorNode = document.createElement('a');
                 downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", "budget_costa_rica.json");
+                downloadAnchorNode.setAttribute("download", "budget_data.json");
                 document.body.appendChild(downloadAnchorNode); // required for firefox
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
+                alert("✅ Saved! Now replace budget_data.json in your project folder and push to GitHub.");
             };
 
             // HISTORY FUNCTIONS
@@ -2095,6 +2097,43 @@
                 ghostClass: 'bg-stone-50',
                 onEnd: handleReorder
             });
+
+            // --- GIT SYNC: Load budget from JSON file if available ---
+            async function loadFromGitSync() {
+                try {
+                    const response = await fetch('budget_data.json?t=' + Date.now());
+                    if (response.ok) {
+                        const fileData = await response.json();
+                        if (fileData.itinerary && Object.keys(fileData.itinerary).length > 0) {
+                            // Load itinerary state from file
+                            Object.keys(fileData.itinerary).forEach(k => {
+                                if (window.itineraryState[k]) {
+                                    // Deep merge expenses and activities
+                                    window.itineraryState[k] = fileData.itinerary[k];
+                                }
+                            });
+                            console.log("✅ Loaded budget from budget_data.json (Git sync)");
+                            // Re-render to show loaded data
+                            renderDetailsGrid();
+                        }
+                        if (fileData.fixedCosts) {
+                            window.globalFixedCosts = { ...window.globalFixedCosts, ...fileData.fixedCosts };
+                            // Update inputs
+                            const flightsInput = document.getElementById('input-flights');
+                            const carInput = document.getElementById('input-car');
+                            const insuranceInput = document.getElementById('input-insurance');
+                            if (flightsInput) flightsInput.value = window.globalFixedCosts.flights || 0;
+                            if (carInput) carInput.value = window.globalFixedCosts.car || 0;
+                            if (insuranceInput) insuranceInput.value = window.globalFixedCosts.misc || 0;
+                            window.updateGlobalBudget();
+                        }
+                    }
+                } catch (e) {
+                    console.log("No budget_data.json found, using localStorage data");
+                }
+            }
+            // Load after a short delay to ensure everything is initialized
+            setTimeout(loadFromGitSync, 800);
 
         });
     </script>

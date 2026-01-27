@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "lastUpdated": null,
+  "fixedCosts": {
+    "flights": 4500,
+    "car": 1200,
+    "accommodation": 0,
+    "misc": 0
+  },
+  "itinerary": {}
+}

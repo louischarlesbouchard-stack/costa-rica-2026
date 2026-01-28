@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Voyage Famille 2026</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
         rel="stylesheet">
@@ -461,16 +461,16 @@
             <div
                 class="flex flex-col lg:flex-row h-[860px] bg-white rounded-xl shadow-lg border border-stone-100 overflow-hidden">
 
-                <!-- COL 1: MAP (8/12) - LARGER -->
-                <div class="hidden lg:flex flex-col w-full lg:w-[67%] h-full relative bg-stone-100">
+                <!-- COL 1: MAP (60%) -->
+                <div class="hidden lg:flex flex-col w-full lg:w-[60%] h-full relative bg-stone-100">
                     <div id="main-map" class="flex-grow z-0 bg-stone-200 relative w-full h-full">
                         <!-- Leaflet Map -->
                     </div>
                 </div>
 
-                <!-- COL 2: ITINERARY LIST (16%) -->
+                <!-- COL 2: ITINERARY LIST (20%) -->
                 <div
-                    class="w-full lg:w-[16%] bg-white z-10 flex flex-col h-full border-l border-r border-stone-200 overflow-hidden">
+                    class="w-full lg:w-[20%] bg-white z-10 flex flex-col h-full border-l border-r border-stone-200 overflow-hidden">
                     <div class="sticky top-0 bg-white z-20 shadow-sm border-b border-stone-100 flex-shrink-0">
                         <div class="p-3 flex justify-between items-center">
                             <h2
@@ -499,8 +499,8 @@
                     </div>
                 </div>
 
-                <!-- COL 3: TRAJETS & STATS (17%) -->
-                <div class="w-full lg:w-[17%] bg-stone-900 text-stone-300 flex flex-col h-full overflow-hidden">
+                <!-- COL 3: TRAJETS & STATS (20%) -->
+                <div class="w-full lg:w-[20%] bg-stone-900 text-stone-300 flex flex-col h-full overflow-hidden">
                     <!-- Header with KPIs integrated -->
                     <div class="p-3 border-b border-white/10 bg-stone-800 flex-shrink-0">
                         <div class="flex justify-between items-center mb-2">
@@ -667,7 +667,8 @@
                                                 <span class="text-stone-500 mr-1">$</span>
                                                 <input type="number" id="input-flights"
                                                     class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
-                                                    value="4500" onchange="window.updateFixedCosts()">
+                                                    value="4500" onfocus="this.select()"
+                                                    onchange="window.updateFixedCosts()">
                                             </div>
                                         </div>
                                         <div
@@ -688,7 +689,8 @@
                                                 <span class="text-stone-500 mr-1">$</span>
                                                 <input type="number" id="input-car"
                                                     class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
-                                                    value="1200" onchange="window.updateFixedCosts()">
+                                                    value="1200" onfocus="this.select()"
+                                                    onchange="window.updateFixedCosts()">
                                             </div>
                                         </div>
                                         <div
@@ -698,7 +700,8 @@
                                                 <span class="text-stone-500 mr-1">$</span>
                                                 <input type="number" id="input-insurance"
                                                     class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
-                                                    value="0" onchange="window.updateFixedCosts()">
+                                                    value="0" onfocus="this.select()"
+                                                    onchange="window.updateFixedCosts()">
                                             </div>
                                         </div>
                                     </div>
@@ -1131,6 +1134,7 @@
                                                     data-idx="${i}"
                                                     data-row="${row}"
                                                     data-col="${col}"
+                                                    onfocus="this.select()"
                                                     oninput="window.updateInputStyle(this)" 
                                                     onchange="window.updateBudget('${d.d}', '${type}', this.value)">
                                             </div>`;
@@ -1210,6 +1214,7 @@
                             </span>
                         </div>
                         <input type="number" class="w-14 bg-white border border-stone-300 rounded px-1 py-0.5 text-right text-sm shadow-sm focus:border-cr-orange focus:outline-none ${act.price > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal'}" placeholder="$" value="${act.price || ''}"
+                                onfocus="this.select()"
                                 oninput="window.updateInputStyle(this)"
                                 onchange="window.updateActivityPrice('${dayId}', ${idx}, this.value)">
                                 `;

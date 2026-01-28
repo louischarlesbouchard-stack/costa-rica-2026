@@ -1884,36 +1884,48 @@
                     const start = uniqueLocs[index];
                     const end = uniqueLocs[index + 1];
 
-                    // REMOVED isBoat restriction to try strict road routing for everything first.
-                    // Fallback will handle un-routable segments.
+                    // Check if this leg involves a ferry (check BOTH start and end travel descriptions)
+                    const isFerry = (start.travel && (start.travel.includes('ferry') || start.travel.includes('bateau'))) ||
+                        (end.travel && (end.travel.includes('ferry') || end.travel.includes('bateau')));
 
-                    // Try OSRM for Roads
-                    // Try OSRM for Roads
-                    router.route([
-                        L.Routing.waypoint(L.latLng(start.coords)),
-                        L.Routing.waypoint(L.latLng(end.coords))
-                    ], (err, routes) => {
-                        if (!err && routes && routes.length > 0) {
-                            const line = L.polyline(routes[0].coordinates, {
-                                color: '#ef4444', // Red
-                                weight: 4,
-                                opacity: 0.8
-                            }).addTo(map);
-                            routeLayers.push(line);
-                        } else {
-                            // Fallback to solid red if OSRM fails
-                            console.warn('OSRM failed for', start.loc, 'to', end.loc, err);
-                            const line = L.polyline([start.coords, end.coords], {
-                                color: '#ef4444',
-                                weight: 4,
-                                opacity: 0.8
-                                // No dashArray
-                            }).addTo(map);
-                            routeLayers.push(line);
-                        }
-                        // Slight delay to respect Rate Limits
-                        setTimeout(() => processLeg(index + 1), 300);
-                    });
+                    if (isFerry) {
+                        // Draw ferry as blue dashed line - NO road routing
+                        const line = L.polyline([start.coords, end.coords], {
+                            color: '#3b82f6', // Blue for ferry
+                            weight: 4,
+                            opacity: 0.9,
+                            dashArray: '10, 10' // Dashed line for water
+                        }).addTo(map);
+                        routeLayers.push(line);
+                        // Continue to next leg
+                        setTimeout(() => processLeg(index + 1), 100);
+                    } else {
+                        // Try OSRM for Roads
+                        router.route([
+                            L.Routing.waypoint(L.latLng(start.coords)),
+                            L.Routing.waypoint(L.latLng(end.coords))
+                        ], (err, routes) => {
+                            if (!err && routes && routes.length > 0) {
+                                const line = L.polyline(routes[0].coordinates, {
+                                    color: '#ef4444', // Red
+                                    weight: 4,
+                                    opacity: 0.8
+                                }).addTo(map);
+                                routeLayers.push(line);
+                            } else {
+                                // Fallback to solid red if OSRM fails
+                                console.warn('OSRM failed for', start.loc, 'to', end.loc, err);
+                                const line = L.polyline([start.coords, end.coords], {
+                                    color: '#ef4444',
+                                    weight: 4,
+                                    opacity: 0.8
+                                }).addTo(map);
+                                routeLayers.push(line);
+                            }
+                            // Slight delay to respect Rate Limits
+                            setTimeout(() => processLeg(index + 1), 300);
+                        });
+                    }
                 }
 
                 // Start processing

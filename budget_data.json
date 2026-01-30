@@ -1,6 +1,15 @@
 {
   "version": 1,
   "lastUpdated": null,
+  "settings": {
+    "gas": {
+      "price": 1.85,
+      "consumption": 10,
+      "tankCapacity": 60,
+      "refuelThreshold": 450,
+      "dailyLocal": 20
+    }
+  },
   "fixedCosts": {
     "flights": 4500,
     "car": 1200,

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Voyage Famille 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: {
+                        'cr-green': '#2d5a47', 'cr-gold': '#f2cc8f', 'cr-blue': '#1e6091', 'cr-orange': '#ea580c',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+</head>
+
+<body class="bg-stone-50 text-stone-800">
+
+    <!-- TIER 1: FLUID MOSAIC HEADER -->
+    <div
+        class="relative bg-stone-900 border-b-8 border-cr-gold overflow-hidden min-h-screen flex items-center justify-center">
+
+        <div class="mosaic-container w-full h-full absolute inset-0">
+            <!-- FIRST PAGE PHOTOS ONLY - 20 items (Path adjusted for root) -->
+            <div class="mosaic-item"><img src="Photos/Photos/First page/meal.png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (12).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (8).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Manuel Antonio (9).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Montezuma (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Samana (11).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Tamarindo (4).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/la Fortuna (11).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/la Fortuna (6).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/tortuguero (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/tortuguero (6).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/uvita (2).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/uvita (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/Drake Bay (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (1).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (2).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (3).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (4).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (5).png"></div>
+            <div class="mosaic-item"><img src="Photos/Photos/First page/animals (6).png"></div>
+        </div>
+
+        <!-- BOTTOM TITLE AREA (The "Brown Space") -->
+        <div
+            class="absolute bottom-0 left-0 w-full py-12 px-4 pr-40 md:pr-[28rem] z-20 flex flex-col items-center justify-center">
+            <h1
+                class="text-4xl md:text-6xl font-serif font-black text-white drop-shadow-2xl mb-2 tracking-tighter uppercase">
+                COSTA RICA
+            </h1>
+            <p class="text-xl md:text-3xl text-stone-200 font-light tracking-wide drop-shadow-md">
+                Voyage en Famille • <span onclick="window.openSlideshow()"
+                    class="text-cr-gold font-bold cursor-pointer hover:text-white hover:underline transition-colors select-none"
+                    title="Voir la galerie photos">Pura Vida</span>
+            </p>
+        </div>
+    </div>
+    <div id="itinerary-start"></div> <!-- Scroll Anchor -->
+
+    <!-- SLIDESHOW MODAL -->
+    <div id="slideshow-modal"
+        class="fixed inset-0 z-50 bg-black/95 hidden flex flex-col justify-center items-center backdrop-blur-xl">
+        <button onclick="window.closeSlideshow()"
+            class="absolute top-4 right-4 text-white/50 hover:text-white text-4xl z-50 transition-colors">&times;</button>
+
+        <div class="relative w-full max-w-5xl h-[80vh] flex items-center justify-center">
+            <button onclick="window.prevSlide()"
+                class="absolute left-4 text-white/50 hover:text-cr-gold text-5xl z-10 p-4 transition-colors"><i
+                    class="fas fa-chevron-left"></i></button>
+
+            <img id="slideshow-img" src=""
+                class="max-h-full max-w-full object-contain shadow-2xl rounded-lg border border-white/10">
+
+            <button onclick="window.nextSlide()"
+                class="absolute right-4 text-white/50 hover:text-cr-gold text-5xl z-10 p-4 transition-colors"><i
+                    class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="mt-4 text-stone-400 font-mono text-sm tracking-widest">
+            <span id="slide-counter">1 / 100</span>
+        </div>
+    </div>
+
+    <!-- UNDERGROUND INFO MODAL -->
+    <div id="underground-modal"
+        class="fixed inset-0 z-[9999] bg-stone-950/95 hidden flex items-center justify-center backdrop-blur-2xl p-4 md:p-10">
+        <div
+            class="bg-stone-900 border border-emerald-500/20 rounded-[2.5rem] w-full max-w-[95%] h-[90vh] flex flex-col shadow-[0_0_100px_rgba(45,90,71,0.2)] overflow-hidden relative">
+
+            <!-- Tropical Decorative Accents -->
+            <div
+                class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none">
+            </div>
+            <div
+                class="absolute -bottom-24 -left-24 w-64 h-64 bg-cr-gold/10 rounded-full blur-[80px] pointer-events-none">
+            </div>
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-stone-950/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-stone-900 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                        <i class="fas fa-user-secret text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-serif font-bold text-white uppercase tracking-tighter">Underground CR
+                            Guide</h3>
+                        <p class="text-xs text-emerald-500/80 font-bold uppercase tracking-[0.2em]">Local Secrets &
+                            Hidden Gems</p>
+                    </div>
+                </div>
+                <button onclick="window.closeUndergroundInfo()"
+                    class="text-white/30 hover:text-white text-3xl transition-colors">&times;</button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div id="underground-content"
+                class="p-8 overflow-y-auto custom-scroll space-y-8 bg-stone-900/50 text-stone-300">
+                <!-- JS Injected Content -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-white/5 bg-stone-950/20 text-center">
+                <p class="text-[10px] text-stone-600 uppercase tracking-widest font-black">Pura Vida • Explorations
+                    Secrètes</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal"
+        class="fixed inset-0 z-[9999] bg-stone-950/90 hidden flex items-center justify-center backdrop-blur-xl p-4">
+        <div class="bg-stone-900 border border-white/10 rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-stone-950/30">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-cog text-cr-orange text-xl"></i>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-tight">Paramètres du Budget</h3>
+                </div>
+                <button onclick="window.closeSettings()"
+                    class="text-white/30 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="p-8 space-y-6">
+                <!-- Gas Settings -->
+                <div>
+                    <h4
+                        class="text-xs font-black text-cr-orange uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                        <i class="fas fa-gas-pump"></i> Essence (Calcul Dynamique)
+                    </h4>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-stone-500 uppercase font-bold">Prix (CAD/L)</label>
+                            <input type="number" step="0.01" id="set-gas-price"
+                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-stone-500 uppercase font-bold">Consommation (L/100km)</label>
+                            <input type="number" id="set-gas-cons"
+                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-stone-500 uppercase font-bold">Réservoir (L)</label>
+                            <input type="number" id="set-gas-tank"
+                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] text-stone-500 uppercase font-bold">Seuil Refuel (km)</label>
+                            <input type="number" id="set-gas-threshold"
+                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 bg-stone-950/30 flex justify-end gap-3">
+                <button onclick="window.closeSettings()"
+                    class="px-6 py-2 rounded-full text-sm font-bold text-stone-400 hover:text-white transition-colors">Annuler</button>
+                <button onclick="window.saveSettings()"
+                    class="bg-cr-orange px-8 py-2 rounded-full text-sm font-black text-white shadow-lg hover:scale-105 active:scale-95 transition-all">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIER 2: ITINERARY CARDS -->
+    <div class="bg-stone-100 border-y-4 border-white shadow-inner">
+        <div class="container mx-auto max-w-full px-4 py-8">
+            <div
+                class="flex flex-col lg:flex-row h-auto lg:h-[860px] bg-white rounded-xl shadow-lg border border-stone-100 overflow-hidden">
+
+                <!-- COL 1: MAP (70%) -->
+                <div class="flex flex-col w-full lg:w-[82%] h-[400px] lg:h-full relative bg-stone-100">
+                    <div id="main-map" class="flex-grow z-0 bg-stone-200 relative w-full h-full">
+                        <!-- Leaflet Map -->
+                    </div>
+                </div>
+
+                <!-- COL 2: COMBINED SIDEBAR (30%) -->
+                <div
+                    class="w-full lg:w-[18%] bg-white z-10 flex flex-col h-auto lg:h-full border-l border-r border-stone-200 overflow-hidden">
+
+                    <!-- TABBED HEADER -->
+                    <div class="sticky top-0 bg-white z-20 shadow-sm border-b border-stone-100 flex-shrink-0">
+                        <div class="p-3 flex justify-between items-center">
+                            <!-- TABS (Left - Desktop Only) -->
+                            <div class="hidden lg:flex items-center gap-1 bg-stone-100 p-1 rounded-lg">
+                                <button id="tab-btn-itinerary" onclick="window.switchSidebarTab('itinerary')"
+                                    class="px-3 py-1.5 rounded-md text-sm font-bold transition-all bg-white text-cr-orange shadow-sm border border-stone-200">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button id="tab-btn-routes" onclick="window.switchSidebarTab('routes')"
+                                    class="px-3 py-1.5 rounded-md text-sm font-bold transition-all text-stone-400 hover:text-stone-600">
+                                    <i class="fas fa-route"></i>
+                                </button>
+                            </div>
+
+                            <!-- TITLE (Centered) -->
+                            <div class="flex-grow flex justify-center">
+                                <h1 id="sidebar-title"
+                                    class="font-serif font-black text-3xl text-stone-800 tracking-tight text-center">
+                                    Itinéraire
+                                </h1>
+                            </div>
+                        </div>
+
+                        <!-- SUB-HEADER: CONTROLS (Itinerary Mode) -->
+                        <div id="header-controls-itinerary"
+                            class="px-3 pb-3 flex justify-center items-center border-t border-stone-50 pt-3">
+                            <div class="text-sm font-black text-stone-700 flex items-center gap-3">
+                                <span><i class="fas fa-road text-cr-orange text-xs mr-1"></i><span id="kpi-total-km">--
+                                        km</span></span>
+                                <span class="text-stone-300">•</span>
+                                <span><i class="fas fa-clock text-cr-orange text-xs mr-1"></i><span
+                                        id="kpi-total-time">-- h</span></span>
+                                <span class="text-stone-300">•</span>
+                                <span id="day-count-badge"
+                                    class="text-xs font-bold text-white bg-cr-orange px-2 py-0.5 rounded-full">19
+                                    J</span>
+                            </div>
+                        </div>
+
+                        <!-- SUB-HEADER: STATS (Route Mode - Hidden on mobile if stacking) -->
+                        <div id="header-controls-routes"
+                            class="hidden lg:hidden px-3 pb-2 border-t border-stone-50 pt-2 bg-stone-50">
+                            <div class="grid grid-cols-2 gap-2 text-center text-stone-600">
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-widest font-bold">Total Km</span>
+                                    <div class="text-xl font-black font-serif text-stone-800" id="stat-panel-km">0</div>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] uppercase tracking-widest font-bold">Heures</span>
+                                    <div class="text-xl font-black font-serif text-stone-800" id="stat-panel-time">0
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTENT: ITINERARY LIST -->
+                    <div id="tab-content-itinerary"
+                        class="flex-shrink-0 lg:flex-grow overflow-y-auto custom-scroll p-1 space-y-0 bg-stone-50 max-h-[500px] lg:max-h-none">
+                        <div id="summary-feed">
+                            <!-- JS Injected Cards -->
+                        </div>
+                    </div>
+
+                    <!-- CONTENT: ROUTE TABLE -->
+                    <div id="tab-content-routes"
+                        class="hidden lg:hidden lg:flex-grow overflow-y-auto custom-scroll p-2 space-y-2 bg-stone-50 max-h-[500px] lg:max-h-none">
+                        <div class="lg:hidden p-2 border-b border-stone-200 bg-white">
+                            <h3
+                                class="font-serif font-black text-xl text-stone-800 text-center uppercase tracking-tight">
+                                Trajets</h3>
+                        </div>
+                        <div id="route-table" class="space-y-2">
+                            <!-- JS Injected Route Segments -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIER 2: RICH CARDS -->
+    <div class="py-12 bg-stone-50">
+        <div class="py-12 bg-stone-50">
+            <div class="container mx-auto px-4 max-w-full"> <!-- Full Width Details -->
+                <div class="text-center mb-16 relative">
+                    <h2 class="text-4xl md:text-5xl font-serif font-bold text-stone-800 mb-2">Détails de l'Itinéraire
+                    </h2>
+                    <div class="w-16 h-1 bg-cr-gold mx-auto mt-4"></div>
+                </div>
+
+                <!-- GRID of BIGGER CARDS (4 Columns) -->
+                <div id="details-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- JS Injected -->
+                </div>
+            </div>
+        </div>
+
+        <!-- TIER 3: FINANCE SECTION -->
+        <div class="bg-stone-800 text-white py-16 border-t-8 border-cr-gold">
+            <div class="container mx-auto px-8 w-full max-w-[95%]">
+                <!-- Replaced max-w-7xl with px-8 max-w-[95%] -->
+                <div class="text-center mb-8 relative flex flex-col items-center">
+                    <h2 class="text-4xl font-serif font-bold text-cr-gold mb-2">Budget Global Estimé</h2>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-1 bg-white/20"></div>
+                        <button onclick="window.exportBudget()"
+                            class="text-[10px] uppercase font-bold text-stone-400 hover:text-white border border-stone-600 rounded px-3 py-1 hover:border-cr-orange hover:bg-stone-700 transition-all"
+                            title="Sauvegarder les données">
+                            <i class="fas fa-save mr-1"></i> Save JSON
+                        </button>
+                        <button onclick="window.openSettings()"
+                            class="text-[10px] uppercase font-bold text-stone-400 hover:text-white border border-stone-600 rounded px-3 py-1 hover:border-cr-orange hover:bg-stone-700 transition-all ml-2"
+                            title="Paramètres globaux (Gaz, Épicerie)">
+                            <i class="fas fa-cog mr-1"></i> Paramètres
+                        </button>
+                        <div class="w-12 h-1 bg-white/20"></div>
+                    </div>
+                </div>
+
+                <div class="w-full">
+                    <div class="w-full">
+                        <!-- LEFT PANEL: Dashboard Visuals (Redesigned) -->
+                        <div
+                            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 bg-stone-800/50 p-6 md:p-12 rounded-xl border border-white/5 h-full shadow-2xl">
+
+                            <!-- COL 1: GLOBAL BUDGET VISUALS -->
+                            <div class="flex flex-col w-full space-y-8">
+                                <h3
+                                    class="text-lg font-bold uppercase tracking-widest text-stone-400 border-b border-white/10 pb-2 w-full text-center">
+                                    Répartition Globale
+                                </h3>
+
+                                <!-- TOTAL BIG DISPLAY -->
+                                <div class="text-center py-2">
+                                    <span
+                                        class="text-sm text-stone-500 uppercase tracking-widest font-bold block mb-1">Total
+                                        Estimé</span>
+                                    <span id="grand-total"
+                                        class="text-5xl md:text-6xl font-black text-white font-serif tracking-tight">$0</span>
+                                </div>
+
+                                <!-- STACKED BAR CONTAINER -->
+                                <div id="global-budget-bar"
+                                    class="w-full h-8 bg-stone-900 rounded-full overflow-hidden flex border border-white/10 relative shadow-inner">
+                                    <!-- JS Injected Bars -->
+                                </div>
+
+                                <!-- CATEGORY GRID (Modern Cards) -->
+                                <div id="global-category-grid" class="grid grid-cols-2 gap-3 w-full">
+                                    <!-- JS Injected Cards -->
+                                </div>
+                            </div>
+
+                            <!-- COL 2: DAILY EXPENSES VISUALS -->
+                            <div class="flex flex-col w-full space-y-8 lg:border-l lg:border-white/5 lg:pl-12">
+                                <h3
+                                    class="text-lg font-bold uppercase tracking-widest text-stone-400 border-b border-white/10 pb-2 w-full text-center">
+                                    Sur Place (Détails)
+                                </h3>
+
+                                <!-- DAILY TOTAL DISPLAY -->
+                                <div class="text-center py-2">
+                                    <span
+                                        class="text-sm text-stone-500 uppercase tracking-widest font-bold block mb-1">Total
+                                        Journalier (Moyenne)</span>
+                                    <span id="daily-total-center"
+                                        class="text-4xl md:text-5xl font-black text-cr-gold font-serif tracking-tight">$0</span>
+                                </div>
+
+                                <!-- STACKED BAR CONTAINER -->
+                                <div id="daily-budget-bar"
+                                    class="w-full h-6 bg-stone-900 rounded-full overflow-hidden flex border border-white/10 relative shadow-inner">
+                                    <!-- JS Injected Bars -->
+                                </div>
+
+                                <!-- CATEGORY GRID (Daily) -->
+                                <div id="daily-category-grid" class="grid grid-cols-2 gap-3 w-full">
+                                    <!-- JS Injected Cards -->
+                                </div>
+                            </div>
+
+                            <!-- COL 3: Detailed Recap Table -->
+                            <div class="flex flex-col justify-start w-full border-l border-white/5 pl-12">
+                                <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
+                                    <h3 class="text-lg font-bold uppercase tracking-widest text-stone-400">
+                                        Récapitulatif
+                                    </h3>
+                                    <button onclick="window.resetFixedCosts()"
+                                        class="mb-1 text-[9px] text-stone-500 hover:text-cr-orange transition-colors border border-stone-600 rounded px-2 py-1 hover:border-cr-orange uppercase tracking-wider">
+                                        <i class="fas fa-undo mr-1"></i> Reset
+                                    </button>
+                                </div>
+
+                                <!-- NO SCROLL - Show all expenses -->
+                                <div class="space-y-6">
+                                    <!-- Fixed Costs Group - EDITABLE -->
+                                    <div>
+                                        <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">
+                                            Coûts
+                                            Fixes
+                                        </h4>
+                                        <div class="space-y-2">
+                                            <div
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                                <span>Vols</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <input type="number" id="input-flights"
+                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                        value="4500" onfocus="this.select()"
+                                                        onchange="window.updateFixedCosts()">
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                                <span>Hébergements</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <div
+                                                        class="w-20 px-2 py-1 text-right font-bold text-white border border-transparent">
+                                                        <span id="tbl-accom">0</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                                <span>Loc. Voiture</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <input type="number" id="input-car"
+                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                        value="1200" onfocus="this.select()"
+                                                        onchange="window.updateFixedCosts()">
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
+                                                <span>Assurances</span>
+                                                <div class="flex items-center">
+                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <input type="number" id="input-insurance"
+                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                        value="0" onfocus="this.select()"
+                                                        onchange="window.updateFixedCosts()">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- Separator -->
+                                <hr class="border-white/10 my-8">
+
+                                <!-- Variable Costs Group - Calculated from cards -->
+                                <div class="mt-8">
+                                    <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">Sur
+                                        Place
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Activités</span>
+                                            <span id="tbl-activities" class="font-bold text-white">$0</span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Restaurants</span>
+                                            <span id="tbl-restaurants" class="font-bold text-white">$0</span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Épicerie (Grocery)</span>
+                                            <span id="tbl-food" class="font-bold text-white">$0</span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Transport (Gas/Park)</span>
+                                            <span id="tbl-transport" class="font-bold text-white">$0</span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Shopping (Biens)</span>
+                                            <span id="tbl-shopping" class="font-bold text-white">$0</span>
+                                        </div>
+                                        <div
+                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
+                                            <span>Autres (Boissons/Tips)</span>
+                                            <span id="tbl-other" class="font-bold text-white">$0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grand Total -->
+                            <div class="col-span-1 lg:col-span-3 pt-6 border-t border-white/20 mt-8">
+                                <div class="flex flex-row items-center justify-between px-4">
+                                    <span class="text-2xl text-stone-400 font-bold tracking-widest uppercase">Grand
+                                        Total</span>
+                                    <span id="grand-total-tbl" class="text-6xl font-black text-cr-gold">$0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TOP ACTIVITIES TABLE (PRIORITY) -->
+                        <div class="mt-16 bg-stone-950/30 rounded-3xl p-8 border border-white/5">
+                            <div class="flex items-center justify-between mb-8">
+                                <div>
+                                    <h3 class="text-2xl font-serif font-bold text-white tracking-tighter uppercase">
+                                        Activités Prioritaires</h3>
+                                    <p class="text-xs text-stone-500 font-bold uppercase tracking-widest mt-1">Top
+                                        Expenditures to Plan Ahead</p>
+                                </div>
+                                <div class="bg-cr-gold/10 px-4 py-2 rounded-full border border-cr-gold/20">
+                                    <span class="text-cr-gold text-[10px] font-black uppercase tracking-widest">Booking
+                                        Priority List</span>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr
+                                            class="text-[10px] text-stone-500 uppercase tracking-widest font-black border-b border-white/10">
+                                            <th class="py-4 px-4">Activity</th>
+                                            <th class="py-4 px-4">Location</th>
+                                            <th class="py-4 px-4 text-center">Day</th>
+                                            <th class="py-4 px-4 text-right">Estimate (CAD)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="top-activities-body" class="text-stone-300">
+                                        <!-- JS Injected Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Weather Button -->
+        <a id="floating-weather-btn" href="#" target="_blank"
+            class="fixed bottom-8 right-8 z-[100] bg-cr-blue text-white p-4 rounded-full shadow-[0_0_50px_rgba(30,96,145,0.4)] flex items-center gap-3 border-2 border-white/20 hover:scale-105 hover:bg-blue-600 transition-all duration-500 opacity-0 pointer-events-none scale-90 translate-y-4 group">
+            <div class="flex flex-col items-end">
+                <span class="text-[10px] uppercase font-black tracking-widest opacity-70">Météo à</span>
+                <span id="weather-location-name" class="text-xs font-bold whitespace-nowrap">Chargement...</span>
+            </div>
+            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
+                <i class="fas fa-cloud-sun"></i>
+            </div>
+            <!-- Tooltip -->
+            <div
+                class="absolute bottom-full right-0 mb-4 bg-stone-900 text-white text-[10px] font-bold py-2 px-4 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-white/10 shadow-2xl">
+                Voir les prévisions détaillées
+            </div>
+        </a>
+
+        <!-- Scripts -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+        <!-- APP Scripts -->
+        <script src="data.js"></script>
+        <script src="budget.js"></script>
+        <script src="app.js"></script>
+</body>
+
+</html>

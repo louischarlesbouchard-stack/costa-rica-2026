@@ -1139,6 +1139,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- DATA EXPORT ---
+    window.exportBudget = function () {
+        const data = {
+            version: 1,
+            lastUpdated: new Date().toISOString(),
+            settings: window.itinerarySettings,
+            fixedCosts: window.globalFixedCosts,
+            itinerary: window.itineraryState
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'budget_data.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
     async function initializeApp() {
         console.log("🚀 Initializing App...");
 

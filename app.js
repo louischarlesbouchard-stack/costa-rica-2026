@@ -495,13 +495,13 @@ document.addEventListener('DOMContentLoaded', () => {
             window.itineraryState[dayId].activities.push({ name: '', price: 0 }); // Keep at least one empty
         }
         renderDetailsGrid();
-        window.updateGlobalBudget(); // Saves automatically
+        window.updateGlobalBudget(true); // Saves automatically (Forced)
     };
 
     window.addActivity = function (dayId) {
         window.itineraryState[dayId].activities.push({ name: '', price: 0 });
         renderDetailsGrid();
-        window.updateGlobalBudget(); // Saves automatically
+        window.updateGlobalBudget(true); // Saves automatically (Forced)
     };
 
     // MISSING RESTAURANT FUNCTIONS
@@ -529,14 +529,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.itineraryState[dayId].restaurants[idx]) {
             window.itineraryState[dayId].restaurants.splice(idx, 1);
             renderDetailsGrid();
-            window.updateGlobalBudget();
+            window.updateGlobalBudget(true);
         }
     };
 
     window.addRestaurant = function (dayId) {
         window.itineraryState[dayId].restaurants.push({ name: '', price: 0 });
         renderDetailsGrid();
-        window.updateGlobalBudget();
+        window.updateGlobalBudget(true);
     };
 
     // KEYDOWN HANDLER for Restaurant Inputs
@@ -1152,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.populateDefaults();
 
         // 4. Mark as Ready
-        isAppReady = true;
+        window.isAppReady = true;
 
         // 5. Final Render & Save Baseline
         renderDetailsGrid();

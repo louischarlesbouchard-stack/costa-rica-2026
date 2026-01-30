@@ -297,11 +297,9 @@ window.updateTotal = function (dayId) {
     if (window.updateGlobalBudget) window.updateGlobalBudget();
     localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
 }
-// Alias for backward compatibility if `updateTotal` was not window scoped
-const updateTotal = window.updateTotal;
-
-
-window.updateGlobalBudget = function () {
+// Alias for backward compatibility if `updateTotal` was not window// --- RE-CALCULATE & UPDATE GLOBAL BUDGET ---
+// CALCULATION LOGIC
+window.updateGlobalBudget = function (forceSave = false) {
     let totalVariable = 0;
     let allActivities = [];
 
@@ -453,10 +451,7 @@ window.updateGlobalBudget = function () {
     renderBudgetVisuals(grandTotal, globalBudgetBreakdown, dailyAvgTotal, dailyAvgBreakdown);
 
     // --- PERSISTENCE ---
-    // Note: We check window.isAppReady which is set in app.js. 
-    // If not accessible, we might skip saving early state, which is fine.
-    // Ideally we define isAppReady on window too.
-    if (window.isAppReady) {
+    if (window.isAppReady || forceSave) {
         localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
         localStorage.setItem('crc_global_fixed_costs', JSON.stringify(window.globalFixedCosts));
         localStorage.setItem('crc_itinerary_settings', JSON.stringify(window.itinerarySettings));

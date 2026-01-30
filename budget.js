@@ -19,20 +19,7 @@ window.itinerarySettings = {
 
 // --- INITIALIZATION & ESTIMATES ---
 
-// PRE-FILL DEFAULT DATA
-window.populateDefaults = function () {
-    // DISABLED: No automatic pre-filling of default data
-    /*
-    if (window.globalFixedCosts.flights === 0) window.updateFixedCost('flights', 4500);
-    if (window.globalFixedCosts.car === 0) window.updateFixedCost('car', 1200);
-
-    const ids = { flights: 'input-flights', car: 'input-car', accommodation: 'input-accommodation' };
-    Object.keys(ids).forEach(k => {
-        const el = document.getElementById(ids[k]);
-        if (el && el.value == "") el.value = window.globalFixedCosts[k];
-    });
-    */
-};
+// --- INITIALIZATION & ESTIMATES ---
 
 window.populateEstimates = function () {
     // 1. RESTORE FROM LOCAL STORAGE FIRST
@@ -45,6 +32,15 @@ window.populateEstimates = function () {
     if (!savedFixed) savedFixed = localStorage.getItem('fixed_costs');
 
     // We assume window.itineraryState is available (managed by app.js data loading)
+
+    // RECOVERY LOGIC: Check if legacy data is "better" than current data
+    // If we have legacy data but no current data (or current is "newly initialized"), prefer legacy.
+    let legacy = localStorage.getItem('itinerary_state');
+    if (legacy && (!saved || saved.length < legacy.length)) {
+        console.warn("⚠️ RECOVERY: Found larger/older legacy data. Preferring it over current state.");
+        saved = legacy;
+    }
+
     if (saved) {
         try {
             const savedState = JSON.parse(saved);
@@ -72,6 +68,7 @@ window.populateEstimates = function () {
                     }
                 }
             });
+            console.log("✅ Data restored from LocalStorage.");
         } catch (e) {
             console.error("Restore failed", e);
         }
@@ -107,15 +104,6 @@ window.populateEstimates = function () {
         }
     });
 
-    // 2. AUTOMATIC ESTIMATES DISABLED
-    // User requested zero automatic cell filling.
-    /*
-    const estimates = { ... };
-    Object.keys(estimates).forEach(dayId => { ... });
-    */
-
-    // 3. DYNAMIC GAS EVALUATION DISABLED
-    // window.calculateDynamicGas();
 
     // 4. RESTORE SETTINGS FROM LOCAL STORAGE
     const savedSettings = localStorage.getItem('crc_itinerary_settings');
@@ -131,13 +119,6 @@ window.populateEstimates = function () {
     window.updateGlobalBudget();
 };
 
-window.calculateDynamicGas = function () {
-    // DISABLED: No automatic gas calculation as per user request
-    /*
-    let accumulatedDistance = 0;
-    ...
-    */
-};
 
 // --- UPDATE & CALCULATION LOGIC ---
 
@@ -149,11 +130,11 @@ window.updateFixedCost = function (key, val) {
 window.updateFixedCosts = function () {
     const flightsInput = document.getElementById('input-flights');
     const carInput = document.getElementById('input-car');
-    const insuranceInput = document.getElementById('input-insurance');
+
 
     if (flightsInput) window.globalFixedCosts.flights = parseFloat(flightsInput.value) || 0;
     if (carInput) window.globalFixedCosts.car = parseFloat(carInput.value) || 0;
-    if (insuranceInput) window.globalFixedCosts.misc = parseFloat(insuranceInput.value) || 0;
+    // Insurance removed per user request
 
     window.updateGlobalBudget();
 };
@@ -161,7 +142,7 @@ window.updateFixedCosts = function () {
 window.resetFixedCosts = function () {
     window.globalFixedCosts = { flights: 0, car: 0, accommodation: 0, misc: 0 };
     document.querySelectorAll('.budget-fix-input').forEach(el => el.value = '');
-    const inputs = ['input-flights', 'input-car', 'input-insurance'];
+    const inputs = ['input-flights', 'input-car'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = 0;
@@ -347,7 +328,8 @@ window.updateGlobalBudget = function (forceSave = false) {
     });
 
     // RENDER VISUALS
-    renderBudgetVisuals(grandTotal, globalBudgetBreakdown, dailyAvgTotal, dailyAvgBreakdown);
+    // RENDER VISUALS
+    renderBudgetVisuals(grandTotal, globalBudgetBreakdown, dailyAvgTotal, dailyAvgBreakdown, dailyCatTotals);
 
     // --- PERSISTENCE ---
     if (window.isAppReady || forceSave) {
@@ -435,7 +417,7 @@ window.updateGlobalBudget = function (forceSave = false) {
 };
 
 // --- VISUALIZATION FUNCTION ---
-function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown) {
+function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown, dailyCatTotals) {
     // COLORS
     // COLORS - More harmonious "Nature Fintech" palette
     const colors = {
@@ -531,6 +513,7 @@ function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown
 
             // Card
             if (dailyGrid) {
+                const totalVal = dailyCatTotals[key] || 0;
                 const card = `
                     <div class="budget-card bg-stone-800/80 p-2 rounded-lg flex flex-col justify-between h-16 relative overflow-hidden group hover:bg-stone-800 transition-colors">
                         <div class="flex justify-between items-center relative z-10">
@@ -538,7 +521,7 @@ function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown
                                 <i class="fas ${icons[key]} text-white/40 text-4xl absolute right-3 top-2 transition-transform group-hover:scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,1)]"></i>
                         </div>
                         <div class="flex items-end gap-2 mt-auto relative z-10">
-                            <span class="text-lg font-bold text-white">$${val.toLocaleString()}</span>
+                            <span class="text-lg font-bold text-white">$${totalVal.toLocaleString()}</span>
                         </div> 
                     </div>
                 `;
@@ -610,7 +593,7 @@ function renderBudgetCharts(total, globalCats, dailyAvgTotal, dailyAvgBreakdown,
                                 family: '"Font Awesome 6 Free", "Outfit"',
                                 weight: 900,
                                 size: 20, // Enlarged from 16
-                                lineHeight: 1.1
+                                lineHeight: 1.5
                             };
                         },
                         offset: 0
@@ -701,7 +684,6 @@ window.saveSettings = function () {
 
     localStorage.setItem('crc_itinerary_settings', JSON.stringify(window.itinerarySettings));
 
-    window.calculateDynamicGas();
     window.updateGlobalBudget();
     renderDetailsGrid(); // App.js function to re-render costs on cards if needed
     window.closeSettings();
@@ -724,3 +706,20 @@ window.exportBudget = function () {
     downloadAnchorNode.remove();
     alert("✅ Saved! Now replace budget_data.json in your project folder and push to GitHub.");
 };
+
+// --- MISSING FUNCTIONS RESTORED (Prevent Crash) ---
+
+window.populateDefaults = function () {
+    // Only set if completely missing/zero to respect manual changes?
+    // actually, if it's 0, it might be intentional. 
+    // But for "defaults", we usually want them on fresh start.
+    // If globalFixedCosts were loaded from storage, they wouldn't be 0 unless manually set to 0.
+    // We'll trust the storage loading. 
+    // If everything is 0 (fresh load), we set defaults.
+    if (window.globalFixedCosts.flights === 0 && window.globalFixedCosts.car === 0) {
+        window.globalFixedCosts.flights = 4500;
+        window.globalFixedCosts.car = 1200;
+    }
+};
+
+

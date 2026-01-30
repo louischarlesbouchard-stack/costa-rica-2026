@@ -61,72 +61,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeDayItineraryState(day) {
         if (window.itineraryState[day.d]) return; // Safeguard: never wipe existing state if already loaded
 
+        // NO AUTO-FILL / NO PARSING.
+        // If state doesn't exist, we start CLEAN.
         window.itineraryState[day.d] = {
             activities: [],
-            restaurants: [], // Array of {name, price}
+            restaurants: [],
             expenses: { food: null, drinks: null, tips: null, goods: null, night: null, parking: null, gas: 0 },
             locked: { expenses: {}, activities: {}, restaurants: {} }
         };
 
-        // Parse text to activities
-        const raw = day.text.replace(/<br\s*\/?>/gi, '\n');
-        const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-        lines.forEach(line => {
-            let clean = line;
-            if (clean.startsWith('•')) clean = clean.substring(1).trim();
-            let isRestaurant = false;
-            // Auto-extract restaurants (looking for keywords: Dîner, Soir, Déjeuner + Name)
-            // We support up to 2 restaurants per day
-            let restMatches = [];
-            if (clean.match(/^(Dîner|Soir|Déjeuner|Lunch|Souper)\s*:/i)) {
-                const parts = clean.split(':');
-                if (parts.length > 1) {
-                    restMatches.push(parts[1].trim());
-                    isRestaurant = true;
-                }
-            }
-
-            // Only check specific names if not already found via regex
-            if (!isRestaurant) {
-                if (clean.includes('Sibu Cafe')) { restMatches.push('Sibu Cafe'); isRestaurant = true; }
-                else if (clean.includes('Playa de los Artistes')) { restMatches.push('Playa de los Artistes'); isRestaurant = true; }
-                else if (clean.includes('The Bakery')) { restMatches.push('The Bakery'); isRestaurant = true; }
-            }
-
-            if (restMatches.length > 0) {
-                restMatches.forEach(r => {
-                    if (window.itineraryState[day.d].restaurants.length < 2) {
-                        window.itineraryState[day.d].restaurants.push({ name: r, price: 0 });
-                    }
-                });
-            }
-
-            // Only add to activities if it wasn't identified as a restaurant
-            if (!isRestaurant) {
-                // IMPROVED: If it has a colon but it's not a restaurant prefix, the name is likely AFTER the colon (e.g. "Soir: Détente...")
-                let name = clean;
-                if (clean.includes(':')) {
-                    const parts = clean.split(':');
-                    if (parts.length > 1 && parts[0].length < 15) { // Short prefix like "Option", "Matin", "Soir"
-                        name = parts[1].trim();
-                    }
-                }
-                window.itineraryState[day.d].activities.push({ name: name, price: null });
-            }
-        });
-
-        // Ensure we always have 2 slots for restaurants
+        // Ensure we always have 2 slots for restaurants (Empty placeholders)
         while (window.itineraryState[day.d].restaurants.length < 2) {
             window.itineraryState[day.d].restaurants.push({ name: '', price: 0 });
         }
 
-        // No longer forcing 6 slots - dynamic length
+        // Ensure we always have 1 slot for activities (Empty placeholder)
         if (window.itineraryState[day.d].activities.length === 0) {
             window.itineraryState[day.d].activities.push({ name: '', price: null });
         }
 
-        // CRITICAL: Attach to day object for template rendering
+        // Attach to day object for template rendering
         day.activities = window.itineraryState[day.d].activities;
         day.restaurants = window.itineraryState[day.d].restaurants;
     }
@@ -1203,7 +1157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 5. Final Render & Save Baseline
         renderDetailsGrid();
-        window.calculateDynamicGas();
+
         window.updateGlobalBudget();
 
         // 6. Initialize UI Observers

@@ -150,56 +150,7 @@
     </div>
 
     <!-- SETTINGS MODAL -->
-    <div id="settings-modal"
-        class="fixed inset-0 z-[9999] bg-stone-950/90 hidden flex items-center justify-center backdrop-blur-xl p-4">
-        <div class="bg-stone-900 border border-white/10 rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-stone-950/30">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-cog text-cr-orange text-xl"></i>
-                    <h3 class="text-xl font-bold text-white uppercase tracking-tight">Paramètres du Budget</h3>
-                </div>
-                <button onclick="window.closeSettings()"
-                    class="text-white/30 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="p-8 space-y-6">
-                <!-- Gas Settings -->
-                <div>
-                    <h4
-                        class="text-xs font-black text-cr-orange uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                        <i class="fas fa-gas-pump"></i> Essence (Calcul Dynamique)
-                    </h4>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-1">
-                            <label class="text-[10px] text-stone-500 uppercase font-bold">Prix (CAD/L)</label>
-                            <input type="number" step="0.01" id="set-gas-price"
-                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] text-stone-500 uppercase font-bold">Consommation (L/100km)</label>
-                            <input type="number" id="set-gas-cons"
-                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] text-stone-500 uppercase font-bold">Réservoir (L)</label>
-                            <input type="number" id="set-gas-tank"
-                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] text-stone-500 uppercase font-bold">Seuil Refuel (km)</label>
-                            <input type="number" id="set-gas-threshold"
-                                class="w-full bg-stone-800 border border-white/5 rounded-lg px-3 py-2 text-white font-bold focus:border-cr-orange outline-none transition-all">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="p-6 bg-stone-950/30 flex justify-end gap-3">
-                <button onclick="window.closeSettings()"
-                    class="px-6 py-2 rounded-full text-sm font-bold text-stone-400 hover:text-white transition-colors">Annuler</button>
-                <button onclick="window.saveSettings()"
-                    class="bg-cr-orange px-8 py-2 rounded-full text-sm font-black text-white shadow-lg hover:scale-105 active:scale-95 transition-all">Enregistrer</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- TIER 2: ITINERARY CARDS -->
     <div class="bg-stone-100 border-y-4 border-white shadow-inner">
@@ -331,11 +282,7 @@
                             title="Sauvegarder les données">
                             <i class="fas fa-save mr-1"></i> Save JSON
                         </button>
-                        <button onclick="window.openSettings()"
-                            class="text-[10px] uppercase font-bold text-stone-400 hover:text-white border border-stone-600 rounded px-3 py-1 hover:border-cr-orange hover:bg-stone-700 transition-all ml-2"
-                            title="Paramètres globaux (Gaz, Épicerie)">
-                            <i class="fas fa-cog mr-1"></i> Paramètres
-                        </button>
+
                         <div class="w-12 h-1 bg-white/20"></div>
                     </div>
                 </div>
@@ -377,39 +324,11 @@
                                 </div>
                             </div>
 
-                            <!-- COL 2: DAILY EXPENSES VISUALS -->
-                            <div class="flex flex-col w-full space-y-8 lg:border-l lg:border-white/5 lg:pl-12">
-                                <h3
-                                    class="text-lg font-bold uppercase tracking-widest text-stone-400 border-b border-white/10 pb-2 w-full text-center">
-                                    Sur Place (Détails)
-                                </h3>
-
-                                <!-- DAILY TOTAL DISPLAY -->
-                                <div class="text-center py-2">
-                                    <span
-                                        class="text-sm text-stone-500 uppercase tracking-widest font-bold block mb-1">Total
-                                        Journalier (Moyenne)</span>
-                                    <span id="daily-total-center"
-                                        class="text-4xl md:text-5xl font-black text-cr-gold font-serif tracking-tight">$0</span>
-                                </div>
-
-                                <!-- BAR CHART CONTAINER (DAILY) -->
-                                <div class="relative w-full h-[240px] mb-8">
-                                    <canvas id="daily-bar-chart"></canvas>
-                                </div>
-
-
-                                <!-- CATEGORY GRID (Daily) -->
-                                <div id="daily-category-grid" class="grid grid-cols-2 gap-3 w-full">
-                                    <!-- JS Injected Cards -->
-                                </div>
-                            </div>
-
-                            <!-- COL 3: Detailed Recap Table -->
+                            <!-- COL 2: Detailed Recap Table (Moved per user request) -->
                             <div class="flex flex-col justify-start w-full lg:border-l lg:border-white/5 lg:pl-12">
                                 <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
                                     <h3 class="text-lg font-bold uppercase tracking-widest text-stone-400">
-                                        Récapitulatif
+                                        Récapitulatif & Coûts Fixes
                                     </h3>
                                     <button onclick="window.resetFixedCosts()"
                                         class="mb-1 text-[9px] text-stone-500 hover:text-cr-orange transition-colors border border-stone-600 rounded px-2 py-1 hover:border-cr-orange uppercase tracking-wider">
@@ -422,146 +341,95 @@
                                     <!-- Fixed Costs Group - EDITABLE -->
                                     <div>
                                         <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">
-                                            Coûts
-                                            Fixes
+                                            Coûts Fixes (Saisir ici)
                                         </h4>
-                                        <div class="space-y-2">
+                                        <div class="space-y-4">
                                             <div
-                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
-                                                <span>Vols</span>
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-2">
+                                                <span>Vols Internationaux</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <span class="text-stone-500 mr-2">$</span>
                                                     <input type="number" id="input-flights"
-                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                        class="w-24 bg-stone-900 border border-white/10 hover:border-stone-500 focus:border-cr-orange focus:bg-stone-800 rounded px-3 py-1 text-right font-bold text-white focus:outline-none transition-all"
                                                         value="4500" onfocus="this.select()"
                                                         onchange="window.updateFixedCosts()">
                                                 </div>
                                             </div>
                                             <div
-                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
-                                                <span>Hébergements</span>
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-2">
+                                                <span>Hébergements (Total Nuits)</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <span class="text-stone-500 mr-2">$</span>
                                                     <div
-                                                        class="w-20 px-2 py-1 text-right font-bold text-white border border-transparent">
+                                                        class="w-24 px-3 py-1 text-right font-bold text-white border border-transparent">
                                                         <span id="tbl-accom">0</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div
-                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
-                                                <span>Loc. Voiture</span>
+                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-2">
+                                                <span>Location Voiture (4x4)</span>
                                                 <div class="flex items-center">
-                                                    <span class="text-stone-500 mr-1">$</span>
+                                                    <span class="text-stone-500 mr-2">$</span>
                                                     <input type="number" id="input-car"
-                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
+                                                        class="w-24 bg-stone-900 border border-white/10 hover:border-stone-500 focus:border-cr-orange focus:bg-stone-800 rounded px-3 py-1 text-right font-bold text-white focus:outline-none transition-all"
                                                         value="1200" onfocus="this.select()"
                                                         onchange="window.updateFixedCosts()">
                                                 </div>
                                             </div>
-                                            <div
-                                                class="flex justify-between items-center text-base text-stone-300 border-b border-white/5 pb-1">
-                                                <span>Assurances</span>
-                                                <div class="flex items-center">
-                                                    <span class="text-stone-500 mr-1">$</span>
-                                                    <input type="number" id="input-insurance"
-                                                        class="w-20 bg-transparent border border-transparent hover:border-stone-600 focus:border-cr-orange focus:bg-stone-700 rounded px-2 py-1 text-right font-bold text-white focus:outline-none transition-all"
-                                                        value="0" onfocus="this.select()"
-                                                        onchange="window.updateFixedCosts()">
-                                                </div>
-                                            </div>
+
                                         </div>
 
                                     </div>
-                                </div>
-                                <!-- Separator -->
-                                <hr class="border-white/10 my-8">
-
-                                <!-- Variable Costs Group - Calculated from cards -->
-                                <div class="mt-8">
-                                    <h4 class="text-xs text-stone-500 uppercase font-bold mb-4 tracking-widest">Sur
-                                        Place
-                                    </h4>
-                                    <div class="space-y-2">
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Activités</span>
-                                            <span id="tbl-activities" class="font-bold text-white">$0</span>
-                                        </div>
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Restaurants</span>
-                                            <span id="tbl-restaurants" class="font-bold text-white">$0</span>
-                                        </div>
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Épicerie (Grocery)</span>
-                                            <span id="tbl-food" class="font-bold text-white">$0</span>
-                                        </div>
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Transport (Gas/Park)</span>
-                                            <span id="tbl-transport" class="font-bold text-white">$0</span>
-                                        </div>
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Shopping (Biens)</span>
-                                            <span id="tbl-shopping" class="font-bold text-white">$0</span>
-                                        </div>
-                                        <div
-                                            class="flex justify-between text-base text-stone-300 border-b border-white/5 pb-1">
-                                            <span>Autres (Boissons/Tips)</span>
-                                            <span id="tbl-other" class="font-bold text-white">$0</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Grand Total -->
-                            <div class="col-span-1 lg:col-span-3 pt-6 border-t border-white/20 mt-8">
-                                <div class="flex flex-row items-baseline justify-end gap-x-12 px-4">
-                                    <span
-                                        class="text-5xl lg:text-7xl text-white font-black tracking-tighter uppercase whitespace-nowrap opacity-80">Grand
-                                        Total</span>
-                                    <span id="grand-total-tbl"
-                                        class="text-6xl lg:text-8xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">$0</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- TOP ACTIVITIES TABLE REMOVED PER USER REQUEST -->
+                        <!-- Grand Total -->
+                        <div class="col-span-1 lg:col-span-3 pt-6 border-t border-white/20 mt-8">
+                            <div class="flex flex-row items-baseline justify-end gap-x-12 px-4">
+                                <span
+                                    class="text-5xl lg:text-7xl text-cr-gold font-black tracking-tighter uppercase whitespace-nowrap opacity-80">Grand
+                                    Total</span>
+                                <span id="grand-total-tbl"
+                                    class="text-6xl lg:text-8xl font-black text-cr-gold drop-shadow-[0_0_15px_rgba(242,204,143,0.3)]">$0</span>
+                            </div>
+                        </div>
                     </div>
 
-
+                    <!-- TOP ACTIVITIES TABLE REMOVED PER USER REQUEST -->
                 </div>
+
+
             </div>
         </div>
+    </div>
 
-        <!-- Floating Weather Button -->
-        <a id="floating-weather-btn" href="#" target="_blank"
-            class="fixed bottom-8 right-8 z-[100] bg-cr-blue text-white p-4 rounded-full shadow-[0_0_50px_rgba(30,96,145,0.4)] flex items-center gap-3 border-2 border-white/20 hover:scale-105 hover:bg-blue-600 transition-all duration-500 opacity-0 pointer-events-none scale-90 translate-y-4 group">
-            <div class="flex flex-col items-end">
-                <span class="text-[10px] uppercase font-black tracking-widest opacity-70">Météo à</span>
-                <span id="weather-location-name" class="text-xs font-bold whitespace-nowrap">Chargement...</span>
-            </div>
-            <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
-                <i class="fas fa-cloud-sun"></i>
-            </div>
-            <!-- Tooltip -->
-            <div
-                class="absolute bottom-full right-0 mb-4 bg-stone-900 text-white text-[10px] font-bold py-2 px-4 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-white/10 shadow-2xl">
-                Voir les prévisions détaillées
-            </div>
-        </a>
+    <!-- Floating Weather Button -->
+    <a id="floating-weather-btn" href="#" target="_blank"
+        class="fixed bottom-8 right-8 z-[100] bg-cr-blue text-white p-4 rounded-full shadow-[0_0_50px_rgba(30,96,145,0.4)] flex items-center gap-3 border-2 border-white/20 hover:scale-105 hover:bg-blue-600 transition-all duration-500 opacity-0 pointer-events-none scale-90 translate-y-4 group">
+        <div class="flex flex-col items-end">
+            <span class="text-[10px] uppercase font-black tracking-widest opacity-70">Météo à</span>
+            <span id="weather-location-name" class="text-xs font-bold whitespace-nowrap">Chargement...</span>
+        </div>
+        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-xl">
+            <i class="fas fa-cloud-sun"></i>
+        </div>
+        <!-- Tooltip -->
+        <div
+            class="absolute bottom-full right-0 mb-4 bg-stone-900 text-white text-[10px] font-bold py-2 px-4 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-white/10 shadow-2xl">
+            Voir les prévisions détaillées
+        </div>
+    </a>
 
-        <!-- Scripts -->
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-        <script src="data.js"></script>
-        <script src="budget.js"></script>
-        <script src="app.js"></script>
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="data.js"></script>
+    <script src="budget.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

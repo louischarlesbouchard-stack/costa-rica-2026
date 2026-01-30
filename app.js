@@ -1163,12 +1163,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializeApp() {
         console.log("🚀 Initializing App...");
 
-        // 1. Sync from Git first (Master baseline)
-        await loadFromGitSync();
-
-        // 2. Restore from LocalStorage & Apply fallback Estimates
-        // This MUST happen after Git sync so Local wins over Git, and Estimates fill gaps
+        // 1. Restore from LocalStorage & Apply fallback Estimates
+        // We do this FIRST to load any local state.
         window.populateEstimates();
+
+        // 2. Sync from Git (Master baseline)
+        // We do this SECOND so that if a fresh JSON file exists on the server,
+        // it OVERWRITES the stale local storage, ensuring the device syncs to the latest desktop version.
+        await loadFromGitSync();
 
         // 3. Populate Default Fixed Costs (Flights/Car)
         window.populateDefaults();

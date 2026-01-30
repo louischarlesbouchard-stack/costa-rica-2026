@@ -21,15 +21,17 @@ window.itinerarySettings = {
 
 // PRE-FILL DEFAULT DATA
 window.populateDefaults = function () {
+    // DISABLED: No automatic pre-filling of default data
+    /*
     if (window.globalFixedCosts.flights === 0) window.updateFixedCost('flights', 4500);
     if (window.globalFixedCosts.car === 0) window.updateFixedCost('car', 1200);
-    // Accommodation is calculated, not defaulted
 
-    const ids = { flights: 'input-flights', car: 'input-car', accommodation: 'input-accommodation' }; // Fixed IDs
+    const ids = { flights: 'input-flights', car: 'input-car', accommodation: 'input-accommodation' };
     Object.keys(ids).forEach(k => {
         const el = document.getElementById(ids[k]);
         if (el && el.value == "") el.value = window.globalFixedCosts[k];
     });
+    */
 };
 
 window.populateEstimates = function () {
@@ -105,77 +107,15 @@ window.populateEstimates = function () {
         }
     });
 
-    // 2. THEN APPLY ESTIMATES (Converted to CAD, approx 1.4x exchange)
-    const estimates = {
-        'J1': { expenses: { night: 165 }, acts: { 'Thermalitas': 85 } },
-        'J2': { expenses: { night: 165 }, acts: { 'Mistico': 185, 'Arenal 1968': 115, 'Chocolate': 140, 'Hot Springs': 0, 'Salto': 0 } },
-        'J3': { expenses: { night: 185 }, parking: 15, acts: { 'Marino Ballena': 50 } },
-        'J4': { expenses: { night: 185 }, acts: { 'Nauyaca': 70, 'Baleines': 535, 'Pavon': 0 } },
-        'J5': { expenses: { night: 185 }, acts: { 'Manuel Antonio': 80, 'Arco': 0 } },
-        'J6': { expenses: { night: 210 }, parking: 25, acts: { 'Bateau Sierpe': 115, 'Plancton': 250, 'Trail': 0, 'Canoe': 20 } },
-        'J7': { expenses: { night: 210 }, acts: { 'Corcovado': 550 } },
-        'J8': { expenses: { night: 210 }, acts: { 'Snorkeling': 490, 'Trail': 0, 'Retour bateau': 0 } },
-        'J9': { expenses: { night: 250 }, acts: { 'Bateau retour': 115, 'Ferry': 50 } },
-        'J10': { expenses: { night: 250 }, acts: { 'Montezuma Waterfalls': 30, 'Cabuya': 0 } },
-        'J11': { expenses: { night: 250 }, acts: { 'Surf': 140, 'Cabo Blanco': 70, 'Hermosa': 0 } },
-        'J12': { expenses: { night: 150 } },
-        'J13': { expenses: { night: 150, food: 70, drinks: 30 }, acts: { 'Isla Tortuga': 450, 'Isla Chora': 115 } },
-        'J14': { expenses: { night: 150, other: 60 }, acts: { 'Kayak': 210, 'Barrigona': 0 } },
-        'J15': { expenses: { night: 230 }, acts: { 'Ostional': 45, 'Conchal': 0 } },
-        'J16': { expenses: { night: 230 }, acts: { 'Estuaire': 170, 'Baulas': 70, 'Carbon': 0 } },
-        'J17': { expenses: { night: 230 }, acts: { 'Surf': 115 } },
-        'J18': { expenses: { night: 140 }, acts: { 'La Leona': 200, 'Rincón': 100, 'Coyotes': 30 } },
-    };
+    // 2. AUTOMATIC ESTIMATES DISABLED
+    // User requested zero automatic cell filling.
+    /*
+    const estimates = { ... };
+    Object.keys(estimates).forEach(dayId => { ... });
+    */
 
-    Object.keys(estimates).forEach(dayId => {
-        const data = estimates[dayId];
-        const dayState = window.itineraryState[dayId];
-        if (!dayState) return;
-
-        // 1. DAILY ESTIMATES (Food/Grocery) - ONE TIME ADVICE
-        if (dayState.expenses.food === null || dayState.expenses.food === undefined) {
-            dayState.expenses.food = 50; // Estimated 50 CAD/day for the family
-        }
-        if (data.parking && (dayState.expenses.parking === null || dayState.expenses.parking === undefined)) dayState.expenses.parking = data.parking;
-
-        if (data.expenses) {
-            Object.keys(data.expenses).forEach(k => {
-                if (dayState.expenses[k] === null || dayState.expenses[k] === undefined) dayState.expenses[k] = data.expenses[k];
-            });
-        }
-
-        if (data.acts) {
-            Object.keys(data.acts).forEach(key => {
-                const estimatedPrice = data.acts[key];
-                // Search in activities
-                let actIdx = dayState.activities.findIndex(a => a.name.toLowerCase().includes(key.toLowerCase()));
-                let isRestaurant = false;
-
-                // IF NOT FOUND IN ACTIVITIES, CHECK RESTAURANTS
-                if (actIdx === -1) {
-                    actIdx = dayState.restaurants.findIndex(r => r.name.toLowerCase().includes(key.toLowerCase()));
-                    isRestaurant = true;
-                }
-
-                if (actIdx !== -1) {
-                    const targetArray = isRestaurant ? dayState.restaurants : dayState.activities;
-                    const current = targetArray[actIdx].price;
-                    const isLocked = targetArray[actIdx].locked;
-
-                    if (!isLocked) {
-                        if (current === null || current === undefined) {
-                            targetArray[actIdx].price = estimatedPrice;
-                        } else if (current === 0 && estimatedPrice > 0) {
-                            targetArray[actIdx].price = estimatedPrice;
-                        }
-                    }
-                }
-            });
-        }
-    });
-
-    // 3. DYNAMIC GAS EVALUATION
-    window.calculateDynamicGas();
+    // 3. DYNAMIC GAS EVALUATION DISABLED
+    // window.calculateDynamicGas();
 
     // 4. RESTORE SETTINGS FROM LOCAL STORAGE
     const savedSettings = localStorage.getItem('crc_itinerary_settings');
@@ -192,55 +132,11 @@ window.populateEstimates = function () {
 };
 
 window.calculateDynamicGas = function () {
+    // DISABLED: No automatic gas calculation as per user request
+    /*
     let accumulatedDistance = 0;
-    const s = window.itinerarySettings.gas;
-    const TANK_CAPACITY = s.tankCapacity; // Liters
-    const CONSUMPTION = s.consumption / 100; // L per km
-    const REFUEL_THRESHOLD = s.refuelThreshold; // km range used before refueling
-    const GAS_PRICE_CAD = s.price; // CAD per liter
-    const FULL_TANK_COST = TANK_CAPACITY * GAS_PRICE_CAD;
-    const LOCAL_DRIVING_DAILY = s.dailyLocal; // km daily local driving
-
-    days.forEach(day => {
-        const dayState = window.itineraryState[day.d];
-        if (!dayState) return;
-
-        let travelKm = 0;
-        if (day.travel && day.travel.includes('km')) {
-            travelKm = parseInt(day.travel.split('•')[1].replace(/[^0-9]/g, '')) || 0;
-        } else if (day.travel && day.travel !== 'Sur Place') {
-            if (day.d === 'J6') travelKm = 65;
-            if (day.d === 'J9') travelKm = 220;
-        }
-
-        accumulatedDistance += travelKm + LOCAL_DRIVING_DAILY;
-
-        const isLocked = (dayState.locked && dayState.locked.expenses && dayState.locked.expenses.gas);
-
-        // Refuel if threshold reached
-        if (accumulatedDistance >= REFUEL_THRESHOLD) {
-            if (!isLocked && (dayState.expenses.gas === null || dayState.expenses.gas === undefined)) {
-                dayState.expenses.gas = Math.round(FULL_TANK_COST);
-            }
-            accumulatedDistance = 0; // Full tank refill
-        } else {
-            // If not refilling, ensure it is 0 if it was null (initialization)
-            if (!isLocked && (dayState.expenses.gas === null || dayState.expenses.gas === undefined)) {
-                dayState.expenses.gas = 0;
-            }
-        }
-    });
-
-    // Final refill on last day
-    const lastDayId = days[days.length - 1].d;
-    if (accumulatedDistance > 30 && window.itineraryState[lastDayId]) {
-        const dayState = window.itineraryState[lastDayId];
-        const isLocked = dayState.locked && dayState.locked.expenses && dayState.locked.expenses.gas;
-        if (!isLocked && (dayState.expenses.gas === null || dayState.expenses.gas === undefined)) {
-            const refillNeeded = accumulatedDistance * CONSUMPTION * GAS_PRICE_CAD;
-            dayState.expenses.gas = Math.round(refillNeeded);
-        }
-    }
+    ...
+    */
 };
 
 // --- UPDATE & CALCULATION LOGIC ---

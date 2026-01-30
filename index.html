@@ -291,7 +291,7 @@
                     <div class="w-full">
                         <!-- LEFT PANEL: Dashboard Visuals (Redesigned) -->
                         <div
-                            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 bg-stone-800/50 p-6 md:p-12 rounded-xl border border-white/5 h-full shadow-2xl">
+                            class="w-full grid grid-cols-1 lg:grid-cols-3 gap-6 bg-stone-800/50 p-6 md:p-8 rounded-xl border border-white/5 h-full shadow-2xl">
 
                             <!-- COL 1: GLOBAL BUDGET VISUALS -->
                             <div class="flex flex-col w-full space-y-8">
@@ -304,7 +304,7 @@
 
                                 <!-- PIE CHART CONTAINER (GLOBAL) -->
                                 <div
-                                    class="relative w-full aspect-square max-w-[320px] mx-auto mb-8 flex items-center justify-center">
+                                    class="relative w-full aspect-square max-w-[280px] mx-auto mb-8 flex items-center justify-center">
                                     <canvas id="global-pie-chart"></canvas>
                                     <!-- TOTAL IN MIDDLE -->
                                     <div
@@ -313,22 +313,50 @@
                                             class="text-sm text-stone-500 uppercase font-bold tracking-widest mb-1">Total
                                             Estimé</span>
                                         <span id="global-total-center"
-                                            class="text-4xl font-black text-white font-serif tracking-tighter">$0</span>
+                                            class="text-3xl font-black text-white font-serif tracking-tighter">$0</span>
                                     </div>
                                 </div>
 
 
                                 <!-- CATEGORY GRID (Modern Cards) -->
-                                <div id="global-category-grid" class="grid grid-cols-2 gap-3 w-full">
+                                <div id="global-category-grid" class="grid grid-cols-2 gap-2 w-full">
                                     <!-- JS Injected Cards -->
                                 </div>
                             </div>
 
-                            <!-- COL 2: Detailed Recap Table (Moved per user request) -->
-                            <div class="flex flex-col justify-start w-full lg:border-l lg:border-white/5 lg:pl-12">
+                            <!-- COL 2: DAILY EXPENSES VISUALS (Restored) -->
+                            <div class="flex flex-col w-full space-y-8 lg:border-l lg:border-white/5 lg:pl-6">
+                                <h3
+                                    class="text-lg font-bold uppercase tracking-widest text-stone-400 border-b border-white/10 pb-2 w-full text-center">
+                                    Sur Place (Détails)
+                                </h3>
+
+                                <!-- DAILY TOTAL DISPLAY -->
+                                <div class="text-center py-2">
+                                    <span
+                                        class="text-sm text-stone-500 uppercase tracking-widest font-bold block mb-1">Total
+                                        Journalier (Moyenne)</span>
+                                    <span id="daily-total-center"
+                                        class="text-4xl md:text-5xl font-black text-cr-gold font-serif tracking-tight">$0</span>
+                                </div>
+
+                                <!-- BAR CHART CONTAINER (DAILY) -->
+                                <div class="relative w-full h-[200px] mb-8">
+                                    <canvas id="daily-bar-chart"></canvas>
+                                </div>
+
+
+                                <!-- CATEGORY GRID (Daily) -->
+                                <div id="daily-category-grid" class="grid grid-cols-2 gap-2 w-full">
+                                    <!-- JS Injected Cards -->
+                                </div>
+                            </div>
+
+                            <!-- COL 3: Detailed Recap Table (Fixed Costs) -->
+                            <div class="flex flex-col justify-start w-full lg:border-l lg:border-white/5 lg:pl-6">
                                 <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
                                     <h3 class="text-lg font-bold uppercase tracking-widest text-stone-400">
-                                        Récapitulatif & Coûts Fixes
+                                        Coûts Fixes
                                     </h3>
                                     <button onclick="window.resetFixedCosts()"
                                         class="mb-1 text-[9px] text-stone-500 hover:text-cr-orange transition-colors border border-stone-600 rounded px-2 py-1 hover:border-cr-orange uppercase tracking-wider">

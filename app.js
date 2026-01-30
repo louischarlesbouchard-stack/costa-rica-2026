@@ -206,12 +206,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDetailsGrid() {
-        document.getElementById('details-grid').innerHTML = toggleBtnHtml + days.map(d => `
+        const usedPhotos = new Set();
+        // Create a flat global pool for fallback
+        const globalPool = [];
+        Object.values(photoDB).forEach(arr => {
+            if (Array.isArray(arr)) globalPool.push(...arr);
+            else globalPool.push(arr);
+        });
+
+        document.getElementById('details-grid').innerHTML = toggleBtnHtml + days.map(d => {
+            // PHOTO SELECTION LOGIC
+            const pool = Array.isArray(d.photos) ? [...d.photos] : [d.photos];
+            // Shuffle pool to avoid same order every time
+            pool.sort(() => Math.random() - 0.5);
+            const selection = [];
+
+            // 1. Unused photos from day pool
+            pool.forEach(img => {
+                if (selection.length < 3 && img && !usedPhotos.has(img)) {
+                    selection.push(img);
+                    usedPhotos.add(img);
+                }
+            });
+            // 2. Unused photos from global pool (to keep variety)
+            if (selection.length < 3) {
+                globalPool.forEach(img => {
+                    if (selection.length < 3 && img && !usedPhotos.has(img)) {
+                        selection.push(img);
+                        usedPhotos.add(img);
+                    }
+                });
+            }
+            // 3. Unique photos from day pool (even if used globally)
+            if (selection.length < 3) {
+                pool.forEach(img => {
+                    if (selection.length < 3 && img && !selection.includes(img)) {
+                        selection.push(img);
+                    }
+                });
+            }
+            // 4. Fallback
+            const fallbackPhoto = pool.length > 0 && pool[0] ? pool[0] : 'https://via.placeholder.com/600x400?text=No+Image';
+            while (selection.length < 3) {
+                selection.push(fallbackPhoto);
+            }
+
+
+            return `
             <div class="bg-white rounded-xl shadow-md border border-stone-100 overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform group" onclick="window.flyTo([${d.coords}])">
             
             <div class="grid grid-cols-3 h-52 w-full gap-0.5 flex-none" id="gallery-${d.d}">
                 <div class="col-span-2 relative overflow-hidden bg-stone-200">
-                     <img src="${Array.isArray(d.photos) ? d.photos[0] : d.photos}" 
+                     <img src="${selection[0]}" 
                           class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                           >
                      <!-- VISIBLE LOCATION BADGE -->
@@ -221,12 +267,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="col-span-1 grid grid-rows-2 gap-0.5">
                      <div class="relative overflow-hidden bg-stone-200">
-                        <img src="${Array.isArray(d.photos) && d.photos[1] ? d.photos[1] : d.photos}" 
+                        <img src="${selection[1]}" 
                              class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                              onerror="this.style.display='none'">
                      </div>
                      <div class="relative overflow-hidden bg-stone-200">
-                        <img src="${Array.isArray(d.photos) && d.photos[2] ? d.photos[2] : d.photos}" 
+                        <img src="${selection[2]}" 
                              class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
                              onerror="this.style.display='none'">
                      </div>
@@ -253,13 +299,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="text-right">
                                 <!-- Calculate Total for Render -->
                                 ${(() => {
-                const s = window.itineraryState[d.d];
-                const actT = s.activities.reduce((a, x) => a + (x.price || 0), 0);
-                const restT = s.restaurants.reduce((a, x) => a + (x.price || 0), 0);
-                // Exclude food (grocery), goods, gifts, gas. INCLUDE night.
-                const expT = (s.expenses.drinks || 0) + (s.expenses.tips || 0) + (s.expenses.parking || 0) + (s.expenses.night || 0);
-                return `<span class="block text-3xl font-black text-cr-gold" id="total-${d.d}">$${(actT + restT + expT).toLocaleString()}</span>`;
-            })()}
+                    const s = window.itineraryState[d.d];
+                    const actT = s.activities.reduce((a, x) => a + (x.price || 0), 0);
+                    const restT = s.restaurants.reduce((a, x) => a + (x.price || 0), 0);
+                    // Exclude food (grocery), goods, gifts, gas. INCLUDE night.
+                    const expT = (s.expenses.drinks || 0) + (s.expenses.tips || 0) + (s.expenses.parking || 0) + (s.expenses.night || 0);
+                    return `<span class="block text-3xl font-black text-cr-gold" id="total-${d.d}">$${(actT + restT + expT).toLocaleString()}</span>`;
+                })()}
                             </div>
                         </div>
 
@@ -347,18 +393,18 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="grid grid-cols-4 gap-1" data-dayid="${d.d}">
                                 ${['food', 'drinks', 'tips', 'parking', 'gas', 'gifts', 'goods', 'night'].map((type, i) => {
-                const icons = {
-                    food: 'shopping-basket text-cr-orange', drinks: 'cocktail text-blue-500', tips: 'hand-holding-usd text-green-600',
-                    parking: 'parking text-stone-600', gas: 'gas-pump text-stone-600', gifts: 'gifts text-purple-500',
-                    goods: 'suitcase text-pink-500', night: 'home text-orange-600'
-                };
-                const iconClass = icons[type] || 'circle';
-                const val = window.itineraryState[d.d].expenses[type] || 0;
-                const row = Math.floor(i / 4);
-                const col = i % 4;
-                const textStyle = val > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal';
+                    const icons = {
+                        food: 'shopping-basket text-cr-orange', drinks: 'cocktail text-blue-500', tips: 'hand-holding-usd text-green-600',
+                        parking: 'parking text-stone-600', gas: 'gas-pump text-stone-600', gifts: 'gifts text-purple-500',
+                        goods: 'suitcase text-pink-500', night: 'home text-orange-600'
+                    };
+                    const iconClass = icons[type] || 'circle';
+                    const val = window.itineraryState[d.d].expenses[type] || 0;
+                    const row = Math.floor(i / 4);
+                    const col = i % 4;
+                    const textStyle = val > 0 ? 'text-stone-900 font-bold' : 'text-stone-300 font-normal';
 
-                return `
+                    return `
                                     <div class="relative group">
                                         <i class="fas fa-${iconClass} absolute left-2 top-1/2 -translate-y-1/2 text-sm opacity-90 z-10 pointer-events-none"></i>
                                         <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-stone-400 pointer-events-none">$</span>
@@ -375,12 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
                                             oninput="window.updateInputStyle(this)" 
                                             onchange="window.updateBudget('${d.d}', '${type}', this.value)">
                                     </div>`;
-            }).join('')}
+                }).join('')}
                             </div>
                         </div>
                     </div>
         </div>
-                    `).join('');
+                    `;
+        }).join('');
 
         // Init Sortable after render
         setTimeout(initSortable, 100);

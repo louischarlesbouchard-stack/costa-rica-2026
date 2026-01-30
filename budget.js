@@ -2,6 +2,9 @@
 // Extracted from app.js for better isolation
 
 // --- GLOBAL STATE & SETTINGS ---
+let globalPieChart = null;
+let dailyPieChart = null;
+
 window.globalFixedCosts = { flights: 4500, car: 1200, accommodation: 0, misc: 0 };
 
 window.itinerarySettings = {
@@ -538,35 +541,35 @@ window.updateGlobalBudget = function (forceSave = false) {
 // --- VISUALIZATION FUNCTION ---
 function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown) {
     // COLORS
+    // COLORS - More harmonious "Nature Fintech" palette
     const colors = {
-        vols: '#60a5fa', // Blue 400
-        hebergement: '#f59e0b', // Amber 500
-        transport: '#10b981', // Emerald 500
-        activites: '#ef4444', // Red 500
-        epicerie: '#fcd34d', // Amber 300
-        autres: '#64748b',  // Slate 500
-        // Daily specific
-        resto: '#8b5cf6', // Violet 500
-        goods: '#ec4899', // Pink 500
-        drinks: '#3b82f6', // Blue 500
-        tips: '#84cc16', // Lime 500
-        gas: '#0d9488', // Teal 600
-        parking: '#64748b' // Slate 500
+        vols: '#334155',         // Slate 700 (Pro)
+        hebergement: '#b45309',  // Amber 700 (Warm)
+        transport: '#065f46',    // Emerald 800 (Forest)
+        activites: '#991b1b',    // Red 800 (Deep Earth)
+        epicerie: '#7c2d12',     // Orange 900 (Warmth)
+        autres: '#1e293b',       // Slate 800
+        resto: '#6d28d9',        // Violet 700
+        goods: '#be185d',        // Pink 700
+        drinks: '#1d4ed8',       // Blue 700
+        tips: '#4d7c0f',         // Lime 700
+        gas: '#0f766e',          // Teal 700
+        parking: '#475569'       // Slate 600
     };
 
     const icons = {
         vols: 'fa-plane',
         hebergement: 'fa-bed',
         transport: 'fa-car',
-        activites: 'fa-hiking',
-        epicerie: 'fa-shopping-basket',
-        autres: 'fa-ellipsis-h',
+        activites: 'fa-person-hiking',
+        epicerie: 'fa-basket-shopping',
+        autres: 'fa-ellipsis',
         resto: 'fa-utensils',
         goods: 'fa-suitcase',
-        drinks: 'fa-cocktail',
+        drinks: 'fa-martini-glass-citrus',
         tips: 'fa-hand-holding-dollar',
         gas: 'fa-gas-pump',
-        parking: 'fa-parking'
+        parking: 'fa-square-p'
     };
 
     // 1. GLOBAL BUDGET VISUALS
@@ -587,29 +590,19 @@ function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown
             const pct = (val / total) * 100;
 
             // Bar Segment
-            if (globalBar) {
-                const segment = document.createElement('div');
-                segment.className = 'budget-bar-segment h-full';
-                segment.style.width = `${pct}%`;
-                segment.style.backgroundColor = colors[key];
-                segment.title = `${key}: $${val.toLocaleString()}`;
-                globalBar.appendChild(segment);
-            }
+            // STACKED BAR REMOVED
+
 
             // Card
             if (globalGrid) {
                 const card = `
-                    <div class="budget-card bg-stone-800/80 p-3 rounded-lg flex flex-col justify-between h-20">
-                        <div class="flex justify-between items-start">
+                    <div class="budget-card bg-stone-800/80 p-3 rounded-lg flex flex-col justify-between h-20 relative overflow-hidden group hover:bg-stone-800 transition-colors">
+                        <div class="flex justify-between items-start relative z-10">
                             <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">${key}</span>
-                            <i class="fas ${icons[key]} text-stone-500 text-xs"></i>
+                            <i class="fas ${icons[key]} text-white/40 text-5xl absolute right-4 top-3 transition-transform group-hover:scale-110 drop-shadow-[0_0_12px_rgba(255,255,255,1)]"></i>
                         </div>
-                        <div class="flex items-end gap-2 mt-auto">
+                        <div class="flex items-end gap-2 mt-auto relative z-10">
                             <span class="text-xl font-bold text-white">$${val.toLocaleString()}</span>
-                            <span class="text-xs text-stone-500 font-mono mb-1">${Math.round(pct)}%</span>
-                        </div>
-                        <div class="w-full h-1 bg-stone-700 rounded-full mt-2 overflow-hidden">
-                            <div class="h-full rounded-full" style="width: ${pct}%; background-color: ${colors[key]}"></div>
                         </div>
                     </div>
                 `;
@@ -637,24 +630,18 @@ function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown
         if (val > 0) {
             const pct = (val / dailyAvgTotal) * 100;
             // Bar
-            if (dailyBar) {
-                const segment = document.createElement('div');
-                segment.className = 'budget-bar-segment h-full';
-                segment.style.width = `${pct}%`;
-                segment.style.backgroundColor = colors[key];
-                segment.title = `${key}: $${val.toLocaleString()}`;
-                dailyBar.appendChild(segment);
-            }
+            // STACKED BAR REMOVED
+
 
             // Card
             if (dailyGrid) {
                 const card = `
-                    <div class="budget-card bg-stone-800/80 p-2 rounded-lg flex flex-col justify-between h-16">
-                        <div class="flex justify-between items-center">
+                    <div class="budget-card bg-stone-800/80 p-2 rounded-lg flex flex-col justify-between h-16 relative overflow-hidden group hover:bg-stone-800 transition-colors">
+                        <div class="flex justify-between items-center relative z-10">
                             <span class="text-[10px] font-bold text-stone-400 uppercase tracking-wider">${key}</span>
-                                <i class="fas ${icons[key]} text-stone-500 text-[10px]"></i>
+                                <i class="fas ${icons[key]} text-white/40 text-4xl absolute right-3 top-2 transition-transform group-hover:scale-110 drop-shadow-[0_0_10px_rgba(255,255,255,1)]"></i>
                         </div>
-                        <div class="flex items-end gap-2 mt-auto">
+                        <div class="flex items-end gap-2 mt-auto relative z-10">
                             <span class="text-lg font-bold text-white">$${val.toLocaleString()}</span>
                         </div> 
                     </div>
@@ -663,7 +650,131 @@ function renderBudgetVisuals(total, globalCats, dailyAvgTotal, dailyAvgBreakdown
             }
         }
     });
+
+    // 3. RENDER CHARTS
+    renderBudgetCharts(total, globalCats, dailyAvgTotal, dailyAvgBreakdown, colors, icons);
 }
+
+function renderBudgetCharts(total, globalCats, dailyAvgTotal, dailyAvgBreakdown, colors, iconsMap) {
+    if (typeof Chart === 'undefined') return;
+
+    // Register the datalabels plugin if not already
+    if (ChartDataLabels) Chart.register(ChartDataLabels);
+
+    // Update center total text
+    const elGlobalCenter = document.getElementById('global-total-center');
+    if (elGlobalCenter) elGlobalCenter.textContent = `$${total.toLocaleString()}`;
+
+    // --- 1. GLOBAL DOUGHNUT CHART ---
+    const ctxGlobal = document.getElementById('global-pie-chart');
+    if (ctxGlobal) {
+        if (globalPieChart) globalPieChart.destroy();
+        const dataPrepared = Object.entries(globalCats).filter(([k, v]) => v > 0);
+
+        // FontAwesome Unicode Mapping
+        const faUnicode = {
+            vols: '\uf072', hebergement: '\uf236', transport: '\uf1b9',
+            activites: '\uf6ec', epicerie: '\uf291', autres: '\uf141'
+        };
+
+        globalPieChart = new Chart(ctxGlobal, {
+            type: 'doughnut',
+            data: {
+                labels: dataPrepared.map(d => d[0].toUpperCase()),
+                datasets: [{
+                    data: dataPrepared.map(d => d[1]),
+                    backgroundColor: dataPrepared.map(d => colors[d[0]]),
+                    borderWidth: 0,
+                    cutout: '65%' // Thicker ring
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true },
+                    datalabels: {
+                        color: 'rgba(255,255,255,0.9)',
+                        textAlign: 'center',
+                        anchor: 'center',
+                        align: 'center',
+                        formatter: (value, ctx) => {
+                            const pct = (value / total * 100).toFixed(0);
+                            const key = dataPrepared[ctx.dataIndex][0];
+                            const icon = faUnicode[key] || '';
+                            // Conditional: Stack for Plane (vols) and Car (transport)
+                            if (key === 'vols' || key === 'transport') {
+                                return `${icon}\n${pct}%`;
+                            }
+                            return `${icon} ${pct}%`;
+                        },
+                        font: (context) => {
+                            return {
+                                family: '"Font Awesome 6 Free", "Outfit"',
+                                weight: 900,
+                                size: 20, // Enlarged from 16
+                                lineHeight: 1.1
+                            };
+                        },
+                        offset: 0
+                    }
+                },
+                animation: { duration: 1000, easing: 'easeOutQuart' }
+            }
+        });
+    }
+
+    // --- 2. DAILY BAR CHART ---
+    const ctxDaily = document.getElementById('daily-bar-chart');
+    if (ctxDaily) {
+        if (dailyPieChart) dailyPieChart.destroy();
+        const dataPrepared = Object.entries(dailyAvgBreakdown)
+            .filter(([k, v]) => v > 0)
+            .sort((a, b) => b[1] - a[1]);
+
+        dailyPieChart = new Chart(ctxDaily, {
+            type: 'bar',
+            data: {
+                labels: dataPrepared.map(d => d[0].toUpperCase()),
+                datasets: [{
+                    data: dataPrepared.map(d => d[1]),
+                    backgroundColor: dataPrepared.map(d => colors[d[0]] || '#444'),
+                    borderRadius: 6,
+                    barThickness: 20
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        display: false,
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#888', font: { size: 10, weight: 'bold' } },
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'end',
+                        color: '#ddd',
+                        font: { size: 11, weight: 'black' },
+                        formatter: (val) => `$${Math.round(val)}`
+                    }
+                }
+            }
+        });
+    }
+}
+
 
 // --- SETTINGS UI ---
 window.openSettings = function () {

@@ -66,7 +66,7 @@
 
         <!-- BOTTOM TITLE AREA (The "Brown Space") -->
         <div
-            class="absolute bottom-0 left-0 w-full py-12 px-4 pr-40 md:pr-[28rem] z-20 flex flex-col items-center justify-center">
+            class="absolute bottom-0 left-0 w-full py-6 px-4 pr-24 md:pr-80 z-20 flex flex-col items-center justify-center">
             <h1
                 class="text-4xl md:text-6xl font-serif font-black text-white drop-shadow-2xl mb-2 tracking-tighter uppercase">
                 COSTA RICA
@@ -224,12 +224,12 @@
                             <!-- TABS (Left - Desktop Only) -->
                             <div class="hidden lg:flex items-center gap-1 bg-stone-100 p-1 rounded-lg">
                                 <button id="tab-btn-itinerary" onclick="window.switchSidebarTab('itinerary')"
-                                    class="px-3 py-1.5 rounded-md text-sm font-bold transition-all bg-white text-cr-orange shadow-sm border border-stone-200">
-                                    <i class="fas fa-list-ul"></i>
+                                    class="w-12 h-10 flex items-center justify-center rounded-md transition-all bg-white text-stone-900 shadow-sm border border-stone-200">
+                                    <i class="fas fa-list-ul text-xl"></i>
                                 </button>
                                 <button id="tab-btn-routes" onclick="window.switchSidebarTab('routes')"
-                                    class="px-3 py-1.5 rounded-md text-sm font-bold transition-all text-stone-400 hover:text-stone-600">
-                                    <i class="fas fa-route"></i>
+                                    class="w-12 h-10 flex items-center justify-center rounded-md transition-all text-stone-400 hover:text-stone-600">
+                                    <i class="fas fa-route text-xl"></i>
                                 </button>
                             </div>
 
@@ -246,10 +246,10 @@
                         <div id="header-controls-itinerary"
                             class="px-3 pb-3 flex justify-center items-center border-t border-stone-50 pt-3">
                             <div class="text-sm font-black text-stone-700 flex items-center gap-3">
-                                <span><i class="fas fa-road text-cr-orange text-xs mr-1"></i><span id="kpi-total-km">--
+                                <span><i class="fas fa-road text-stone-400 text-xs mr-1"></i><span id="kpi-total-km">--
                                         km</span></span>
                                 <span class="text-stone-300">•</span>
-                                <span><i class="fas fa-clock text-cr-orange text-xs mr-1"></i><span
+                                <span><i class="fas fa-clock text-stone-400 text-xs mr-1"></i><span
                                         id="kpi-total-time">-- h</span></span>
                                 <span class="text-stone-300">•</span>
                                 <span id="day-count-badge"
@@ -353,20 +353,23 @@
                                     Répartition Globale
                                 </h3>
 
-                                <!-- TOTAL BIG DISPLAY -->
-                                <div class="text-center py-2">
-                                    <span
-                                        class="text-sm text-stone-500 uppercase tracking-widest font-bold block mb-1">Total
-                                        Estimé</span>
-                                    <span id="grand-total"
-                                        class="text-5xl md:text-6xl font-black text-white font-serif tracking-tight">$0</span>
+
+
+                                <!-- PIE CHART CONTAINER (GLOBAL) -->
+                                <div
+                                    class="relative w-full aspect-square max-w-[320px] mx-auto mb-8 flex items-center justify-center">
+                                    <canvas id="global-pie-chart"></canvas>
+                                    <!-- TOTAL IN MIDDLE -->
+                                    <div
+                                        class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                                        <span
+                                            class="text-sm text-stone-500 uppercase font-bold tracking-widest mb-1">Total
+                                            Estimé</span>
+                                        <span id="global-total-center"
+                                            class="text-4xl font-black text-white font-serif tracking-tighter">$0</span>
+                                    </div>
                                 </div>
 
-                                <!-- STACKED BAR CONTAINER -->
-                                <div id="global-budget-bar"
-                                    class="w-full h-8 bg-stone-900 rounded-full overflow-hidden flex border border-white/10 relative shadow-inner">
-                                    <!-- JS Injected Bars -->
-                                </div>
 
                                 <!-- CATEGORY GRID (Modern Cards) -->
                                 <div id="global-category-grid" class="grid grid-cols-2 gap-3 w-full">
@@ -390,11 +393,11 @@
                                         class="text-4xl md:text-5xl font-black text-cr-gold font-serif tracking-tight">$0</span>
                                 </div>
 
-                                <!-- STACKED BAR CONTAINER -->
-                                <div id="daily-budget-bar"
-                                    class="w-full h-6 bg-stone-900 rounded-full overflow-hidden flex border border-white/10 relative shadow-inner">
-                                    <!-- JS Injected Bars -->
+                                <!-- BAR CHART CONTAINER (DAILY) -->
+                                <div class="relative w-full h-[240px] mb-8">
+                                    <canvas id="daily-bar-chart"></canvas>
                                 </div>
+
 
                                 <!-- CATEGORY GRID (Daily) -->
                                 <div id="daily-category-grid" class="grid grid-cols-2 gap-3 w-full">
@@ -403,7 +406,7 @@
                             </div>
 
                             <!-- COL 3: Detailed Recap Table -->
-                            <div class="flex flex-col justify-start w-full border-l border-white/5 pl-12">
+                            <div class="flex flex-col justify-start w-full lg:border-l lg:border-white/5 lg:pl-12">
                                 <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-2">
                                     <h3 class="text-lg font-bold uppercase tracking-widest text-stone-400">
                                         Récapitulatif
@@ -516,46 +519,17 @@
 
                             <!-- Grand Total -->
                             <div class="col-span-1 lg:col-span-3 pt-6 border-t border-white/20 mt-8">
-                                <div class="flex flex-row items-center justify-between px-4">
-                                    <span class="text-2xl text-stone-400 font-bold tracking-widest uppercase">Grand
+                                <div class="flex flex-row items-baseline justify-end gap-x-12 px-4">
+                                    <span
+                                        class="text-5xl lg:text-7xl text-white font-black tracking-tighter uppercase whitespace-nowrap opacity-80">Grand
                                         Total</span>
-                                    <span id="grand-total-tbl" class="text-6xl font-black text-cr-gold">$0</span>
+                                    <span id="grand-total-tbl"
+                                        class="text-6xl lg:text-8xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">$0</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- TOP ACTIVITIES TABLE (PRIORITY) -->
-                        <div class="mt-16 bg-stone-950/30 rounded-3xl p-8 border border-white/5">
-                            <div class="flex items-center justify-between mb-8">
-                                <div>
-                                    <h3 class="text-2xl font-serif font-bold text-white tracking-tighter uppercase">
-                                        Activités Prioritaires</h3>
-                                    <p class="text-xs text-stone-500 font-bold uppercase tracking-widest mt-1">Top
-                                        Expenditures to Plan Ahead</p>
-                                </div>
-                                <div class="bg-cr-gold/10 px-4 py-2 rounded-full border border-cr-gold/20">
-                                    <span class="text-cr-gold text-[10px] font-black uppercase tracking-widest">Booking
-                                        Priority List</span>
-                                </div>
-                            </div>
-
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr
-                                            class="text-[10px] text-stone-500 uppercase tracking-widest font-black border-b border-white/10">
-                                            <th class="py-4 px-4">Activity</th>
-                                            <th class="py-4 px-4">Location</th>
-                                            <th class="py-4 px-4 text-center">Day</th>
-                                            <th class="py-4 px-4 text-right">Estimate (CAD)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="top-activities-body" class="text-stone-300">
-                                        <!-- JS Injected Content -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <!-- TOP ACTIVITIES TABLE REMOVED PER USER REQUEST -->
                     </div>
 
 
@@ -583,8 +557,8 @@
         <!-- Scripts -->
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-
-        <!-- APP Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
         <script src="data.js"></script>
         <script src="budget.js"></script>
         <script src="app.js"></script>

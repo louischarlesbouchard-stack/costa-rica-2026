@@ -131,7 +131,7 @@
         "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 185,
+        "night": 350,
         "parking": 15,
         "gas": 0,
         "gifts": 0
@@ -177,7 +177,7 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 185,
+        "night": 350,
         "parking": 0,
         "gas": 110,
         "gifts": 0
@@ -217,7 +217,7 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 185,
+        "night": 350,
         "parking": 0,
         "gas": 60,
         "gifts": 0

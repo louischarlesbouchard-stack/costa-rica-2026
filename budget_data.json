@@ -43,13 +43,17 @@
         "night": 165,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 165
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J2": {
@@ -81,8 +85,7 @@
         "night": 165,
         "parking": 0,
         "gas": 70,
-        "gifts": 0,
-        "accommodation": 165
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -90,6 +93,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J3": {
@@ -126,13 +134,17 @@
         "night": 185,
         "parking": 15,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 185
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J4": {
@@ -168,8 +180,7 @@
         "night": 185,
         "parking": 0,
         "gas": 110,
-        "gifts": 0,
-        "accommodation": 185
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -177,6 +188,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J5": {
@@ -204,8 +220,7 @@
         "night": 185,
         "parking": 0,
         "gas": 60,
-        "gifts": 0,
-        "accommodation": 185
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -213,6 +228,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J6": {
@@ -249,13 +269,17 @@
         "night": 210,
         "parking": 25,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 210
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J7": {
@@ -280,13 +304,17 @@
         "night": 210,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 210
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J8": {
@@ -314,8 +342,7 @@
         "night": 210,
         "parking": 0,
         "gas": 110,
-        "gifts": 0,
-        "accommodation": 210
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -323,6 +350,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J9": {
@@ -355,13 +387,17 @@
         "night": 250,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 250
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J10": {
@@ -390,13 +426,17 @@
         "night": 250,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 250
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J11": {
@@ -428,8 +468,7 @@
         "night": 250,
         "parking": 0,
         "gas": 40,
-        "gifts": 0,
-        "accommodation": 250
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -437,6 +476,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J12": {
@@ -465,13 +509,17 @@
         "night": 150,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 150
+        "gifts": 0
       },
       "locked": {
         "expenses": {},
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J13": {
@@ -500,8 +548,7 @@
         "night": 150,
         "parking": 0,
         "gas": 110,
-        "gifts": 0,
-        "accommodation": 150
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -510,6 +557,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J14": {
@@ -539,8 +591,7 @@
         "parking": 0,
         "gas": 60,
         "gifts": 0,
-        "other": 40,
-        "accommodation": 150
+        "other": 40
       },
       "locked": {
         "expenses": {
@@ -549,6 +600,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J15": {
@@ -580,8 +636,7 @@
         "night": 230,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 230
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -589,6 +644,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J16": {
@@ -621,8 +681,7 @@
         "night": 230,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 230
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -630,6 +689,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J17": {
@@ -654,8 +718,7 @@
         "night": 230,
         "parking": 0,
         "gas": 0,
-        "gifts": 0,
-        "accommodation": 230
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -663,6 +726,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J18": {
@@ -690,8 +758,7 @@
         "night": 140,
         "parking": 0,
         "gas": 40,
-        "gifts": 0,
-        "accommodation": 140
+        "gifts": 0
       },
       "locked": {
         "expenses": {
@@ -699,6 +766,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     },
     "J19": {
@@ -734,6 +806,11 @@
         },
         "activities": {},
         "restaurants": {}
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
       }
     }
   }

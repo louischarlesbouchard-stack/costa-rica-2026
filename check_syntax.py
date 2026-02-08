@@ -1,5 +1,9 @@
 
 import sys
+import io
+
+# Force UTF-8 for stdout to avoid Windows console errors
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 def check_balance(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:

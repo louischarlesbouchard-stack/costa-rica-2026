@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tabName === 'itinerary') {
             if (isDesktop) {
-                tabItin.classList.remove('hidden');
+                tabItin.classList.remove('hidden', 'lg:hidden');
                 tabRoutes.classList.add('hidden', 'lg:hidden');
-                headerControlsItin.classList.remove('hidden');
+                headerControlsItin.classList.remove('hidden', 'lg:hidden');
                 headerControlsRoutes.classList.add('hidden', 'lg:hidden');
             }
 
@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activities: [],
             restaurants: [],
             expenses: { food: null, drinks: null, tips: null, goods: null, night: null, parking: null, gas: 0 },
+            accommodation: { name: '', address: '', link: '' },
             locked: { expenses: {}, activities: {}, restaurants: {} }
         };
 
@@ -120,17 +121,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const realIndex = days.indexOf(d);
             const fromLoc = realIndex === 0 ? 'LIR Airport' : days[realIndex - 1].loc;
 
+            // Stats for buttons
+            const acc = window.itineraryState[d.d]?.accommodation;
+            const hasWaze = acc && acc.address && acc.address.length > 5;
+            const hasLink = acc && acc.link && acc.link.length > 5;
+
             return `
-                    <div class="p-3 cursor-pointer bg-white rounded-lg shadow-sm border border-stone-200 mb-2 hover:shadow-md hover:border-cr-green transition-all" onclick="window.flyTo([${d.coords}])" data-day-id="${d.d}">
+                    <div class="p-3 cursor-pointer bg-white rounded-lg shadow-sm border border-stone-200 mb-2 hover:shadow-md hover:border-cr-green transition-all group relative" onclick="window.flyTo([${d.coords}])" data-day-id="${d.d}">
                         <div class="flex justify-between items-center mb-1.5">
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-black text-white bg-cr-green px-2 py-0.5 rounded">${d.d}</span>
-                                <span class="text-sm font-bold text-stone-700">${d.loc}</span>
+                                <span class="text-sm font-bold text-stone-700 truncate max-w-[120px]" title="${d.loc}">${d.loc}</span>
                             </div>
                             <span class="text-xs text-stone-400 font-medium">${d.date}</span>
                         </div>
+                        
                         ${d.travel && d.travel !== 'Sur Place' ? `
-                            <div class="flex flex-col items-start mt-1">
+                            <div class="flex flex-col items-start mt-1 mb-1">
                                 <span class="text-[9px] text-stone-400 font-bold uppercase tracking-wider mb-0.5 ml-0.5">
                                     ${fromLoc} <i class="fas fa-arrow-right mx-0.5 text-[8px]"></i> ${d.loc}
                                 </span>
@@ -142,8 +149,24 @@ document.addEventListener('DOMContentLoaded', () => {
                                     ${roadBadge}
                                 </div>
                             </div>
-                        ` : ''
-                }
+                        ` : ''}
+
+                        <!-- Action Buttons (Hover Reveal or Always Visible) -->
+                        ${(hasWaze || hasLink) ? `
+                        <div class="flex justify-end gap-2 mt-2 border-t border-stone-100 pt-1.5">
+                             ${hasWaze ? `
+                             <button onclick="event.stopPropagation(); window.open('https://waze.com/ul?q=${encodeURIComponent(acc.address)}', '_blank')" 
+                                     class="w-6 h-6 flex items-center justify-center rounded-full bg-blue-50 text-blue-500 hover:bg-blue-500 hover:text-white transition-all shadow-sm" title="Waze">
+                                <i class="fab fa-waze text-xs"></i>
+                             </button>` : ''}
+                             
+                             ${hasLink ? `
+                             <button onclick="event.stopPropagation(); window.open('${acc.link}', '_blank')" 
+                                     class="w-6 h-6 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-800 hover:text-white transition-all shadow-sm" title="Voir réservation">
+                                <i class="fas fa-house text-[10px]"></i>
+                             </button>` : ''}
+                        </div>
+                        ` : ''}
                     </div>
                     `;
         }).join('');
@@ -209,29 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
             <div class="bg-white rounded-xl shadow-md border border-stone-100 overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 transform group" onclick="window.flyTo([${d.coords}])">
             
-            <div class="grid grid-cols-3 h-52 w-full gap-0.5 flex-none" id="gallery-${d.d}">
-                <div class="col-span-2 relative overflow-hidden bg-stone-200">
-                     <img src="${selection[0]}" 
-                          class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                          >
-                     <!-- VISIBLE LOCATION BADGE -->
-                    <div class="absolute top-3 left-3 bg-stone-900/90 text-white text-xs px-3 py-1.5 rounded-md backdrop-blur-md font-black uppercase tracking-widest shadow-lg border border-white/20">
-                        <span><i class="fas fa-calendar-alt mr-1 text-cr-orange"></i>${d.date} • ${d.loc}</span>
+                <!-- Day Badge Header -->
+                <div class="bg-stone-900 text-white px-4 py-2 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg font-black text-cr-orange">${d.d}</span>
+                        <span class="text-sm font-bold text-stone-300">${d.date}</span>
                     </div>
+                    <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">${d.loc}</span>
                 </div>
-                <div class="col-span-1 grid grid-rows-2 gap-0.5">
-                     <div class="relative overflow-hidden bg-stone-200">
-                        <img src="${selection[1]}" 
-                             class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                             onerror="this.style.display='none'">
-                     </div>
-                     <div class="relative overflow-hidden bg-stone-200">
-                        <img src="${selection[2]}" 
-                             class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-                             onerror="this.style.display='none'">
-                     </div>
-                </div>
-            </div>
 
                 <!-- Content Section (Always Right) -->
                     <div class="col-span-1 md:col-span-2 px-5 pb-5 pt-3 flex flex-col justify-between h-full bg-white relative">
@@ -261,6 +269,96 @@ document.addEventListener('DOMContentLoaded', () => {
                     return `<span class="block text-3xl font-black text-cr-gold" id="total-${d.d}">$${(actT + restT + expT).toLocaleString()}</span>`;
                 })()}
                             </div>
+                        </div>
+
+                        <!-- Activity List - NO SCROLL -->
+                        
+                        <!-- ACCOMMODATION SECTION -->
+                        <div class="mb-3 px-1">
+                            ${(() => {
+                    const acc = window.itineraryState[d.d].accommodation || { name: '', address: '', link: '' };
+                    const hasAddress = acc.address && acc.address.length > 5;
+                    const hasLink = acc.link && acc.link.length > 5;
+                    const wazeUrl = hasAddress ? `https://waze.com/ul?q=${encodeURIComponent(acc.address)}` : '#';
+
+                    return `
+                                <div class="bg-stone-50 rounded-lg p-2 border border-stone-200">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-2 overflow-hidden">
+                                            <div class="w-6 h-6 rounded bg-stone-200 flex items-center justify-center text-stone-500 text-xs shadow-sm">
+                                                <i class="fas fa-bed"></i>
+                                            </div>
+                                            <span class="text-xs font-bold text-stone-700 truncate max-w-[150px] md:max-w-[200px]" title="${acc.name || 'Aucun hébergement'}">
+                                                ${acc.name || '<span class="text-stone-400 italic font-normal">Ajouter le logement...</span>'}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            ${hasAddress ? `
+                                            <a href="${wazeUrl}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-blue-100 text-blue-500 hover:bg-blue-500 hover:text-white transition-all shadow-sm" title="Ouvrir dans Waze">
+                                                <i class="fab fa-waze text-sm"></i>
+                                            </a>` : ''}
+                                            
+                                            ${hasLink ? `
+                                            <a href="${acc.link}" target="_blank" class="w-7 h-7 flex items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-800 hover:text-white transition-all shadow-sm" title="Voir la réservation">
+                                                <i class="fas fa-house text-xs"></i>
+                                            </a>` : ''}
+                                            
+                                            <button onclick="document.getElementById('acc-form-${d.d}').classList.toggle('hidden')" class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-stone-200 text-stone-400 hover:text-stone-600 transition-colors" title="Modifier">
+                                                <i class="fas fa-pen text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- HIDDEN FORM -->
+                                    <div id="acc-form-${d.d}" class="hidden mt-3 pt-2 border-t border-stone-200 space-y-2">
+                                        
+                                        <!-- Name -->
+                                        <div class="relative">
+                                            <i class="fas fa-hotel absolute left-2 top-1.5 text-stone-300 text-xs"></i>
+                                            <input type="text" 
+                                                class="w-full bg-white border border-stone-300 rounded text-xs pl-7 pr-2 py-1 focus:border-cr-orange focus:outline-none placeholder-stone-300" 
+                                                placeholder="Nom de l'hébergement"
+                                                value="${acc.name || ''}"
+                                                onchange="window.updateAccommodation('${d.d}', 'name', this.value)">
+                                            
+                                            <!-- Nights Duration (New) -->
+                                            <div class="absolute right-0 top-0 bottom-0 w-16 border-l border-stone-200">
+                                                <input type="number" min="1" max="10"
+                                                    class="w-full h-full text-center text-xs font-bold text-cr-orange focus:outline-none bg-stone-50"
+                                                    value="${acc.nights || 1}"
+                                                    title="Nombre de nuits (Copie auto)"
+                                                    onchange="window.updateAccommodationDuration('${d.d}', this.value)">
+                                            </div>
+                                        </div>
+
+                                        <!-- Address (Waze) -->
+                                        <div class="relative">
+                                            <i class="fas fa-map-marker-alt absolute left-2 top-1.5 text-stone-300 text-xs"></i>
+                                            <input type="text" 
+                                                class="w-full bg-white border border-stone-300 rounded text-xs pl-7 pr-2 py-1 focus:border-cr-orange focus:outline-none placeholder-stone-300" 
+                                                placeholder="Adresse (pour Waze)"
+                                                value="${acc.address || ''}"
+                                                onchange="window.updateAccommodation('${d.d}', 'address', this.value)">
+                                        </div>
+
+                                        <!-- Link -->
+                                        <div class="relative">
+                                            <i class="fas fa-link absolute left-2 top-1.5 text-stone-300 text-xs"></i>
+                                            <input type="text" 
+                                                class="w-full bg-white border border-stone-300 rounded text-xs pl-7 pr-2 py-1 focus:border-cr-orange focus:outline-none placeholder-stone-300" 
+                                                placeholder="Lien Booking / Airbnb / Site"
+                                                value="${acc.link || ''}"
+                                                onchange="window.updateAccommodation('${d.d}', 'link', this.value)">
+                                        </div>
+                                        
+                                        <div class="text-right">
+                                            <button onclick="document.getElementById('acc-form-${d.d}').classList.add('hidden')" class="text-[10px] font-bold text-stone-400 hover:text-stone-600 uppercase tracking-wider">
+                                                Fermer
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>`;
+                })()}
                         </div>
 
                         <!-- Activity List - NO SCROLL -->
@@ -524,6 +622,68 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             window.updateGlobalBudget(); // Saves automatically
         }
+    };
+
+    window.updateAccommodation = function (dayId, field, val) {
+        if (!window.itineraryState[dayId].accommodation) {
+            window.itineraryState[dayId].accommodation = { name: '', address: '', link: '', nights: 1 };
+        }
+        window.itineraryState[dayId].accommodation[field] = val;
+        renderDetailsGrid(); // Re-render to update Waze link
+        localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
+    };
+
+    window.updateAccommodationDuration = function (dayId, val) {
+        const duration = parseInt(val) || 1;
+        if (duration < 1) return;
+
+        // Save current day duration
+        if (!window.itineraryState[dayId].accommodation) {
+            window.itineraryState[dayId].accommodation = { name: '', address: '', link: '', nights: 1 };
+        }
+        window.itineraryState[dayId].accommodation.nights = duration;
+
+        // Auto-Copy Logic
+        if (duration > 1) {
+            const currentIdx = days.findIndex(d => d.d === dayId);
+            if (currentIdx !== -1) {
+                const sourceAcc = window.itineraryState[dayId].accommodation;
+                let copiedCount = 0;
+
+                for (let i = 1; i < duration; i++) {
+                    const targetIdx = currentIdx + i;
+                    if (targetIdx < days.length) {
+                        const targetDayId = days[targetIdx].d;
+
+                        // Create target state if missing
+                        if (!window.itineraryState[targetDayId]) {
+                            // Should exist by default, but safety first
+                            continue;
+                        }
+
+                        // Initialize accommodation object if missing
+                        if (!window.itineraryState[targetDayId].accommodation) {
+                            window.itineraryState[targetDayId].accommodation = {};
+                        }
+
+                        // COPY DETAILS
+                        window.itineraryState[targetDayId].accommodation.name = sourceAcc.name;
+                        window.itineraryState[targetDayId].accommodation.address = sourceAcc.address;
+                        window.itineraryState[targetDayId].accommodation.link = sourceAcc.link;
+                        window.itineraryState[targetDayId].accommodation.nights = 1; // Resets subsequent days to 1 to avoid cascade confusion
+
+                        copiedCount++;
+                    }
+                }
+                if (copiedCount > 0) {
+                    // Optional: Toast or simple console log
+                    console.log(`Auto-copied accommodation to next ${copiedCount} days.`);
+                }
+            }
+        }
+
+        renderDetailsGrid();
+        localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
     };
 
     window.deleteRestaurant = function (dayId, idx) {
@@ -1088,54 +1248,66 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function loadFromGitSync() {
+        let fileData = null;
         try {
             const response = await fetch('budget_data.json?t=' + Date.now());
             if (response.ok) {
-                const fileData = await response.json();
-                if (fileData.itinerary && Object.keys(fileData.itinerary).length > 0) {
-                    Object.keys(fileData.itinerary).forEach(k => {
-                        const localState = window.itineraryState[k];
-                        const remoteState = fileData.itinerary[k];
-
-                        if (localState && remoteState) {
-                            // 1. Merge Expenses (Safe)
-                            if (remoteState.expenses) {
-                                localState.expenses = { ...localState.expenses, ...remoteState.expenses };
-                            }
-
-                            // 2. Merge Activity Prices AND Structure (User Edits Win)
-                            // We MUST assign the array from remote to respect deletions (cleanup)
-                            if (remoteState.activities && Array.isArray(remoteState.activities)) {
-                                localState.activities = remoteState.activities;
-                            }
-
-                            // 3. Merge Restaurant Prices AND Structure
-                            if (remoteState.restaurants && Array.isArray(remoteState.restaurants)) {
-                                localState.restaurants = remoteState.restaurants;
-                            }
-
-                            // 4. Merge Locked State container
-                            if (remoteState.locked) {
-                                if (!localState.locked) localState.locked = {};
-                                localState.locked = { ...localState.locked, ...remoteState.locked };
-                            }
-                        }
-                    });
-                    console.log("✅ Loaded budget from budget_data.json (State Restored)");
-                }
-                if (fileData.settings) {
-                    window.itinerarySettings = { ...window.itinerarySettings, ...fileData.settings };
-                }
-                if (fileData.fixedCosts) {
-                    window.globalFixedCosts = { ...window.globalFixedCosts, ...fileData.fixedCosts };
-                }
-
-                // Force Re-render to show changes
-                if (window.renderDetailsGrid) window.renderDetailsGrid();
-                if (window.updateGlobalBudget) window.updateGlobalBudget();
+                fileData = await response.json();
+                console.log("✅ Loaded budget from budget_data.json (Fetch Successful)");
             }
         } catch (e) {
-            console.log("No budget_data.json found or fetch failed", e);
+            console.log("⚠️ Fetch failed (likely local file protocol). Checking fallback...");
+        }
+
+        // FALLBACK: Use window.fallbackData if fetch failed or returned null
+        if (!fileData && window.fallbackData) {
+            fileData = window.fallbackData;
+            console.log("✅ Loaded budget from window.fallbackData (Local Fallback)");
+        }
+
+        if (fileData) {
+            if (fileData.itinerary && Object.keys(fileData.itinerary).length > 0) {
+                Object.keys(fileData.itinerary).forEach(k => {
+                    const localState = window.itineraryState[k];
+                    const remoteState = fileData.itinerary[k];
+
+                    if (localState && remoteState) {
+                        // 1. Merge Expenses (Safe)
+                        if (remoteState.expenses) {
+                            localState.expenses = { ...localState.expenses, ...remoteState.expenses };
+                        }
+
+                        // 2. Merge Activity Prices AND Structure (User Edits Win)
+                        // We MUST assign the array from remote to respect deletions (cleanup)
+                        if (remoteState.activities && Array.isArray(remoteState.activities)) {
+                            localState.activities = remoteState.activities;
+                        }
+
+                        // 3. Merge Restaurant Prices AND Structure
+                        if (remoteState.restaurants && Array.isArray(remoteState.restaurants)) {
+                            localState.restaurants = remoteState.restaurants;
+                        }
+
+                        // 4. Merge Locked State container
+                        if (remoteState.locked) {
+                            if (!localState.locked) localState.locked = {};
+                            localState.locked = { ...localState.locked, ...remoteState.locked };
+                        }
+                    }
+                });
+            }
+            if (fileData.settings) {
+                window.itinerarySettings = { ...window.itinerarySettings, ...fileData.settings };
+            }
+            if (fileData.fixedCosts) {
+                window.globalFixedCosts = { ...window.globalFixedCosts, ...fileData.fixedCosts };
+            }
+
+            // Force Re-render to show changes
+            if (window.renderDetailsGrid) window.renderDetailsGrid();
+            if (window.updateGlobalBudget) window.updateGlobalBudget();
+        } else {
+            console.log("❌ CRITICAL: No budget data found (Fetch failed & No Fallback).");
         }
     }
 

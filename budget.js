@@ -60,6 +60,9 @@ window.populateEstimates = function () {
                     if (savedDay.restaurants && Array.isArray(savedDay.restaurants)) {
                         currentDay.restaurants = savedDay.restaurants;
                     }
+                    if (savedDay.accommodation) {
+                        currentDay.accommodation = savedDay.accommodation;
+                    }
 
                     // Restore Locked State
                     if (savedDay.locked) {
@@ -101,6 +104,12 @@ window.populateEstimates = function () {
                 });
                 dayState.locked.restaurants = {};
             }
+        }
+
+        // MIGRATION 2: Remove legacy 'accommodation' from expenses (causes double-counting)
+        if (dayState && dayState.expenses && 'accommodation' in dayState.expenses) {
+            console.log(`🔧 Migration: Removing legacy 'accommodation' expense from ${d.d}`);
+            delete dayState.expenses.accommodation;
         }
     });
 

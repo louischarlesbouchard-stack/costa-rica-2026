@@ -23,19 +23,19 @@ window.itinerarySettings = {
 
 window.populateEstimates = function () {
     // 1. RESTORE FROM LOCAL STORAGE FIRST
-    let saved = localStorage.getItem('crc_itinerary_state');
+    let saved = localStorage.getItem('steph_itinerary_state');
     // FALLBACK: Try old keys if new prefix is missing
-    if (!saved) saved = localStorage.getItem('itinerary_state');
-    if (!saved) saved = localStorage.getItem('itineraryState');
+    // if (!saved) saved = localStorage.getItem('itinerary_state');
+    // if (!saved) saved = localStorage.getItem('itineraryState');
 
     let savedFixed = localStorage.getItem('crc_fixed_costs');
-    if (!savedFixed) savedFixed = localStorage.getItem('fixed_costs');
+    // if (!savedFixed) savedFixed = localStorage.getItem('fixed_costs');
 
     // We assume window.itineraryState is available (managed by app.js data loading)
 
     // RECOVERY LOGIC: Check if legacy data is "better" than current data
     // If we have legacy data but no current data (or current is "newly initialized"), prefer legacy.
-    let legacy = localStorage.getItem('itinerary_state');
+    let legacy = null; // localStorage.getItem('itinerary_state');
     if (legacy && (!saved || saved.length < legacy.length)) {
         console.warn("⚠️ RECOVERY: Found larger/older legacy data. Preferring it over current state.");
         saved = legacy;
@@ -115,7 +115,7 @@ window.populateEstimates = function () {
 
 
     // 4. RESTORE SETTINGS FROM LOCAL STORAGE
-    const savedSettings = localStorage.getItem('crc_itinerary_settings');
+    const savedSettings = localStorage.getItem('steph_itinerary_settings');
     if (savedSettings) {
         try {
             window.itinerarySettings = JSON.parse(savedSettings);
@@ -184,7 +184,7 @@ window.updateTotal = function (dayId) {
     if (el) el.textContent = '$' + total.toLocaleString();
 
     if (window.updateGlobalBudget) window.updateGlobalBudget();
-    localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
+    localStorage.setItem('steph_itinerary_state', JSON.stringify(window.itineraryState));
 }
 // Alias for backward compatibility if `updateTotal` was not window// --- RE-CALCULATE & UPDATE GLOBAL BUDGET ---
 // CALCULATION LOGIC
@@ -342,9 +342,9 @@ window.updateGlobalBudget = function (forceSave = false) {
 
     // --- PERSISTENCE ---
     if (window.isAppReady || forceSave) {
-        localStorage.setItem('crc_itinerary_state', JSON.stringify(window.itineraryState));
-        localStorage.setItem('crc_global_fixed_costs', JSON.stringify(window.globalFixedCosts));
-        localStorage.setItem('crc_itinerary_settings', JSON.stringify(window.itinerarySettings));
+        localStorage.setItem('steph_itinerary_state', JSON.stringify(window.itineraryState));
+        localStorage.setItem('steph_global_fixed_costs', JSON.stringify(window.globalFixedCosts));
+        localStorage.setItem('steph_itinerary_settings', JSON.stringify(window.itinerarySettings));
     }
 
     // --- DASHBOARD KPIS ---
@@ -691,7 +691,7 @@ window.saveSettings = function () {
     window.itinerarySettings.gas.tankCapacity = parseFloat(document.getElementById('set-gas-tank').value) || 0;
     window.itinerarySettings.gas.refuelThreshold = parseFloat(document.getElementById('set-gas-threshold').value) || 0;
 
-    localStorage.setItem('crc_itinerary_settings', JSON.stringify(window.itinerarySettings));
+    localStorage.setItem('steph_itinerary_settings', JSON.stringify(window.itinerarySettings));
 
     window.updateGlobalBudget();
     renderDetailsGrid(); // App.js function to re-render costs on cards if needed

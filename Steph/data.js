@@ -4,7 +4,7 @@
 
 // Photo helper (reusing generic for now or local placeholders)
 const p = (city, count, start = 1) => {
-    return Array.from({ length: count }, (_, i) => `../Costa Rica/Photos/Photos/${city} (${i + start}).png`); // Point to parent photos
+    return Array.from({ length: count }, (_, i) => `Photos/Photos/${city} (${i + start}).png`); // Point to parent photos
 };
 
 // Generic coordinates for key locations

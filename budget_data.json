@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-01-30T17:02:56.418Z",
+  "lastUpdated": "2026-06-08T18:08:17.055Z",
   "settings": {
     "gas": {
       "price": 1.85,
@@ -12,7 +12,7 @@
   },
   "fixedCosts": {
     "flights": 4500,
-    "car": 1200,
+    "car": 1350,
     "accommodation": 0,
     "misc": 0
   },
@@ -20,7 +20,7 @@
     "J1": {
       "activities": [
         {
-          "name": "El Castillo Secrets :  best volcano view, Arenal Lake private access point",
+          "name": "El Castillo Secrets :  best volcano view, Arenal Lake private access point",
           "price": 10
         },
         {
@@ -31,29 +31,32 @@
       "restaurants": [
         {
           "name": "Soda El Turnito :  A bit outside town, famous for charcoal grilled chicken.",
-          "price": 50,
+          "price": 75,
           "locked": true
         }
       ],
       "expenses": {
         "food": 150,
-        "drinks": 0,
+        "drinks": 80,
         "tips": 0,
         "goods": 200,
-        "night": 165,
+        "night": 90,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "drinks": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J2": {
@@ -67,40 +70,111 @@
           "price": 0
         },
         {
-          "name": "Catarata Danta :  Head to the Arenal Observatory Lodge gate",
+          "name": "Catarata Danta :  Head to the Arenal Observatory Lodge gate",
           "price": 10
         }
       ],
       "restaurants": [
         {
           "name": "",
-          "price": 0
+          "price": 75,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 50,
-        "drinks": 0,
+        "food": 30,
+        "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 165,
+        "night": 90,
         "parking": 0,
-        "gas": 70,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J3": {
+      "activities": [],
+      "restaurants": [
+        {
+          "name": "To be Determine",
+          "price": 75,
+          "locked": true
+        }
+      ],
+      "expenses": {
+        "food": 30,
+        "drinks": 50,
+        "tips": 0,
+        "goods": 0,
+        "night": 185,
+        "parking": 0,
+        "gas": 150,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "night": true,
+          "drinks": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J4": {
+      "activities": [],
+      "restaurants": [
+        {
+          "name": "To be Determine",
+          "price": 75,
+          "locked": true
+        }
+      ],
+      "expenses": {
+        "food": 100,
+        "drinks": null,
+        "tips": 0,
+        "goods": 0,
+        "night": 185,
+        "parking": 0,
+        "gas": 0,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J5": {
       "activities": [
         {
           "name": "Arrêt Pont Crocodiles - Tarcoles",
@@ -111,10 +185,6 @@
           "price": 30
         },
         {
-          "name": "Manuel Antonio day trip (1h)",
-          "price": 70
-        },
-        {
           "name": "Cascada El Pavon : 20 mins south Ojochal. A giant boulderis stuck, swin under the rock.",
           "price": 0
         }
@@ -122,35 +192,38 @@
       "restaurants": [
         {
           "name": "Soda Ranchito Dona Maria : Rustic, wood-fire stove cooking. The real grandmother's cooking experience.",
-          "price": 50,
+          "price": 75,
           "locked": true
         }
       ],
       "expenses": {
-        "food": 100,
+        "food": 30,
         "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 350,
+        "night": 168,
         "parking": 15,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J4": {
+    "J6": {
       "activities": [
         {
-          "name": "Cataratas Nauyaca ",
+          "name": "Cataratas Nauyaca ",
           "price": 50
         },
         {
@@ -169,73 +242,37 @@
       "restaurants": [
         {
           "name": "Sibu Cafe : Excellent coffe and simpler meals.",
-          "price": 0
+          "price": 75,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 50,
-        "drinks": 0,
+        "food": 100,
+        "drinks": 50,
         "tips": 0,
         "goods": 0,
-        "night": 350,
+        "night": 168,
         "parking": 0,
-        "gas": 110,
+        "gas": 150,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
-      }
-    },
-    "J5": {
-      "activities": [
-        {
-          "name": "Journée plage Uvita / Dominical",
-          "price": 0
-        },
-        {
-          "name": "Playa Arco: Plage secrète avec des grottes, accessible seulement à marée basse par la jungle. Un paradis privé.",
-          "price": 0
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 50,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 350,
-        "parking": 0,
-        "gas": 60,
-        "gifts": 0
       },
       "locked": {
         "expenses": {
-          "gas": true
+          "gas": true,
+          "night": true,
+          "food": true,
+          "drinks": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     },
-    "J6": {
+    "J7": {
       "activities": [
         {
           "name": "11h30: Bateau Sierpe -> Drake Bay (Mangrove tour inclus)",
@@ -258,66 +295,74 @@
       "restaurants": [
         {
           "name": "",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 20,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 210,
-        "parking": 25,
-        "gas": 0,
-        "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
-      }
-    },
-    "J7": {
-      "activities": [
-        {
-          "name": "Journée Snorkeling Isla del Caño (Corcovado Expeditions)",
-          "price": 350
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "Soda Mar y Bosque",
           "price": 50,
           "locked": true
         }
       ],
       "expenses": {
-        "food": 20,
+        "food": 100,
         "drinks": 0,
-        "tips": 0,
+        "tips": 20,
         "goods": 0,
-        "night": 210,
-        "parking": 0,
+        "night": 115,
+        "parking": null,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "tips": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J8": {
+      "activities": [
+        {
+          "name": "Journée Snorkeling Isla del Caño (Corcovado Expeditions)",
+          "price": null
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "\n",
+          "price": null
+        }
+      ],
+      "expenses": {
+        "food": 30,
+        "drinks": 0,
+        "tips": 20,
+        "goods": 0,
+        "night": 115,
+        "parking": 0,
+        "gas": 0,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true,
+          "tips": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J9": {
       "activities": [
         {
           "name": "Drake Bay Hiking Trail: Sentier côtier gratuit magnifique. Marchez jusqu'à playa Cocalito pour voir les singes sur la plage.",
@@ -331,33 +376,37 @@
       "restaurants": [
         {
           "name": "Claudio's Grill : Great seefod, very local vibe.",
-          "price": 0
+          "price": 100,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 20,
-        "drinks": 0,
+        "food": 50,
+        "drinks": 100,
         "tips": 0,
         "goods": 0,
-        "night": 210,
+        "night": 115,
         "parking": 0,
-        "gas": 110,
+        "gas": 150,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "night": true,
+          "drinks": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J9": {
+    "J10": {
       "activities": [
         {
           "name": "Ferry Puntarenas → Paquera (1h30)",
@@ -381,26 +430,30 @@
       ],
       "expenses": {
         "food": 150,
-        "drinks": 0,
-        "tips": 0,
+        "drinks": 50,
+        "tips": 20,
         "goods": 0,
-        "night": 250,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "drinks": true,
+          "tips": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J10": {
+    "J11": {
       "activities": [
         {
           "name": "Déjeuner: Playa de los Artistes",
@@ -420,67 +473,27 @@
       ],
       "expenses": {
         "food": 20,
-        "drinks": 0,
-        "tips": 0,
+        "drinks": 50,
+        "tips": 20,
         "goods": 0,
-        "night": 250,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
       },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
-      },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
-      }
-    },
-    "J11": {
-      "activities": [
-        {
-          "name": "Cabo Blanco Reserve",
-          "price": 50
-        },
-        {
-          "name": "Playa Hermosa Tidepool: Au nord de Santa Teresa. Une piscine naturelle géante se forme dans les rochers à marée basse.",
-          "price": 0
-        },
-        {
-          "name": "Playa Suecos : Situated between Malpaís - Santa Teresa. Path is near the entrance Cabo Blanco Nature Reserve",
-          "price": null
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "The Bakery : Not a soda but Iconic",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 20,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 250,
-        "parking": 0,
-        "gas": 40,
-        "gifts": 0
       },
       "locked": {
         "expenses": {
-          "gas": true
+          "night": true,
+          "drinks": true,
+          "tips": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     },
     "J12": {
@@ -504,22 +517,26 @@
       "expenses": {
         "food": 100,
         "drinks": 0,
-        "tips": 0,
+        "tips": 20,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
-        "gas": 0,
+        "gas": 100,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "tips": true,
+          "gas": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J13": {
@@ -545,23 +562,23 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
-        "gas": 110,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true,
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J14": {
@@ -587,24 +604,25 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
         "gas": 60,
         "gifts": 0,
         "other": 40
       },
-      "locked": {
-        "expenses": {
-          "food": true,
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
-      },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "gas": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J15": {
@@ -633,22 +651,23 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J16": {
@@ -678,22 +697,24 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
-        "gas": 0,
+        "gas": 100,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true,
+          "gas": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J17": {
@@ -715,22 +736,23 @@
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J18": {
@@ -755,22 +777,22 @@
         "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 140,
+        "night": 115,
         "parking": 0,
-        "gas": 40,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J19": {
@@ -780,7 +802,7 @@
           "price": 0
         },
         {
-          "name": "Parque Central Granizado  regardez la vie passer sur la place centrale.",
+          "name": "Parque Central Granizado  regardez la vie passer sur la place centrale.",
           "price": 0
         }
       ],
@@ -800,17 +822,17 @@
         "gas": 80,
         "gifts": 0
       },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
       "locked": {
         "expenses": {
           "gas": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     }
   }

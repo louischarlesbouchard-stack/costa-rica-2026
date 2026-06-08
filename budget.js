@@ -5,7 +5,7 @@
 let globalPieChart = null;
 let dailyPieChart = null;
 
-window.globalFixedCosts = { flights: 4500, car: 1200, accommodation: 0, misc: 0 };
+window.globalFixedCosts = { flights: 4500, car: 1350, accommodation: 0, misc: 0 };
 
 window.itinerarySettings = {
     gas: {
@@ -727,7 +727,7 @@ window.populateDefaults = function () {
     // If everything is 0 (fresh load), we set defaults.
     if (window.globalFixedCosts.flights === 0 && window.globalFixedCosts.car === 0) {
         window.globalFixedCosts.flights = 4500;
-        window.globalFixedCosts.car = 1200;
+        window.globalFixedCosts.car = 1350;
     }
 };
 

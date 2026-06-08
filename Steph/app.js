@@ -1361,6 +1361,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 5. Final Render & Save Baseline
         renderDetailsGrid();
 
+        // Sync input fields with final global fixed costs
+        const flightsInput = document.getElementById('input-flights');
+        const carInput = document.getElementById('input-car');
+        if (flightsInput) flightsInput.value = window.globalFixedCosts.flights;
+        if (carInput) carInput.value = window.globalFixedCosts.car;
+
         window.updateGlobalBudget();
 
         // 6. Initialize UI Observers

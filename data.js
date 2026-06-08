@@ -1,4 +1,3 @@
-
 // --- LOCAL PHOTOS (User Provided) ---
 // Helper to generate array of local paths: Photos/Photos/City (i).png
 const p = (city, count, start = 1) => {
@@ -39,29 +38,35 @@ let days = [
     text: "• Mistico Hanging Bridges (Voir les paresseux)<br>• Baignade gratuite à 'El Salto' (Corde à sauter)<br>• Randonnée 'Arenal 1968' (Lave séchée)<br>• Chocolate Tour<br>• El Chollín (Hot Springs): Alternative gratuite à Tabacon. Rivière thermale naturelle juste à côté du resort. Allez-y le soir avec des bougies pour la magie (Don au gardien)."
   },
 
-  // UVITA - 3 Days
+  // MONTEVERDE - 2 Days
   {
-    d: 'J3', date: '23 Juil', loc: 'Uvita', title: 'Route Sud & Baleines', photos: photoDB.uvita, coords: [9.1670, -83.7441], travel: "5h • 280 km", road: "Route 1 + 34", roadType: "highway",
-    weatherUrl: "https://www.accuweather.com/en/cr/uvita/114995/weather-forecast/114995",
-    tides: "Basse: 11h20 • Haute: 17h45",
-    text: "• Longue route vers le Sud (Arrêt Pont Crocodiles - Tarcoles)<br>• Parc Marino Ballena (Queue de Baleine)<br>• Installation & dîner Uvita<br>• Soda Ranchito Doña Maria (Food): Cuisine au feu de bois comme chez grand-mère. Rustique et délicieux."
+    d: 'J3', date: '23 Juil', loc: 'Monteverde', labelPos: 'bottom', title: 'Route vers Monteverde', photos: [], coords: [10.3168, -84.8252], travel: "3h • 115 km", road: "Route 142 + 606", roadType: "secondary",
+    weatherUrl: "https://www.accuweather.com/en/cr/monteverde/113642/weather-forecast/113642",
+    text: "• Route vers Monteverde (3h)<br>• Installation et détente à Monteverde<br>• Découverte de Santa Elena et dîner local"
   },
   {
-    d: 'J4', date: '24 Juil', loc: 'Uvita', title: 'Nauyaca & Baleines', photos: [photoDB.uvita[2], photoDB.uvita[3], photoDB.uvita[4]], coords: [9.1670, -83.7441], travel: "Sur Place",
+    d: 'J4', date: '24 Juil', loc: 'Monteverde', title: 'Cloud Forest', photos: [], coords: [10.3168, -84.8252], travel: "Sur Place",
+    weatherUrl: "https://www.accuweather.com/en/cr/monteverde/113642/weather-forecast/113642",
+    text: "• Randonnée dans la forêt de nuages<br>• Réserva Biológica Bosque Nuboso ou Selvatura Park (ponts suspendus / tyroliennes)"
+  },
+
+  // UVITA - 2 Days
+  {
+    d: 'J5', date: '25 Juil', loc: 'Uvita', title: 'Route Sud & Baleines', photos: photoDB.uvita, coords: [9.1670, -83.7441], travel: "4h30 • 200 km", road: "Route 606 + 34", roadType: "highway",
+    weatherUrl: "https://www.accuweather.com/en/cr/uvita/114995/weather-forecast/114995",
+    tides: "Basse: 11h20 • Haute: 17h45",
+    text: "• Longue route vers le Sud (Arrêt Pont Crocodiles - Tarcoles)<br>• Visite de soir (Jungle Night Walk) à Manuel Antonio<br>• Parc Marino Ballena (Queue de Baleine)<br>• Installation & dîner Uvita<br>• Soda Ranchito Doña Maria (Food): Cuisine au feu de bois comme chez grand-mère."
+  },
+  {
+    d: 'J6', date: '26 Juil', loc: 'Uvita', title: 'Nauyaca & Baleines', photos: [photoDB.uvita[2], photoDB.uvita[3], photoDB.uvita[4]], coords: [9.1670, -83.7441], travel: "Sur Place",
     weatherUrl: "https://www.accuweather.com/en/cr/uvita/114995/weather-forecast/114995",
     tides: "Basse: 12h10 • Haute: 18h35",
     text: "• Cataratas Nauyaca (4x4 Tour - Magnifique!)<br>• Observation des Baleines (Saison haute!)<br>• Pizza au Sibu Cafe<br>• Cascada El Pavon: À 20min au sud. Une cascade incroyable avec un énorme rocher coincé au milieu. Baignade fraiche et gratuite."
   },
-  {
-    d: 'J5', date: '25 Juil', loc: 'Uvita', title: 'Plages & Détente', photos: [photoDB.uvita[0], photoDB.uvita[1], photoDB.uvita[5]], coords: [9.1670, -83.7441], travel: "Sur Place",
-    weatherUrl: "https://www.accuweather.com/en/cr/uvita/114995/weather-forecast/114995",
-    tides: "Basse: 13h05 • Haute: 19h25",
-    text: "• Journée plage Uvita / Dominical<br>• Manuel Antonio day trip (1h)<br>• Dernière soirée côte Pacifique Sud<br>• Playa Arco: Plage secrète avec des grottes, accessible seulement à marée basse par la jungle. Un paradis privé."
-  },
 
   // DRAKE BAY - 3 Days (via Sierpe boat)
   {
-    d: 'J6', date: '26 Juil', loc: 'Drake Bay', title: 'Vers Drake Bay', photos: photoDB.corcovado, coords: [8.6917, -83.6644], travel: "2h • 60 km", road: "Route 243", roadType: "secondary",
+    d: 'J7', date: '27 Juil', loc: 'Corcovado', title: 'Vers Drake Bay', photos: photoDB.corcovado, coords: [8.6917, -83.6644], travel: "2h • 60 km", road: "Route 243", roadType: "secondary",
     waypoints: [[9.0167, -83.5167]], // Sierpe
     routeSegments: ['road', 'boat'], // Uvita -> Sierpe (road), Sierpe -> Drake (boat)
     weatherUrl: "https://www.accuweather.com/en/cr/bahia-drake/114952/weather-forecast/114952",
@@ -69,21 +74,21 @@ let days = [
     text: "• Route Uvita → Sierpe (1h30)<br>• Bateau Sierpe -> Drake Bay (Mangrove tour inclus)<br>• Drake Bay Hiking Trail (Cocalito)<br>• Plancton bioluminescent (Tour bateau)<br>• Rio Claro Canoe: Marchez jusqu'à l'embouchure et payez un local pour une petite balade en canoë dans la lagune d'eau douce."
   },
   {
-    d: 'J7', date: '27 Juil', loc: 'Drake Bay', title: 'Corcovado', photos: [photoDB.corcovado[3], photoDB.corcovado[4], photoDB.corcovado[5]], coords: [8.6917, -83.6644], travel: "Sur Place",
+    d: 'J8', date: '28 Juil', loc: 'Corcovado', title: 'Corcovado', photos: [photoDB.corcovado[3], photoDB.corcovado[4], photoDB.corcovado[5]], coords: [8.6917, -83.6644], travel: "Sur Place",
     weatherUrl: "https://www.accuweather.com/en/cr/bahia-drake/114952/weather-forecast/114952",
     tides: "Basse: 15h10 • Haute: 21h30",
     text: "• Full Day: Corcovado - Sirena Ranger Station<br>• Faune intense: Tapirs, 4 espèces de singes, Requins<br>• Guide obligatoire (Pacheco Tours)<br>• Retour fatigués mais émerveillés!<br>• Soda Mar y Bosque (Food): Le meilleur poisson frais du village à prix Tico. Simple et efficace après une grosse journée."
   },
   {
-    d: 'J8', date: '28 Juil', loc: 'Drake Bay', title: 'Isla del Caño', photos: [photoDB.corcovado[0], photoDB.corcovado[1], photoDB.corcovado[2]], coords: [8.6917, -83.6644], travel: "Sur Place",
-    weatherUrl: "https://www.accuweather.com/en/cr/bahia-drake/114952/weather-forecast/114952",
+    d: 'J9', date: '29 Juil', loc: 'Santa Teresa', title: 'Isla del Caño', photos: [photoDB.corcovado[0], photoDB.corcovado[1], photoDB.corcovado[2]], coords: [9.6453, -85.1666], travel: "Sur Place",
+    weatherUrl: "https://www.accuweather.com/en/cr/santa-teresa/114986/weather-forecast/114986",
     tides: "Basse: 04h30 • Haute: 10h45",
     text: "• Journée Snorkeling Isla del Caño<br>• Tortues marines, requins, poissons tropicaux<br>• Plage et détente après-midi<br>• Dernière soirée à Drake Bay<br>• Drake Bay Hiking Trail: Sentier côtier gratuit magnifique. Marchez jusqu'à playa Cocalito pour voir les singes sur la plage."
   },
 
-  // SANTA TERESA - 3 Days (via ferry from Puntarenas)
+  // SANTA TERESA - 2 Days (via ferry from Puntarenas)
   {
-    d: 'J9', date: '29 Juil', loc: 'Santa Teresa', title: 'Grande Traversée', photos: photoDB.santa_teresa, coords: [9.6453, -85.1666], travel: "6h • 260 km", road: "Route 34 + 21", roadType: "highway",
+    d: 'J10', date: '30 Juil', loc: 'Santa Teresa', title: 'Grande Traversée', photos: photoDB.santa_teresa, coords: [9.6453, -85.1666], travel: "6h • 260 km", road: "Route 34 + 21", roadType: "highway",
     waypoints: [[9.0167, -83.5167], [9.9667, -84.8333], [9.8167, -84.9333]], // Sierpe, Puntarenas, Paquera
     routeSegments: ['boat', 'road', 'ferry', 'road'], // Drake->Sierpe, Sierpe->Punta, Punta->Paq, Paq->ST
     weatherUrl: "https://www.accuweather.com/en/cr/santa-teresa/114986/weather-forecast/114986",
@@ -91,19 +96,13 @@ let days = [
     text: "• Bateau retour Drake → Sierpe<br>• Route Sierpe → Puntarenas (3h)<br>• Ferry Puntarenas → Paquera (1h30)<br>• Route Paquera → Santa Teresa (1h30)<br>• Installation & Sunset Playa Carmen<br>• Soda Tiquicia (Food): Un des rares spots authentiques dans ce village hipster. Casados délicieux et pas chers."
   },
   {
-    d: 'J10', date: '30 Juil', loc: 'Santa Teresa', title: 'Montezuma Day', photos: photoDB.montezuma, coords: [9.6453, -85.1666], travel: "45min aller", road: "Piste", roadType: "secondary",
+    d: 'J11', date: '31 Juil', loc: 'Santa Teresa', title: 'Montezuma Day', photos: photoDB.montezuma, coords: [9.6453, -85.1666], travel: "45min aller", road: "Piste", roadType: "secondary",
     weatherUrl: "https://www.accuweather.com/en/cr/santa-teresa/114986/weather-forecast/114986",
     tides: "Basse: 06h50 • Haute: 13h10",
     text: "• Excursion journée Montezuma (30min)<br>• Montezuma Waterfalls (3 Niveaux - Baignade!)<br>• Déjeuner: Playa de los Artistes<br>• Retour Santa Teresa pour le sunset<br>• Cabuya Island Cemetery: Au sud de Montezuma. Attendez la marée basse pour marcher jusqu'à ce cimetière insulaire unique. Ambiance mystique."
   },
-  {
-    d: 'J11', date: '31 Juil', loc: 'Santa Teresa', title: 'Surf & Chill', photos: [photoDB.santa_teresa[3], photoDB.santa_teresa[4], photoDB.santa_teresa[5]], coords: [9.6453, -85.1666], travel: "Sur Place",
-    weatherUrl: "https://www.accuweather.com/en/cr/santa-teresa/114986/weather-forecast/114986",
-    tides: "Basse: 07h55 • Haute: 14h15",
-    text: "• Surf Lesson ou Yoga<br>• Cabo Blanco Reserve (Option) ou plage<br>• Piscines naturelles à marée basse<br>• Dîner 'The Bakery'<br>• Dernière nuit Nicoya Sud<br>• Playa Hermosa Tidepool: Au nord de Santa Teresa. Une piscine naturelle géante se forme dans les rochers à marée basse."
-  },
 
-  // SÁMARA - 3 Days (ferry retour)
+  // SÁMARA - 3 Days
   {
     d: 'J12', date: '1 Août', loc: 'Sámara', title: 'Route Côtière', photos: photoDB.samara, coords: [9.8805, -85.5269], travel: "4h • 140 km", road: "Route 160", roadType: "secondary",
     waypoints: [[9.6975, -85.2046], [9.7619, -85.2415], [9.8668, -85.3736]], // Manzanillo, Playa Coyote, Puerto Islita
@@ -125,31 +124,28 @@ let days = [
     text: "• Visite Nosara Beach (Playa Guiones - Surf Vibe)<br>• Playa Carrillo (Calme, palmiers)<br>• Option: Kayak ou SUP<br>• Dernière soirée tranquille Sámara<br>• Playa Barrigona: La 'plage de Mel Gibson'. Cachée, sable blanc pur, souvent déserte. Nécessite un peu de marche ou 4x4."
   },
 
-  // TAMARINDO - 3 Days
   {
-    d: 'J15', date: '4 Août', loc: 'Tamarindo', title: 'Route Côtière', photos: photoDB.tamarindo, coords: [10.2993, -85.8400], travel: "2h30 • 85 km", road: "Route 160", roadType: "secondary",
+    d: 'J15', date: '4 Août', loc: 'Tamarindo', title: 'Route vers Tamarindo', photos: photoDB.tamarindo, coords: [10.2993, -85.8400], travel: "2h30 • 110 km", road: "Route 21", roadType: "highway",
     weatherUrl: "https://www.accuweather.com/en/cr/tamarindo/113650/weather-forecast/113650",
     tides: "Basse: 12h10 • Haute: 18h30",
-    text: "• Route côtière: Sámara → Nosara → Ostional<br>• Arrêt: Playa Ostional (Observation tortues si saison)<br>• Continuation vers Tamarindo<br>• Playa Conchal (Sable de coquillages)<br>• Sunset au Coco Loco<br>• Soda Guanacaste (Food): Une institution locale pour manger pas cher dans cette ville touristique. Le Casado est top."
+    text: "• Route Sámara → Nicoya → Tamarindo<br>• Arrêt suggéré: Santa Cruz (Ville folklorique)<br>• Installation & balade sur la plage / Sunset<br>• Sunset au Coco Loco, une institution locale."
   },
   {
-    d: 'J16', date: '5 Août', loc: 'Tamarindo', title: 'Playa Grande', photos: [photoDB.tamarindo[3], photoDB.tamarindo[4], photoDB.tamarindo[5]], coords: [10.2993, -85.8400], travel: "Sur Place",
+    d: 'J16', date: '5 Août', loc: 'Tamarindo', title: 'Plages & Estuaire', photos: [photoDB.tamarindo[5], photoDB.tamarindo[6], photoDB.tamarindo[7]], coords: [10.2993, -85.8400], travel: "Sur Place",
     weatherUrl: "https://www.accuweather.com/en/cr/tamarindo/113650/weather-forecast/113650",
     tides: "Basse: 13h15 • Haute: 19h35",
-    text: "• Bateau Estuaire -> Playa Grande<br>• Parc National Las Baulas<br>• Surf ou longue marche plage sauvage<br>• Déjeuner: Taco Star<br>• Shopping Tamarindo<br>• Playa Carbon: Plage de sable noir magnétique, juste au nord de Playa Grande. Complètement surréaliste et vide."
+    text: "• Parc National Las Baulas (Playa Grande)<br>• Estuaire de Tamarindo (Crocodiles & singes)<br>• Option surf ou détente plage<br>• Dîner libre et animation nocturne"
   },
   {
-    d: 'J17', date: '6 Août', loc: 'Tamarindo', title: 'Détente Finale', photos: [photoDB.tamarindo[0], photoDB.tamarindo[1], photoDB.tamarindo[2]], coords: [10.2993, -85.8400], travel: "Sur Place",
-    weatherUrl: "https://www.accuweather.com/en/cr/tamarindo/113650/weather-forecast/113650",
+    d: 'J17', date: '6 Août', loc: 'Coco', title: 'Détente Finale', photos: [], coords: [10.5517, -85.6966], travel: "Sur Place",
+    weatherUrl: "https://www.accuweather.com/en/cr/playas-del-coco/113643/weather-forecast/113643",
     tides: "Basse: 14h15 • Haute: 20h35",
-    text: "• Journée libre & détente piscine<br>• Dernière session surf<br>• Shopping souvenirs<br>• Night Market ou Dîner Pangas<br>• Dernière grande soirée!<br>• Tamarindo Night Market (Food): Jeudi soir seulement. Plein de stands de nourriture de rue et artisanat local. Super ambiance."
+    text: "• Route Tamarindo → Playas del Coco (1h30)<br>• Installation & détente piscine<br>• Location de paddleboard ou kayak & Shopping souvenirs<br>• Soirée: Numu Taproom ou Coconutz"
   },
-
-  // CURUBANDÉ - 1 Day
   {
-    d: 'J18', date: '7 Août', loc: 'Curubandé', labelPos: 'top', title: 'La Leona', photos: photoDB.laleona, coords: [10.7650, -85.3900], travel: "1h45 • 80 km", road: "Route 21", roadType: "highway",
+    d: 'J18', date: '7 Août', loc: 'Coco', labelPos: 'top', title: 'La Leona', photos: photoDB.laleona, coords: [10.7650, -85.3900], travel: "1h30 • 60 km", road: "Route 1", roadType: "highway",
     weatherUrl: "https://www.accuweather.com/en/cr/liberia/113626/weather-forecast/113626",
-    text: "• Départ Tamarindo → Curubandé<br>• La Leona Waterfall Adventure (Canyon & Baignade)<br>• Rincón de la Vieja National Park (Volcan, Boue)<br>• Nuit: Près de Liberia<br>• Poza Los Coyotes: La 'Piscine Bleue'. Une rivière à la couleur chimique bleu ciel (naturelle!). Grotte flottante incroyable."
+    text: "• Départ Coco → Curubandé<br>• La Leona Waterfall Adventure (Canyon & Baignade)<br>• Après l'activité: Restaurant de La Leona<br>• Rincón de la Vieja National Park (Volcan, Boue)<br>• Nuit: Près de Liberia<br>• Poza Los Coyotes: La 'Piscine Bleue'. Une rivière à la couleur bleue (naturel!)."
   },
 
   // LIBERIA - Departure
@@ -163,10 +159,12 @@ let days = [
 
 
 
+
+
 // --- FALLBACK DATA (Auto-generated by update_json.py) ---
 window.fallbackData = {
   "version": 1,
-  "lastUpdated": "2026-01-30T17:02:56.418Z",
+  "lastUpdated": "2026-06-08T18:08:17.055Z",
   "settings": {
     "gas": {
       "price": 1.85,
@@ -178,7 +176,7 @@ window.fallbackData = {
   },
   "fixedCosts": {
     "flights": 4500,
-    "car": 1200,
+    "car": 1350,
     "accommodation": 0,
     "misc": 0
   },
@@ -186,7 +184,7 @@ window.fallbackData = {
     "J1": {
       "activities": [
         {
-          "name": "El Castillo Secrets :  best volcano view, Arenal Lake private access point",
+          "name": "El Castillo Secrets :  best volcano view, Arenal Lake private access point",
           "price": 10
         },
         {
@@ -197,29 +195,32 @@ window.fallbackData = {
       "restaurants": [
         {
           "name": "Soda El Turnito :  A bit outside town, famous for charcoal grilled chicken.",
-          "price": 50,
+          "price": 75,
           "locked": true
         }
       ],
       "expenses": {
         "food": 150,
-        "drinks": 0,
+        "drinks": 80,
         "tips": 0,
         "goods": 200,
-        "night": 165,
+        "night": 90,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "drinks": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J2": {
@@ -233,40 +234,111 @@ window.fallbackData = {
           "price": 0
         },
         {
-          "name": "Catarata Danta :  Head to the Arenal Observatory Lodge gate",
+          "name": "Catarata Danta :  Head to the Arenal Observatory Lodge gate",
           "price": 10
         }
       ],
       "restaurants": [
         {
           "name": "",
-          "price": 0
+          "price": 75,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 50,
-        "drinks": 0,
+        "food": 30,
+        "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 165,
+        "night": 90,
         "parking": 0,
-        "gas": 70,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J3": {
+      "activities": [],
+      "restaurants": [
+        {
+          "name": "To be Determine",
+          "price": 75,
+          "locked": true
+        }
+      ],
+      "expenses": {
+        "food": 30,
+        "drinks": 50,
+        "tips": 0,
+        "goods": 0,
+        "night": 185,
+        "parking": 0,
+        "gas": 150,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "night": true,
+          "drinks": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J4": {
+      "activities": [],
+      "restaurants": [
+        {
+          "name": "To be Determine",
+          "price": 75,
+          "locked": true
+        }
+      ],
+      "expenses": {
+        "food": 100,
+        "drinks": null,
+        "tips": 0,
+        "goods": 0,
+        "night": 185,
+        "parking": 0,
+        "gas": 0,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J5": {
       "activities": [
         {
           "name": "Arrêt Pont Crocodiles - Tarcoles",
@@ -277,10 +349,6 @@ window.fallbackData = {
           "price": 30
         },
         {
-          "name": "Manuel Antonio day trip (1h)",
-          "price": 70
-        },
-        {
           "name": "Cascada El Pavon : 20 mins south Ojochal. A giant boulderis stuck, swin under the rock.",
           "price": 0
         }
@@ -288,35 +356,38 @@ window.fallbackData = {
       "restaurants": [
         {
           "name": "Soda Ranchito Dona Maria : Rustic, wood-fire stove cooking. The real grandmother's cooking experience.",
-          "price": 50,
+          "price": 75,
           "locked": true
         }
       ],
       "expenses": {
-        "food": 100,
+        "food": 30,
         "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 350,
+        "night": 168,
         "parking": 15,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J4": {
+    "J6": {
       "activities": [
         {
-          "name": "Cataratas Nauyaca ",
+          "name": "Cataratas Nauyaca ",
           "price": 50
         },
         {
@@ -335,73 +406,37 @@ window.fallbackData = {
       "restaurants": [
         {
           "name": "Sibu Cafe : Excellent coffe and simpler meals.",
-          "price": 0
+          "price": 75,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 50,
-        "drinks": 0,
+        "food": 100,
+        "drinks": 50,
         "tips": 0,
         "goods": 0,
-        "night": 350,
+        "night": 168,
         "parking": 0,
-        "gas": 110,
+        "gas": 150,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
-      }
-    },
-    "J5": {
-      "activities": [
-        {
-          "name": "Journée plage Uvita / Dominical",
-          "price": 0
-        },
-        {
-          "name": "Playa Arco: Plage secrète avec des grottes, accessible seulement à marée basse par la jungle. Un paradis privé.",
-          "price": 0
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 50,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 350,
-        "parking": 0,
-        "gas": 60,
-        "gifts": 0
       },
       "locked": {
         "expenses": {
-          "gas": true
+          "gas": true,
+          "night": true,
+          "food": true,
+          "drinks": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     },
-    "J6": {
+    "J7": {
       "activities": [
         {
           "name": "11h30: Bateau Sierpe -> Drake Bay (Mangrove tour inclus)",
@@ -424,66 +459,74 @@ window.fallbackData = {
       "restaurants": [
         {
           "name": "",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 20,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 210,
-        "parking": 25,
-        "gas": 0,
-        "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
-      }
-    },
-    "J7": {
-      "activities": [
-        {
-          "name": "Journée Snorkeling Isla del Caño (Corcovado Expeditions)",
-          "price": 350
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "Soda Mar y Bosque",
           "price": 50,
           "locked": true
         }
       ],
       "expenses": {
-        "food": 20,
+        "food": 100,
         "drinks": 0,
-        "tips": 0,
+        "tips": 20,
         "goods": 0,
-        "night": 210,
-        "parking": 0,
+        "night": 115,
+        "parking": null,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "tips": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J8": {
+      "activities": [
+        {
+          "name": "Journée Snorkeling Isla del Caño (Corcovado Expeditions)",
+          "price": null
+        }
+      ],
+      "restaurants": [
+        {
+          "name": "\n",
+          "price": null
+        }
+      ],
+      "expenses": {
+        "food": 30,
+        "drinks": 0,
+        "tips": 20,
+        "goods": 0,
+        "night": 115,
+        "parking": 0,
+        "gas": 0,
+        "gifts": 0
+      },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "food": true,
+          "tips": true
+        },
+        "activities": {},
+        "restaurants": {}
+      }
+    },
+    "J9": {
       "activities": [
         {
           "name": "Drake Bay Hiking Trail: Sentier côtier gratuit magnifique. Marchez jusqu'à playa Cocalito pour voir les singes sur la plage.",
@@ -497,33 +540,37 @@ window.fallbackData = {
       "restaurants": [
         {
           "name": "Claudio's Grill : Great seefod, very local vibe.",
-          "price": 0
+          "price": 100,
+          "locked": true
         }
       ],
       "expenses": {
-        "food": 20,
-        "drinks": 0,
+        "food": 50,
+        "drinks": 100,
         "tips": 0,
         "goods": 0,
-        "night": 210,
+        "night": 115,
         "parking": 0,
-        "gas": 110,
+        "gas": 150,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "gas": true,
+          "night": true,
+          "drinks": true,
+          "food": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J9": {
+    "J10": {
       "activities": [
         {
           "name": "Ferry Puntarenas → Paquera (1h30)",
@@ -547,26 +594,30 @@ window.fallbackData = {
       ],
       "expenses": {
         "food": 150,
-        "drinks": 0,
-        "tips": 0,
+        "drinks": 50,
+        "tips": 20,
         "goods": 0,
-        "night": 250,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "drinks": true,
+          "tips": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
-    "J10": {
+    "J11": {
       "activities": [
         {
           "name": "Déjeuner: Playa de los Artistes",
@@ -586,67 +637,27 @@ window.fallbackData = {
       ],
       "expenses": {
         "food": 20,
-        "drinks": 0,
-        "tips": 0,
+        "drinks": 50,
+        "tips": 20,
         "goods": 0,
-        "night": 250,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
       },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
-      },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
-      }
-    },
-    "J11": {
-      "activities": [
-        {
-          "name": "Cabo Blanco Reserve",
-          "price": 50
-        },
-        {
-          "name": "Playa Hermosa Tidepool: Au nord de Santa Teresa. Une piscine naturelle géante se forme dans les rochers à marée basse.",
-          "price": 0
-        },
-        {
-          "name": "Playa Suecos : Situated between Malpaís - Santa Teresa. Path is near the entrance Cabo Blanco Nature Reserve",
-          "price": null
-        }
-      ],
-      "restaurants": [
-        {
-          "name": "The Bakery : Not a soda but Iconic",
-          "price": 0
-        }
-      ],
-      "expenses": {
-        "food": 20,
-        "drinks": 0,
-        "tips": 0,
-        "goods": 0,
-        "night": 250,
-        "parking": 0,
-        "gas": 40,
-        "gifts": 0
       },
       "locked": {
         "expenses": {
-          "gas": true
+          "night": true,
+          "drinks": true,
+          "tips": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     },
     "J12": {
@@ -670,22 +681,26 @@ window.fallbackData = {
       "expenses": {
         "food": 100,
         "drinks": 0,
-        "tips": 0,
+        "tips": 20,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
-        "gas": 0,
+        "gas": 100,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {},
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true,
+          "tips": true,
+          "gas": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J13": {
@@ -711,23 +726,23 @@ window.fallbackData = {
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
-        "gas": 110,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true,
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J14": {
@@ -753,24 +768,25 @@ window.fallbackData = {
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 150,
+        "night": 115,
         "parking": 0,
         "gas": 60,
         "gifts": 0,
         "other": 40
       },
-      "locked": {
-        "expenses": {
-          "food": true,
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
-      },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "gas": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J15": {
@@ -799,22 +815,23 @@ window.fallbackData = {
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J16": {
@@ -844,22 +861,24 @@ window.fallbackData = {
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
-        "gas": 0,
+        "gas": 100,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true,
+          "gas": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J17": {
@@ -881,22 +900,23 @@ window.fallbackData = {
         "drinks": 0,
         "tips": 0,
         "goods": 0,
-        "night": 230,
+        "night": 115,
         "parking": 0,
         "gas": 0,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "food": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "food": true,
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J18": {
@@ -921,22 +941,22 @@ window.fallbackData = {
         "drinks": null,
         "tips": 0,
         "goods": 0,
-        "night": 140,
+        "night": 115,
         "parking": 0,
-        "gas": 40,
+        "gas": null,
         "gifts": 0
-      },
-      "locked": {
-        "expenses": {
-          "gas": true
-        },
-        "activities": {},
-        "restaurants": {}
       },
       "accommodation": {
         "name": "",
         "address": "",
         "link": ""
+      },
+      "locked": {
+        "expenses": {
+          "night": true
+        },
+        "activities": {},
+        "restaurants": {}
       }
     },
     "J19": {
@@ -946,7 +966,7 @@ window.fallbackData = {
           "price": 0
         },
         {
-          "name": "Parque Central Granizado  regardez la vie passer sur la place centrale.",
+          "name": "Parque Central Granizado  regardez la vie passer sur la place centrale.",
           "price": 0
         }
       ],
@@ -966,17 +986,17 @@ window.fallbackData = {
         "gas": 80,
         "gifts": 0
       },
+      "accommodation": {
+        "name": "",
+        "address": "",
+        "link": ""
+      },
       "locked": {
         "expenses": {
           "gas": true
         },
         "activities": {},
         "restaurants": {}
-      },
-      "accommodation": {
-        "name": "",
-        "address": "",
-        "link": ""
       }
     }
   }

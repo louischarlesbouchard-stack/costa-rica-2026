@@ -417,7 +417,7 @@
             border-top: 1px solid rgba(0,0,0,0.05);
         }
 
-        .reset-btn {
+        .outline-btn {
             background: transparent;
             border: 1px solid #d6d3d1;
             color: #78716c;
@@ -433,7 +433,7 @@
             transition: var(--transition);
         }
 
-        .reset-btn:hover {
+        .outline-btn:hover {
             background: rgba(234, 88, 12, 0.05);
             color: var(--cr-orange);
             border-color: var(--cr-orange);
@@ -735,14 +735,9 @@
 
         <!-- Footer Utilities -->
         <footer class="footer-actions">
-            <div style="display: flex; gap: 8px;">
-                <button class="reset-btn" id="reset-btn" title="Réinitialiser toutes les cases cochées">
-                    <i class="fa-solid fa-rotate-left"></i> Réinitialiser tout
-                </button>
-                <button class="reset-btn" id="share-btn" title="Partager la checklist par code QR ou lien">
-                    <i class="fa-solid fa-share-nodes"></i> Partager
-                </button>
-            </div>
+            <button class="outline-btn" id="share-btn" title="Partager la checklist par code QR ou lien">
+                <i class="fa-solid fa-share-nodes"></i> Partager la checklist
+            </button>
             <a href="index.html" class="home-link">
                 <i class="fa-solid fa-chevron-left"></i> Retour à l'itinéraire
             </a>
@@ -840,7 +835,6 @@
         const newItemInput = document.getElementById('new-item-text');
         const progressBar = document.getElementById('progress-bar');
         const progressPercent = document.getElementById('progress-percent');
-        const resetBtn = document.getElementById('reset-btn');
 
         // Current active tab
         let activeTab = 'admin';
@@ -855,9 +849,6 @@
             
             // Setup form submit
             addItemForm.addEventListener('submit', handleAddItem);
-            
-            // Setup reset action
-            resetBtn.addEventListener('click', handleReset);
 
             // Render current list
             renderCurrentList();
@@ -1036,21 +1027,6 @@
             // Update UI elements
             progressBar.style.width = `${percent}%`;
             progressPercent.textContent = `${percent}% (${checked}/${total})`;
-        }
-
-        // Reset check status for all items (asks confirmation)
-        function handleReset() {
-            if (confirm("Voulez-vous réinitialiser toutes les cases cochées de toutes les catégories ? (Les tâches personnalisées ajoutées seront conservées, mais décochées).")) {
-                for (let category in checklistState) {
-                    checklistState[category] = checklistState[category].map(item => ({
-                        ...item,
-                        checked: false
-                    }));
-                }
-                saveState();
-                renderCurrentList();
-                updateProgress();
-            }
         }
 
         // Utility to escape HTML and prevent XSS

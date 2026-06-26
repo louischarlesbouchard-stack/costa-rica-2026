@@ -4,7 +4,7 @@
 Crée un guide de voyage HTML complet et professionnel pour un voyage familial au Costa Rica.
 
 ## INFORMATIONS DU VOYAGE
-- **Voyageurs:** Famille de 5 (2 adultes + 3 enfants: [ÂGES])
+- **Voyageurs:** Famille de 5 (2 adultes + 3 enfants: 8, 10 et 11 ans)
 - **Durée:** 22 jours
 - **Période:** Juillet-Août 2026
 - **Point de départ:** Montréal, Québec

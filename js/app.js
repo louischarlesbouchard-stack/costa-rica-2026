@@ -1250,10 +1250,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadFromGitSync() {
         let fileData = null;
         try {
-            const response = await fetch('budget_data.json?t=' + Date.now());
+            const response = await fetch('js/budget_data.json?t=' + Date.now());
             if (response.ok) {
                 fileData = await response.json();
-                console.log("✅ Loaded budget from budget_data.json (Fetch Successful)");
+                console.log("✅ Loaded budget from js/budget_data.json (Fetch Successful)");
             }
         } catch (e) {
             console.log("⚠️ Fetch failed (likely local file protocol). Checking fallback...");

@@ -6,7 +6,7 @@
     <title>🌴 Checklist Interactive - Costa Rica 2026</title>
     
     <!-- PWA Manifest & Icons -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="js/manifest.json">
     <link rel="apple-touch-icon" href="assets/icon.png">
     <meta name="theme-color" content="#2d5a47">
     
@@ -1046,7 +1046,7 @@
         // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
+                navigator.serviceWorker.register('./js/sw.js')
                     .then(reg => console.log('Service Worker PWA enregistré !', reg))
                     .catch(err => console.error('Erreur Service Worker PWA :', err));
             });

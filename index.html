@@ -6,7 +6,7 @@
     <title>Voyage Famille 2026</title>
     
     <!-- PWA Manifest & Icons -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="js/manifest.json">
     <link rel="apple-touch-icon" href="assets/icon.png">
     <meta name="theme-color" content="#2d5a47">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -33,7 +33,7 @@
     </script>
 
     <!-- App Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
@@ -478,15 +478,15 @@
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script src="data.js?v=2"></script>
-    <script src="budget.js?v=2"></script>
-    <script src="app.js?v=2"></script>
+    <script src="js/data.js?v=2"></script>
+    <script src="js/budget.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
 
     <!-- PWA Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
+                navigator.serviceWorker.register('./js/sw.js')
                     .then(reg => console.log('Service Worker de index.html enregistré !', reg))
                     .catch(err => console.error('Erreur Service Worker de index.html :', err));
             });

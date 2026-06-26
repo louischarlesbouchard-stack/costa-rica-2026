@@ -1,9 +1,9 @@
 const CACHE_NAME = 'cr-checklist-v1';
 const ASSETS = [
-  './checklist.html',
-  './index.html',
-  './styles.css',
-  './assets/icon.png'
+  '../checklist.html',
+  '../index.html',
+  '../css/styles.css',
+  '../assets/icon.png'
 ];
 
 // Install Event

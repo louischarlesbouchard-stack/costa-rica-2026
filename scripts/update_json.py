@@ -64,7 +64,7 @@ def update_budget_data(file_path):
         print("Syncing data.js with latest budget_data.json content...")
         
         # Read the current data.js
-        with open('data.js', 'r', encoding='utf-8') as f:
+        with open('js/data.js', 'r', encoding='utf-8') as f:
             js_content = f.read()
 
         # Prepare the fallback string
@@ -81,7 +81,7 @@ def update_budget_data(file_path):
             # Append if missing
             new_js_content = js_content + "\n" + fallback_code
 
-        with open('data.js', 'w', encoding='utf-8') as f:
+        with open('js/data.js', 'w', encoding='utf-8') as f:
             f.write(new_js_content)
         
         print("Successfully synced data.js!")
@@ -90,7 +90,7 @@ def update_budget_data(file_path):
         print(f"Error updating data.js: {e}")
 
 if __name__ == "__main__":
-    file_path = "budget_data.json"
+    file_path = "js/budget_data.json"
     if os.path.exists(file_path):
         update_budget_data(file_path)
     else:

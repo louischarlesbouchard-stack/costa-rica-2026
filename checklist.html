@@ -518,13 +518,120 @@
             .custom-checkmark {
                 border: 2px solid black;
             }
-            .checklist-item.checked .custom-checkmark:after {
-                border-color: black;
-            }
-            .checklist-item.checked .item-title {
-                color: black;
-                text-decoration: none;
-            }
+        }
+
+        /* Share Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transform: scale(0.9);
+            transition: var(--transition);
+        }
+        
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--cr-green);
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+        
+        .qr-image-wrapper {
+            margin: 16px auto;
+            width: 200px;
+            height: 200px;
+            border: 4px solid var(--cr-green-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .qr-image-wrapper img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .modal-desc {
+            font-size: 0.85rem;
+            color: #78716c;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .copy-link-btn {
+            background: var(--cr-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+        
+        .copy-link-btn:hover {
+            background: #1e3d30;
+        }
+        
+        .close-modal-btn {
+            background: var(--stone-100);
+            color: #78716c;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-modal-btn:hover {
+            background: #e7e5e4;
+            color: var(--stone-800);
         }
     </style>
 </head>
@@ -628,14 +735,38 @@
 
         <!-- Footer Utilities -->
         <footer class="footer-actions">
-            <button class="reset-btn" id="reset-btn" title="Réinitialiser toutes les cases cochées">
-                <i class="fa-solid fa-rotate-left"></i> Réinitialiser tout
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <button class="reset-btn" id="reset-btn" title="Réinitialiser toutes les cases cochées">
+                    <i class="fa-solid fa-rotate-left"></i> Réinitialiser tout
+                </button>
+                <button class="reset-btn" id="share-btn" title="Partager la checklist par code QR ou lien">
+                    <i class="fa-solid fa-share-nodes"></i> Partager
+                </button>
+            </div>
             <a href="index.html" class="home-link">
                 <i class="fa-solid fa-chevron-left"></i> Retour à l'itinéraire
             </a>
         </footer>
 
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="share-modal">
+        <div class="modal-card">
+            <h3 class="modal-title">Partager la Checklist</h3>
+            <p class="modal-desc">Faites scanner ce code QR par un autre téléphone pour ouvrir la checklist instantanément.</p>
+            
+            <div class="qr-image-wrapper">
+                <img id="qr-modal-img" src="" alt="Code QR de partage">
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="copy-link-btn" id="copy-link-btn">
+                    <i class="fa-solid fa-copy"></i> Copier le lien
+                </button>
+                <button class="close-modal-btn" id="close-modal-btn">Fermer</button>
+            </div>
+        </div>
     </div>
 
     <!-- Script logic -->
@@ -943,6 +1074,49 @@
                     .catch(err => console.error('Erreur Service Worker PWA :', err));
             });
         }
+
+        // Share Modal elements
+        const shareBtn = document.getElementById('share-btn');
+        const shareModal = document.getElementById('share-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const copyLinkBtn = document.getElementById('copy-link-btn');
+        const qrModalImg = document.getElementById('qr-modal-img');
+
+        // Show modal and generate QR code based on actual current URL
+        shareBtn.addEventListener('click', () => {
+            const currentURL = window.location.href;
+            // Generate QR code dynamically using the secure API
+            qrModalImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentURL)}`;
+            shareModal.classList.add('active');
+        });
+
+        // Hide modal
+        closeModalBtn.addEventListener('click', () => {
+            shareModal.classList.remove('active');
+        });
+
+        // Close on clicking outside modal card
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) {
+                shareModal.classList.remove('active');
+            }
+        });
+
+        // Copy link to clipboard
+        copyLinkBtn.addEventListener('click', () => {
+            const currentURL = window.location.href;
+            navigator.clipboard.writeText(currentURL).then(() => {
+                const originalText = copyLinkBtn.innerHTML;
+                copyLinkBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Copié !';
+                copyLinkBtn.style.background = '#16a34a'; // Green success color
+                setTimeout(() => {
+                    copyLinkBtn.innerHTML = originalText;
+                    copyLinkBtn.style.background = ''; // Restore default
+                }, 2000);
+            }).catch(err => {
+                alert("Impossible de copier le lien automatiquement. Copiez l'URL de votre navigateur.");
+            });
+        });
     </script>
 </body>
 </html>

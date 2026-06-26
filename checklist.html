@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🌴 Checklist Interactive - Costa Rica 2026</title>
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icon.png">
+    <meta name="theme-color" content="#2d5a47">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --cr-green: #2d5a47;
+            --cr-green-light: #eff6f0;
+            --cr-gold: #f2cc8f;
+            --cr-gold-dark: #dca353;
+            --cr-blue: #1e6091;
+            --cr-orange: #ea580c;
+            --stone-50: #faf9f6;
+            --stone-100: #f4f3ee;
+            --stone-800: #2c2a29;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(45, 90, 71, 0.15);
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f7f6f0 0%, #e9ece6 100%);
+            color: var(--stone-800);
+            min-height: 100vh;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        /* Header Style Costa Rica */
+        header {
+            background: linear-gradient(135deg, var(--cr-green) 0%, #1c3c2f 100%);
+            color: white;
+            padding: 30px 24px 24px 24px;
+            position: relative;
+            text-align: center;
+            border-bottom: 6px solid var(--cr-gold);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 10% 20%, rgba(242, 204, 143, 0.08) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .header-title-wrapper {
+            margin-bottom: 15px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--cr-gold);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        h1 span {
+            color: var(--cr-gold);
+        }
+
+        .family-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Progress Bar Section */
+        .progress-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #d1e2d9;
+        }
+
+        .progress-bar-bg {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cr-gold) 0%, #ffe8c4 100%);
+            border-radius: 5px;
+            transition: width 0.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+            box-shadow: 0 0 10px var(--cr-gold);
+        }
+
+        /* Navigation / Categories tabs */
+        .categories-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            background: var(--stone-100);
+            padding: 8px;
+            gap: 6px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .categories-tabs::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tab-btn {
+            flex: 1 1 auto;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #78716c;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab-btn i {
+            font-size: 1rem;
+        }
+
+        .tab-btn:hover {
+            background: rgba(45, 90, 71, 0.05);
+            color: var(--cr-green);
+        }
+
+        .tab-btn.active {
+            background: var(--cr-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(45, 90, 71, 0.2);
+        }
+
+        /* Content List Section */
+        .list-container {
+            padding: 24px;
+            min-height: 350px;
+        }
+
+        .list-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .list-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-desc {
+            font-size: 0.9rem;
+            color: #625c58;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            background: var(--stone-50);
+            padding: 12px 16px;
+            border-left: 4px solid var(--cr-green);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        /* Checkbox items */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 16px;
+            background: white;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #eae8e1;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            user-select: none;
+        }
+
+        .checklist-item:hover {
+            border-color: var(--cr-green);
+            transform: translateX(2px);
+            box-shadow: 0 4px 12px rgba(45, 90, 71, 0.06);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-wrapper {
+            position: relative;
+            margin-right: 14px;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .custom-checkmark {
+            height: 22px;
+            width: 22px;
+            background-color: white;
+            border: 2px solid #a8a29e;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: inline-block;
+            position: relative;
+        }
+
+        .checklist-item:hover .custom-checkmark {
+            border-color: var(--cr-green);
+        }
+
+        /* Active/Checked state */
+        .checklist-item.checked {
+            background-color: var(--cr-green-light);
+            border-color: rgba(45, 90, 71, 0.2);
+        }
+
+        .checklist-item.checked .custom-checkmark {
+            background-color: var(--cr-green);
+            border-color: var(--cr-green);
+        }
+
+        .checklist-item.checked .custom-checkmark:after {
+            content: "";
+            position: absolute;
+            display: block;
+            left: 7px;
+            top: 3px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg);
+        }
+
+        .item-text-wrapper {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--stone-800);
+            transition: var(--transition);
+        }
+
+        .checklist-item.checked .item-title {
+            color: #7c8b82;
+            text-decoration: line-through;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #78716c;
+            margin-top: 4px;
+            line-height: 1.4;
+            transition: var(--transition);
+        }
+
+        .checklist-item.checked .item-desc {
+            color: #9aa8a0;
+        }
+
+        /* Delete button for custom items */
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            padding: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            opacity: 0;
+            transition: var(--transition);
+            margin-left: 8px;
+            align-self: center;
+        }
+
+        .checklist-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            color: var(--cr-orange);
+            background: rgba(234, 88, 12, 0.05);
+        }
+
+        /* Custom item form */
+        .add-item-form {
+            display: flex;
+            margin-top: 20px;
+            gap: 8px;
+            background: var(--stone-50);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px dashed #d6d3d1;
+        }
+
+        .add-item-input {
+            flex: 1;
+            border: 1px solid #d6d3d1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .add-item-input:focus {
+            border-color: var(--cr-green);
+            box-shadow: 0 0 0 3px rgba(45, 90, 71, 0.1);
+        }
+
+        .add-item-btn {
+            background: var(--cr-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .add-item-btn:hover {
+            background: #1e3d30;
+        }
+
+        /* Footer Utilities */
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            background: var(--stone-50);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .reset-btn {
+            background: transparent;
+            border: 1px solid #d6d3d1;
+            color: #78716c;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .reset-btn:hover {
+            background: rgba(234, 88, 12, 0.05);
+            color: var(--cr-orange);
+            border-color: var(--cr-orange);
+        }
+
+        .home-link {
+            font-size: 0.85rem;
+            color: var(--cr-green);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+            color: #1e3d30;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            header {
+                padding: 24px 16px 16px 16px;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .list-container {
+                padding: 16px;
+            }
+            .tab-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            .checklist-item {
+                padding: 12px;
+            }
+            .add-item-form {
+                flex-direction: column;
+            }
+            .add-item-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Print styling */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+                max-width: 100%;
+            }
+            header {
+                background: white !important;
+                color: black !important;
+                border-bottom: 2px solid black;
+                padding: 10px 0;
+            }
+            .progress-container, .categories-tabs, .add-item-form, .footer-actions, .delete-btn {
+                display: none !important;
+            }
+            .list-section {
+                display: block !important;
+                page-break-after: always;
+            }
+            .section-desc {
+                border-left: 2px solid black;
+                background: white;
+            }
+            .checklist-item {
+                border: 1px solid #ccc;
+                background: white !important;
+            }
+            .custom-checkmark {
+                border: 2px solid black;
+            }
+            .checklist-item.checked .custom-checkmark:after {
+                border-color: black;
+            }
+            .checklist-item.checked .item-title {
+                color: black;
+                text-decoration: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <div class="header-title-wrapper">
+                <div class="header-subtitle">Voyage en Famille 2026</div>
+                <h1>🌴 Checklist <span>Costa Rica</span></h1>
+                <div class="family-badge">
+                    <i class="fa-solid fa-people-group"></i> Parents + 3 Enfants (8g, 10g, 11f)
+                </div>
+            </div>
+            
+            <!-- Global Progress -->
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span>Progression générale</span>
+                    <span id="progress-percent">0% (0/0)</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Categories Navigation Tabs -->
+        <nav class="categories-tabs" id="tabs-navigation">
+            <button class="tab-btn active" data-tab="admin">
+                <i class="fa-solid fa-passport"></i> Admin & Départ
+            </button>
+            <button class="tab-btn" data-tab="sante">
+                <i class="fa-solid fa-kit-medical"></i> Pharmacie
+            </button>
+            <button class="tab-btn" data-tab="adultes">
+                <i class="fa-solid fa-suitcase"></i> Valises Adultes
+            </button>
+            <button class="tab-btn" data-tab="enfants">
+                <i class="fa-solid fa-child"></i> Valises Enfants
+            </button>
+            <button class="tab-btn" data-tab="derniere-minute">
+                <i class="fa-solid fa-clock"></i> Dernière Minute
+            </button>
+        </nav>
+
+        <!-- List Content Area -->
+        <main class="list-container">
+            
+            <!-- CATEGORY: ADMIN -->
+            <section id="tab-admin" class="list-section active">
+                <div class="section-desc">
+                    <i class="fa-solid fa-circle-info"></i> Documents importants, finances et logistique québécoise avant d'embarquer.
+                </div>
+                <div class="items-list" id="list-admin"></div>
+            </section>
+
+            <!-- CATEGORY: SANTE -->
+            <section id="tab-sante" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-shield-halved"></i> Trousse de pharmacie essentielle. N'oubliez pas les protections anti-moustiques et le mal des transports.
+                </div>
+                <div class="items-list" id="list-sante"></div>
+            </section>
+
+            <!-- CATEGORY: ADULTES -->
+            <section id="tab-adultes" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-shirt"></i> Vêtements légers en synthétique et chaussures adaptées. Évitez le coton qui ne séchera pas dans la jungle.
+                </div>
+                <div class="items-list" id="list-adultes"></div>
+            </section>
+
+            <!-- CATEGORY: ENFANTS -->
+            <section id="tab-enfants" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-cubes"></i> Pour vos garçons de 8 et 10 ans et votre fille de 11 ans. Équipement pratique, gourdes isothermes et observation de la nature.
+                </div>
+                <div class="items-list" id="list-enfants"></div>
+            </section>
+
+            <!-- CATEGORY: DERNIERE MINUTE -->
+            <section id="tab-derniere-minute" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-house-lock"></i> Checklist de sécurité pour la maison juste avant de franchir le pas de la porte.
+                </div>
+                <div class="items-list" id="list-derniere-minute"></div>
+            </section>
+
+            <!-- Add Custom Item Form -->
+            <form class="add-item-form" id="add-item-form">
+                <input type="text" class="add-item-input" id="new-item-text" placeholder="Ajouter une tâche personnalisée..." required autocomplete="off">
+                <button type="submit" class="add-item-btn">
+                    <i class="fa-solid fa-plus"></i> Ajouter
+                </button>
+            </form>
+
+        </main>
+
+        <!-- Footer Utilities -->
+        <footer class="footer-actions">
+            <button class="reset-btn" id="reset-btn" title="Réinitialiser toutes les cases cochées">
+                <i class="fa-solid fa-rotate-left"></i> Réinitialiser tout
+            </button>
+            <a href="index.html" class="home-link">
+                <i class="fa-solid fa-chevron-left"></i> Retour à l'itinéraire
+            </a>
+        </footer>
+
+    </div>
+
+    <!-- Script logic -->
+    <script>
+        // Core checklist data configuration
+        const DEFAULT_CHECKLIST_DATA = {
+            admin: [
+                { id: "adm-passport", title: "Passeports valides", desc: "Vérifier la validité de toute la famille (doit couvrir tout le séjour)." },
+                { id: "adm-retour", title: "Preuve de vol de retour", desc: "Obligatoire à présenter aux douanes costariciennes à l'arrivée (papier ou PDF)." },
+                { id: "adm-permis", title: "Permis de conduire du Québec", desc: "Le permis SAAQ est légalement valide pour conduire au Costa Rica en tant que touriste." },
+                { id: "adm-pci", title: "Permis de conduire international (PCI)", desc: "Recommandé par CAA Québec pour les contrôles policiers locaux." },
+                { id: "adm-carte-conducteur", title: "Carte de crédit au nom du conducteur principal", desc: "Obligatoire à présenter à l'agence de location de voiture pour le dépôt." },
+                { id: "adm-assurance-med", title: "Assurance voyage médicale familiale", desc: "La RAMQ ne couvre presque rien. Valider que l'assurance médicale privée couvre le Costa Rica et les activités d'aventure (tyrolienne, rafting)." },
+                { id: "adm-assurance-auto", title: "Lettre d'attestation d'assurance auto de la carte de crédit", desc: "En anglais ou espagnol, pour décliner l'assurance collision (CDW) locale. Attention: la responsabilité civile tiers (TPL/SLI) reste obligatoire." },
+                { id: "adm-banque", title: "Déclaration de voyage aux banques", desc: "Aviser vos banques (Desjardins, BNC, etc.) de vos escales US et du Costa Rica pour éviter les blocages de sécurité." },
+                { id: "adm-frais-change", title: "Cartes sans frais de conversion", desc: "Prioriser des cartes comme EQ Bank ou Wealthsimple Cash pour économiser 2.5% sur les frais de devises." },
+                { id: "adm-dollars", title: "Dollars Américains (USD) en liquide", desc: "Petits billets propres et sans déchirure (1$, 5$, 10$, 20$). Les billets usés ou de 50$/100$ sont souvent refusés." },
+                { id: "adm-adaptateur", title: "Pas d'adaptateurs requis !", desc: "Le Costa Rica utilise les mêmes prises (Types A & B, 120V) qu'au Québec. Aucun adaptateur ou convertisseur de tension n'est nécessaire." },
+                { id: "adm-maps", title: "Cartes routières hors ligne", desc: "Télécharger les zones sur Google Maps, Waze ou Maps.me pour pallier le manque de réseau mobile en montagne." }
+            ],
+            sante: [
+                { id: "san-moustique", title: "Chasse-moustique puissant", desc: "Formule avec DEET (max 30% pour les enfants) ou Picaridine. Indispensable contre la dengue." },
+                { id: "san-solaire", title: "Crème solaire respectueuse des récifs (Reef-Safe)", desc: "Sans oxybenzone, obligatoire dans certains parcs et pour préserver les plages." },
+                { id: "san-coeur", title: "Médicaments contre le mal des transports", desc: "Gravol enfants et adultes. Les routes de montagnes sont sinueuses (ex: pour aller à Monteverde)." },
+                { id: "san-diarrhee", title: "Trousse estomac", desc: "Imodium (adulte), probiotiques et sachets d'électrolytes de réhydratation." },
+                { id: "san-premiers-soins", title: "Trousse de premiers soins de base", desc: "Pansements étanches (pour les égratignures des enfants), lingettes antiseptiques, pincette pour échardes et tiques." },
+                { id: "san-allergie", title: "Antihistaminiques & crème apaisante", desc: "Benadryl ou crème à l'hydrocortisone pour calmer les réactions aux piqûres d'insectes." },
+                { id: "san-courant", title: "Médicaments d'usage courant", desc: "Tylenol/Advil (adultes et enfants) et thermomètre." }
+            ],
+            adultes: [
+                { id: "adu-sac", title: "Sac à dos étanche (Dry bag) de jour", desc: "Indispensable pour garder la caméra et le téléphone au sec lors des sorties de bateau ou d'une averse." },
+                { id: "adu-vet-rapide", title: "Vêtements en matières synthétiques", desc: "Prioriser les textiles de sport respirants. Le coton ne sèche pas avec le taux d'humidité de la saison verte." },
+                { id: "adu-rashguard", title: "T-shirt anti-UV à manches longues", desc: "Pour la baignade prolongée ou le rafting sans coups de soleil." },
+                { id: "adu-pantalon", title: "Pantalons longs de randonnée légers", desc: "Indispensable en forêt tropicale pour les tiques, plantes urticantes et moustiques." },
+                { id: "adu-imperm", title: "Coupe-vent ou imperméable léger", desc: "Type K-Way respirant. Les averses arrivent souvent en milieu/fin d'après-midi en juillet-août." },
+                { id: "adu-maillots", title: "2 à 3 maillots de bain", desc: "Pour permettre un roulement de séchage (rien ne sèche en quelques heures)." },
+                { id: "adu-polaire", title: "Veste polaire ou chandail chaud", desc: "Pour les soirées plus fraîches en altitude (Monteverde à 1400m de hauteur ou près des volcans)." },
+                { id: "adu-shoes-rand", title: "Souliers de randonnée ou de trail", desc: "Semelle robuste antidérapante requise pour les chemins glissants et boueux." },
+                { id: "adu-shoes-eau", title: "Sandales de randonnée fermées (type Keen)", desc: "Le meilleur choix pour combiner marche en forêt, traversée de rivières ou descente de cascades." },
+                { id: "adu-chapeau", title: "Chapeau / casquette & lunettes", desc: "Le soleil tropical tape fort, même s'il y a des nuages. Cordon pour lunettes recommandé." },
+                { id: "adu-jumelles", title: "Jumelles de poche", desc: "Pour repérer les paresseux et les toucans cachés dans les cimes des arbres." }
+            ],
+            enfants: [
+                { id: "enf-rashguard", title: "Rashguards anti-UV pour tous", desc: "Manches longues indispensables pour les 3 enfants (garçons 8, 10 ans, fille 11 ans) lors des baignades." },
+                { id: "enf-keen", title: "Sandales fermées étanches (Keen/Merrell)", desc: "Pour courir dans les cascades, faire du rafting léger ou marcher sans glisser." },
+                { id: "enf-gourde", title: "Gourdes isothermes individuelles", desc: "L'eau chauffe vite. Les gourdes en métal gardent l'eau froide et évitent les bouteilles en plastique à usage unique (interdites dans certains parcs)." },
+                { id: "enf-lampe", title: "Lampes frontales individuelles", desc: "Pour les marches nocturnes guidées, ils vont adorer repérer les grenouilles et insectes !" },
+                { id: "enf-jumelles", title: "Petites jumelles de poche", desc: "Pour qu'ils puissent chercher activement les singes capucins et les paresseux." },
+                { id: "enf-pantalon", title: "Pantalons longs légers pour la jungle", desc: "Pour les marches guidées afin de parer les piqures de moustiques." },
+                { id: "enf-collations", title: "Collations familières du Québec", desc: "Barres de céréales, compotes. Très pratiques pour les trajets de route parfois longs." },
+                { id: "enf-jeux", title: "Jeux de cartes compacts (Uno, Dobble)", desc: "Pour jouer ensemble les après-midis de pluie ou en attendant les repas au resto." },
+                { id: "enf-carnet", title: "Carnets de voyage & crayons", desc: "Pour dessiner les animaux observés ou écrire leurs souvenirs du Costa Rica." }
+            ],
+            "derniere-minute": [
+                { id: "dm-eau", title: "Fermer l'entrée d'eau principale", desc: "Évite les mauvaises surprises de dégâts d'eau pendant votre absence." },
+                { id: "dm-thermostat", title: "Régler les thermostats / climatiseur", desc: "Passer en mode économie ou éteindre complètement." },
+                { id: "dm-electric", title: "Débrancher les appareils non essentiels", desc: "Ordinateurs, grille-pain, téléviseurs pour parer les surtensions d'orages d'été." },
+                { id: "dm-poubelle", title: "Sortir les poubelles et vider le frigo", desc: "Vider les aliments périssables pour éviter les odeurs au retour." },
+                { id: "dm-verrou", title: "Verrouiller toutes les issues", desc: "Fenêtres, portes extérieures, garage et cabanon." },
+                { id: "dm-cabine", title: "Valider les bagages de cabine", desc: "Passeports originaux, portefeuilles, téléphones, chargeurs et médicaments essentiels avec vous." }
+            ]
+        };
+
+        // State Manager
+        let checklistState = {};
+
+        // DOM elements
+        const tabsNavigation = document.getElementById('tabs-navigation');
+        const listSections = document.querySelectorAll('.list-section');
+        const addItemForm = document.getElementById('add-item-form');
+        const newItemInput = document.getElementById('new-item-text');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        const resetBtn = document.getElementById('reset-btn');
+
+        // Current active tab
+        let activeTab = 'admin';
+
+        // Initialize App
+        function initApp() {
+            // Load state from localStorage or use defaults
+            loadState();
+            
+            // Set event listeners for tabs
+            tabsNavigation.addEventListener('click', handleTabClick);
+            
+            // Setup form submit
+            addItemForm.addEventListener('submit', handleAddItem);
+            
+            // Setup reset action
+            resetBtn.addEventListener('click', handleReset);
+
+            // Render current list
+            renderCurrentList();
+            updateProgress();
+        }
+
+        // Load State from LocalStorage
+        function loadState() {
+            const savedState = localStorage.getItem('costa_rica_checklist_state');
+            if (savedState) {
+                try {
+                    checklistState = JSON.parse(savedState);
+                } catch (e) {
+                    console.error("Error parsing saved checklist state. Resetting to default.", e);
+                    useDefaultState();
+                }
+            } else {
+                useDefaultState();
+            }
+        }
+
+        // Set default state structure
+        function useDefaultState() {
+            checklistState = JSON.parse(JSON.stringify(DEFAULT_CHECKLIST_DATA));
+            // Add checked status to all
+            for (let category in checklistState) {
+                checklistState[category] = checklistState[category].map(item => ({
+                    ...item,
+                    checked: false
+                }));
+            }
+            saveState();
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('costa_rica_checklist_state', JSON.stringify(checklistState));
+        }
+
+        // Handle tab switcher
+        function handleTabClick(e) {
+            const btn = e.target.closest('.tab-btn');
+            if (!btn) return;
+
+            const targetTab = btn.getAttribute('data-tab');
+            if (targetTab === activeTab) return;
+
+            // Update tab button classes
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Hide/Show section panels
+            listSections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`tab-${targetTab}`).classList.add('active');
+
+            activeTab = targetTab;
+            renderCurrentList();
+        }
+
+        // Render items of active tab
+        function renderCurrentList() {
+            const listContainer = document.getElementById(`list-${activeTab}`);
+            if (!listContainer) return;
+
+            listContainer.innerHTML = '';
+            const items = checklistState[activeTab] || [];
+
+            if (items.length === 0) {
+                listContainer.innerHTML = '<div style="text-align: center; color: #a8a29e; padding: 30px 0; font-size: 0.95rem;">Aucun élément dans cette liste. Ajoutez-en un ci-dessous !</div>';
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = `checklist-item ${item.checked ? 'checked' : ''}`;
+                itemEl.setAttribute('data-id', item.id);
+                itemEl.setAttribute('data-index', index);
+
+                // Check if it's a custom user-added item (doesn't start with standard prefixes)
+                const isCustom = !item.id.startsWith('adm-') && 
+                                 !item.id.startsWith('san-') && 
+                                 !item.id.startsWith('adu-') && 
+                                 !item.id.startsWith('enf-') && 
+                                 !item.id.startsWith('dm-');
+
+                itemEl.innerHTML = `
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" ${item.checked ? 'checked' : ''}>
+                        <span class="custom-checkmark"></span>
+                    </div>
+                    <div class="item-text-wrapper">
+                        <div class="item-title">${escapeHTML(item.title)}</div>
+                        ${item.desc ? `<div class="item-desc">${escapeHTML(item.desc)}</div>` : ''}
+                    </div>
+                    ${isCustom ? `
+                        <button class="delete-btn" title="Supprimer cet élément" onclick="event.stopPropagation(); deleteCustomItem('${activeTab}', ${index})">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    ` : ''}
+                `;
+
+                // Add toggle event listener
+                itemEl.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-btn')) return;
+                    toggleItem(activeTab, index);
+                });
+
+                listContainer.appendChild(itemEl);
+            });
+        }
+
+        // Toggle checked state of an item
+        function toggleItem(category, index) {
+            checklistState[category][index].checked = !checklistState[category][index].checked;
+            saveState();
+            
+            // Re-render and recalculate progress
+            renderCurrentList();
+            updateProgress();
+        }
+
+        // Add dynamically a custom item
+        function handleAddItem(e) {
+            e.preventDefault();
+            const text = newItemInput.value.trim();
+            if (!text) return;
+
+            const newItem = {
+                id: 'custom-' + Date.now(),
+                title: text,
+                desc: 'Ajouté par vous',
+                checked: false
+            };
+
+            if (!checklistState[activeTab]) {
+                checklistState[activeTab] = [];
+            }
+
+            checklistState[activeTab].push(newItem);
+            saveState();
+            
+            newItemInput.value = '';
+            renderCurrentList();
+            updateProgress();
+            
+            // Scroll new item into view smoothly
+            setTimeout(() => {
+                const list = document.getElementById(`list-${activeTab}`);
+                if (list && list.lastElementChild) {
+                    list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
+        }
+
+        // Delete a custom item
+        window.deleteCustomItem = function(category, index) {
+            checklistState[category].splice(index, 1);
+            saveState();
+            renderCurrentList();
+            updateProgress();
+        };
+
+        // Recalculate progress across ALL checklists
+        function updateProgress() {
+            let total = 0;
+            let checked = 0;
+
+            for (let category in checklistState) {
+                const items = checklistState[category] || [];
+                total += items.length;
+                checked += items.filter(item => item.checked).length;
+            }
+
+            const percent = total > 0 ? Math.round((checked / total) * 100) : 0;
+            
+            // Update UI elements
+            progressBar.style.width = `${percent}%`;
+            progressPercent.textContent = `${percent}% (${checked}/${total})`;
+        }
+
+        // Reset check status for all items (asks confirmation)
+        function handleReset() {
+            if (confirm("Voulez-vous réinitialiser toutes les cases cochées de toutes les catégories ? (Les tâches personnalisées ajoutées seront conservées, mais décochées).")) {
+                for (let category in checklistState) {
+                    checklistState[category] = checklistState[category].map(item => ({
+                        ...item,
+                        checked: false
+                    }));
+                }
+                saveState();
+                renderCurrentList();
+                updateProgress();
+            }
+        }
+
+        // Utility to escape HTML and prevent XSS
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Launch
+        initApp();
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker PWA enregistré !', reg))
+                    .catch(err => console.error('Erreur Service Worker PWA :', err));
+            });
+        }
+    </script>
+</body>
+</html>

@@ -669,11 +669,17 @@
             <button class="tab-btn" data-tab="sante">
                 <i class="fa-solid fa-kit-medical"></i> Pharmacie
             </button>
+            <button class="tab-btn" data-tab="toilette-lavage">
+                <i class="fa-solid fa-soap"></i> Toilette & Lavage
+            </button>
             <button class="tab-btn" data-tab="adultes">
                 <i class="fa-solid fa-suitcase"></i> Valises Adultes
             </button>
             <button class="tab-btn" data-tab="enfants">
                 <i class="fa-solid fa-child"></i> Valises Enfants
+            </button>
+            <button class="tab-btn" data-tab="activites-jeux">
+                <i class="fa-solid fa-dice"></i> Activités & Jeux
             </button>
             <button class="tab-btn" data-tab="derniere-minute">
                 <i class="fa-solid fa-clock"></i> Dernière Minute
@@ -699,6 +705,14 @@
                 <div class="items-list" id="list-sante"></div>
             </section>
 
+            <!-- CATEGORY: TOILETTE & LAVAGE -->
+            <section id="tab-toilette-lavage" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-soap"></i> Articles de toilette, hygiène personnelle et matériel pour laver le linge durant le séjour.
+                </div>
+                <div class="items-list" id="list-toilette-lavage"></div>
+            </section>
+
             <!-- CATEGORY: ADULTES -->
             <section id="tab-adultes" class="list-section">
                 <div class="section-desc">
@@ -713,6 +727,14 @@
                     <i class="fa-solid fa-cubes"></i> Pour vos garçons de 8 et 10 ans et votre fille de 11 ans. Équipement pratique, gourdes isothermes et observation de la nature.
                 </div>
                 <div class="items-list" id="list-enfants"></div>
+            </section>
+
+            <!-- CATEGORY: ACTIVITES & JEUX -->
+            <section id="tab-activites-jeux" class="list-section">
+                <div class="section-desc">
+                    <i class="fa-solid fa-dice"></i> Activités intérieures et extérieures, livres, cartes, jeux de voyage et essentiels pour la voiture.
+                </div>
+                <div class="items-list" id="list-activites-jeux"></div>
             </section>
 
             <!-- CATEGORY: DERNIERE MINUTE -->
@@ -792,6 +814,15 @@
                 { id: "san-allergie", title: "Antihistaminiques & crème apaisante", desc: "Benadryl ou crème à l'hydrocortisone pour calmer les réactions aux piqûres d'insectes." },
                 { id: "san-courant", title: "Médicaments d'usage courant", desc: "Tylenol/Advil (adultes et enfants) et thermomètre." }
             ],
+            "toilette-lavage": [
+                { id: "toi-biodeg", title: "Produits d'hygiène biodégradables", desc: "Shampoing, revitalisant et gel douche écologiques pour préserver les écosystèmes fragiles." },
+                { id: "toi-dents", title: "Brosses à dents et dentifrice", desc: "Un ensemble pour chaque membre de la famille dans des étuis de transport étanches." },
+                { id: "toi-deodorant", title: "Déodorant & Coupe-ongles", desc: "Éléments indispensables de la trousse de toilette quotidienne." },
+                { id: "toi-lessive", title: "Lessive de voyage (feuilles ou gel)", desc: "Pratique pour laver rapidement les vêtements synthétiques dans le lavabo." },
+                { id: "toi-corde", title: "Corde à linge de voyage élastique", desc: "Avec ventouses ou crochets pour suspendre et faire sécher le linge humide." },
+                { id: "toi-microfibre", title: "Serviettes microfibres à séchage rapide", desc: "Idéales pour la plage ou les cascades, prennent très peu d'espace." },
+                { id: "toi-linge-sale", title: "Sacs de rangement pour linge sale", desc: "Pour séparer les vêtements humides ou sales du reste de la valise." }
+            ],
             adultes: [
                 { id: "adu-sac", title: "Sac à dos étanche (Dry bag) de jour", desc: "Indispensable pour garder la caméra et le téléphone au sec lors des sorties de bateau ou d'une averse." },
                 { id: "adu-vet-rapide", title: "Vêtements en matières synthétiques", desc: "Prioriser les textiles de sport respirants. Le coton ne sèche pas avec le taux d'humidité de la saison verte." },
@@ -815,6 +846,17 @@
                 { id: "enf-collations", title: "Collations familières du Québec", desc: "Barres de céréales, compotes. Très pratiques pour les trajets de route parfois longs." },
                 { id: "enf-jeux", title: "Jeux de cartes compacts (Uno, Dobble)", desc: "Pour jouer ensemble les après-midis de pluie ou en attendant les repas au resto." },
                 { id: "enf-carnet", title: "Carnets de voyage & crayons", desc: "Pour dessiner les animaux observés ou écrire leurs souvenirs du Costa Rica." }
+            ],
+            "activites-jeux": [
+                { id: "act-livres", title: "Livres de lecture & Liseuses", desc: "Pour les moments calmes ou de pluie en fin d'après-midi." },
+                { id: "act-cartes", title: "Jeux de cartes (Uno, Dobble)", desc: "Indispensables pour patienter au restaurant ou pendant les averses de pluie." },
+                { id: "act-jeux-voyage", title: "Jeux de société format voyage", desc: "Jeux magnétiques ou petits formats (dés, Yatzy) faciles à transporter." },
+                { id: "act-auto", title: "Divertissements pour l'auto", desc: "Histoires audio téléchargées, devinettes ou petits carnets de jeux pour les trajets." },
+                { id: "act-guides", title: "Guide d'identification faune & flore", desc: "Pour s'amuser à repérer et nommer les animaux et plantes observés." },
+                { id: "act-support-tel", title: "Support de téléphone pour l'auto", desc: "Très pratique pour installer le GPS (Waze/Google Maps) sur le tableau de bord." },
+                { id: "act-chargeur-auto", title: "Chargeur allume-cigare USB double", desc: "Pour recharger les téléphones et tablettes en route, le GPS consommant beaucoup d'énergie." },
+                { id: "act-playlists", title: "Playlists & balados hors ligne", desc: "Télécharger de la musique et des balados avant de partir pour les zones sans réseau mobile." },
+                { id: "act-ziploc", title: "Sacs étanches (de type Ziploc)", desc: "Pour garder les livres, cartes et électroniques à l'abri de l'humidité." }
             ],
             "derniere-minute": [
                 { id: "dm-eau", title: "Fermer l'entrée d'eau principale", desc: "Évite les mauvaises surprises de dégâts d'eau pendant votre absence." },
@@ -861,7 +903,33 @@
             const savedState = localStorage.getItem('costa_rica_checklist_state');
             if (savedState) {
                 try {
-                    checklistState = JSON.parse(savedState);
+                    const loadedState = JSON.parse(savedState);
+                    checklistState = {};
+                    
+                    // Merge savedState with DEFAULT_CHECKLIST_DATA to ensure new categories/items are included
+                    for (let category in DEFAULT_CHECKLIST_DATA) {
+                        if (loadedState[category]) {
+                            const savedItemsMap = new Map(loadedState[category].map(item => [item.id, item]));
+                            
+                            checklistState[category] = DEFAULT_CHECKLIST_DATA[category].map(defaultItem => {
+                                const saved = savedItemsMap.get(defaultItem.id);
+                                return {
+                                    ...defaultItem,
+                                    checked: saved ? saved.checked : false
+                                };
+                            });
+                            
+                            // Also keep any custom items
+                            const customItems = loadedState[category].filter(item => item.id.startsWith('custom-'));
+                            checklistState[category].push(...customItems);
+                        } else {
+                            checklistState[category] = DEFAULT_CHECKLIST_DATA[category].map(item => ({
+                                ...item,
+                                checked: false
+                            }));
+                        }
+                    }
+                    saveState();
                 } catch (e) {
                     console.error("Error parsing saved checklist state. Resetting to default.", e);
                     useDefaultState();
@@ -933,7 +1001,9 @@
                                  !item.id.startsWith('san-') && 
                                  !item.id.startsWith('adu-') && 
                                  !item.id.startsWith('enf-') && 
-                                 !item.id.startsWith('dm-');
+                                 !item.id.startsWith('dm-') && 
+                                 !item.id.startsWith('toi-') && 
+                                 !item.id.startsWith('act-');
 
                 itemEl.innerHTML = `
                     <div class="checkbox-wrapper">
